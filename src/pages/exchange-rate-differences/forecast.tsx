@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { Link, HeadFC, PageProps } from 'gatsby'
+import { HeadFC } from 'gatsby'
 import '../../styles/common.css'
-import logo from '../../images/logo.svg'
-import bot from '../../images/bot.png'
 import { currency, round } from '../../utils/formatters'
 import { getExchangeRate } from '../../utils/exchange-rate'
-import { getPrice } from '../../utils/yahoo'
 import Chart from 'chart.js/auto'
+import Join from '../../components/join'
+import Hero from '../../components/hero'
 
 interface Row {
   year: number
@@ -185,17 +184,8 @@ const Forecast = () => {
 
   return (
     <main>
-      <div className="bg-rainbow text-white vh-100">
-        <div className="container">
-          <div className="d-flex vh-100 align-items-center">
-            <div>
-              <img width="120" src={logo} />
-              <h1 className="display-5 display-lg-1 fw-bold">Курсові різниці</h1>
-              <p className="fs-3">Модель впливу податку на інвестиційний прибуток на результат інвестицій при змінних темпах девальвації та % прибутковості</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Hero title="Курсові різниці" subtitle="Модель впливу податку на інвестиційний прибуток на результат інвестицій при змінних темпах девальвації та % прибутковості" />
+
       <div className="container py-5">
         <div className="row">
           <p className="col-12 col-sm-4">
@@ -278,25 +268,7 @@ const Forecast = () => {
         <canvas ref={chartRef} />
       </div>
 
-      <div className="bg-rainbow text-white vh-100 mt-5">
-        <div className="container">
-          <div className="d-flex align-items-center vh-100">
-            <div className="flex-grow-1 ms-3">
-              <img width="120" src={logo} />
-              <h1 className="display-1 fw-bold">iPlan Talks</h1>
-              <p className="fs-3">Отримуй цінний досвід планерів iPlan.ua за щомісячною підпискою</p>
-              <p>
-                <a className="btn btn-outline-light btn-lg" href="https://italks.com.ua/#reasons">
-                  Дізнатись більше
-                </a>
-              </p>
-            </div>
-            <div className="flex-shrink-0 d-none d-lg-block">
-              <img width="300" src={bot} alt="bot screenshot" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <Join />
     </main>
   )
 }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, HeadFC, PageProps } from 'gatsby'
+import { HeadFC, PageProps } from 'gatsby'
 import '../styles/common.css'
 import logo from '../images/logo.svg'
 import bot from '../images/bot.png'

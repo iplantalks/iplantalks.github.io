@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { FC, useState, useEffect, useMemo, useRef } from 'react'
 import type { HeadFC, PageProps } from 'gatsby'
-import logo from '../images/logo.svg'
-import bot from '../images/bot.png'
 import { currency, round } from '../utils/formatters'
 import { getExchangeRate, getExhcangeRateHistory } from '../utils/exchange-rate'
 import '../styles/common.css'
@@ -11,6 +9,8 @@ import { getOVDP } from '../utils/privatbank/ovdp'
 import { createChart, ColorType } from 'lightweight-charts'
 import { rri } from '../utils/rri'
 import Subscribe from '../components/subscribe'
+import Join from '../components/join'
+import Hero from '../components/hero'
 
 interface Row {
   year: number
@@ -178,17 +178,7 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
 
   return (
     <main>
-      <div className="bg-rainbow text-white vh-100">
-        <div className="container">
-          <div className="d-flex vh-100 align-items-center">
-            <div>
-              <img width="120" src={logo} />
-              <h1 className="display-5 display-lg-1 fw-bold mt-2">Курсові різниці</h1>
-              <p className="fs-3">Курс розвороту</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Hero title="Курсові різниці" subtitle="Курс розвороту" />
 
       <div className="container py-5">
         <p>Даний калькулятор дозволяє порівняти ефективність інвестування в гривневі та валютні інструменти - шляхом визначення паритетного майбутнього курсу долара до гривні.</p>
@@ -387,26 +377,7 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
       </div>
 
       <Subscribe />
-
-      <div className="bg-rainbow text-white vh-100">
-        <div className="container">
-          <div className="d-flex align-items-center vh-100">
-            <div className="flex-grow-1 ms-3">
-              <img width="120" src={logo} />
-              <h1 className="display-1 fw-bold mt-2">iPlan Talks</h1>
-              <p className="fs-3">Отримуй цінний досвід планерів iPlan.ua за щомісячною підпискою</p>
-              <p>
-                <a className="btn btn-outline-light btn-lg" href="https://italks.com.ua/#reasons">
-                  Дізнатись більше
-                </a>
-              </p>
-            </div>
-            <div className="flex-shrink-0 d-none d-lg-block">
-              <img width="300" src={bot} alt="bot screenshot" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <Join />
     </main>
   )
 }
