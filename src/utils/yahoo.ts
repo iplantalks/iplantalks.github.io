@@ -42,10 +42,10 @@ export async function queryChart(symbol: string, period1: Date, period2: Date): 
 export async function getPrice(symbol: string, date?: Date): Promise<number | null> {
   if (!date) {
     var prices = await queryChart(symbol, new Date(new Date().setDate(new Date().getDate() - 5)), new Date())
-    if (!prices) {
+    if (!prices || !prices.length) {
       return null
     }
-    return prices[prices.length - 1].close
+    return prices[prices.length - 1]?.close || null
   }
 
   var iso = date.toISOString().split('T').shift()
