@@ -1,0 +1,26 @@
+{
+  "name": "iplpantalks",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "typecheck": "tsc --noEmit",
+    "format": "npx prettier --write .",
+    "outdated": "npx npm-check-updates",
+    "upgrade": "npm run outdated -- -u"
+  },
+  "dependencies": {
+    "gatsby": "^5.13.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.7",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3"
+  }
+}
