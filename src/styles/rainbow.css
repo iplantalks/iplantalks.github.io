@@ -1,0 +1,37 @@
+@property --c1 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: var(--bs-primary);
+}
+@property --c2 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: var(--bs-success);
+}
+@property --c3 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: var(--bs-warning);
+}
+
+@keyframes bgrotate {
+  from {
+    --c1: var(--bs-primary);
+    --c2: var(--bs-success);
+    --c3: var(--bs-warning);
+  }
+  to {
+    --c1: var(--bs-success);
+    --c2: var(--bs-primary);
+    --c3: var(--bs-warning);
+  }
+}
+
+.bg-rainbow {
+  background: radial-gradient(ellipse at top left, var(--c1), transparent), radial-gradient(ellipse at top right, var(--c2), transparent),
+    radial-gradient(ellipse at bottom right, var(--c3), transparent), radial-gradient(ellipse at bottom left, var(--c2), transparent);
+  animation-name: bgrotate;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-duration: 30s;
+}

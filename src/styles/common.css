@@ -1,0 +1,7 @@
+@import url(../../node_modules/bootstrap/dist/css/bootstrap.css);
+@import url(variables.css);
+@import url(rainbow.css);
+
+.foo {
+  color: red;
+}

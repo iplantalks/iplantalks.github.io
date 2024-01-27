@@ -2,7 +2,7 @@ import type { GatsbyConfig } from 'gatsby'
 
 const config: GatsbyConfig = {
   siteMetadata: {
-    title: `iplantalks`,
+    title: `italks`,
     siteUrl: `https://italks.com.ua`,
   },
   graphqlTypegen: true,

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="209.41 265.21 580.08 474.68">
+  <defs>
+    <linearGradient id="a" x1="572" y1="704" x2="325" y2="345" gradientUnits="userSpaceOnUse">
+      <stop offset=".1" stop-color="#fabd05"></stop>
+      <stop offset=".48" stop-color="#7bb95b"></stop>
+      <stop offset=".53" stop-color="#75b661"></stop>
+      <stop offset=".6" stop-color="#67ae75"></stop>
+      <stop offset=".68" stop-color="#4fa195"></stop>
+      <stop offset=".77" stop-color="#3091bf"></stop>
+      <stop offset=".85" stop-color="#2278a8"></stop>
+      <stop offset=".94" stop-color="#156192"></stop>
+      <stop offset="1" stop-color="#11598b"></stop>
+    </linearGradient>
+    <linearGradient id="b" x1="651" y1="628" x2="279" y2="257" gradientUnits="userSpaceOnUse">
+      <stop offset=".04" stop-color="#fabd05"></stop>
+      <stop offset=".4" stop-color="#49a85d"></stop>
+      <stop offset=".69" stop-color="#11598b"></stop>
+    </linearGradient>
+  </defs>
+  <g>
+    <path fill="url(#a)" d="M577.67,392.25v149.29c0,67.12-54.41,121.53-121.53,121.53h-35.78c-67.12,0-121.53-54.41-121.53-121.53v-4.31h-87.6l87.6-74.66v-70.31c0-67.12,54.41-121.53,121.53-121.53h35.78c67.12,0,121.53,54.41,121.53,121.53Z"></path>
+    <path fill="url(#b)" d="M421.23,463.57v149.29c0,67.12,54.41,121.53,121.53,121.53h35.78c67.12,0,121.53-54.41,121.53-121.53v-4.31h87.6s-87.6-74.66-87.6-74.66v-70.31c0-67.12-54.41-121.53-121.53-121.53h-35.78c-67.12,0-121.53,54.41-121.53,121.53Z"></path>
+    <path stroke="#ffffff" stroke-width="11px" fill="none" d="M421.23,465.72v144.98c0,68.31,55.38,123.69,123.69,123.69h31.47c68.31,0,123.69-55.38,123.69-123.69h0c0-1.19,.97-2.16,2.16-2.16h79.59c2,0,2.92-2.5,1.4-3.8l-82.39-70.22c-.48-.41-.76-1.01-.76-1.64v-67.16c0-68.31-55.38-123.69-123.69-123.69h-31.47c-68.31,0-123.69,55.38-123.69,123.69Z"></path>
+    <path stroke="#ffffff" stroke-width="11px" fill="none" d="M577.67,394.4v144.98c0,68.31-55.38,123.69-123.69,123.69h-31.47c-68.31,0-123.69-55.38-123.69-123.69h0c0-1.19-.97-2.16-2.16-2.16h-79.59c-2,0-2.92-2.5-1.4-3.8l82.39-70.22c.48-.41,.76-1.01,.76-1.64v-67.16c0-68.31,55.38-123.69,123.69-123.69h31.47c68.31,0,123.69,55.38,123.69,123.69Z"></path>
+  </g>
+</svg>
