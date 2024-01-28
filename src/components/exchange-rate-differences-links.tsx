@@ -34,6 +34,17 @@ const ExchangeRateDifferencesLinks = () => (
             Розрахунок поточних фінансових результатів з виписки Interactive Brokers
           </Link>
         </li>
+        <li className="col d-flex align-items-stretch">
+          <Link
+            to="/exchange-rate-differences/interactive-brokers/dividends"
+            activeClassName="text-body-emphasis"
+            className="text-bg-light d-flex p-4 border shadow-sm text-body-secondary text-decoration-none"
+          >
+            <i className="fa-solid fa-bookmark flex-shrink-0 me-3 fs-3 text-primary"></i>
+            <i className="fa-regular fa-bookmark flex-shrink-0 me-3 fs-3 text-primary"></i>
+            Розрахунок податкових забовʼязань по дивідендам з виписки Interactive Brokers з урахуванням курсових різниць
+          </Link>
+        </li>
       </ul>
     </div>
   </div>
