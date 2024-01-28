@@ -1,12 +1,14 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo } from 'react'
-import { HeadFC } from 'gatsby'
+import { HeadFC, Link } from 'gatsby'
 import '../../styles/common.css'
 import { currency, round } from '../../utils/formatters'
 import { getExchangeRate } from '../../utils/exchange-rate'
 import { getPrice } from '../../utils/yahoo'
 import Join from '../../components/join'
 import Hero from '../../components/hero'
+import ExchangeRateDifferencesLinks from '../../components/exchange-rate-differences-links'
+import Subscribe from '../../components/subscribe'
 
 /**
  * Guard against unexpected NaN values
@@ -707,6 +709,8 @@ const Zero = () => {
         </div>
       </div>
 
+      <ExchangeRateDifferencesLinks />
+      <Subscribe />
       <Join />
     </main>
   )

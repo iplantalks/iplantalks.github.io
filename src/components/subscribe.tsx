@@ -31,7 +31,7 @@ const Subscribe = () => {
   }
 
   return (
-    <div className="bg-secondary">
+    <div className="bg-body-secondary">
       <div className="container py-5">
         <div className="row align-items-center">
           <div className="col-12 col-sm-6">

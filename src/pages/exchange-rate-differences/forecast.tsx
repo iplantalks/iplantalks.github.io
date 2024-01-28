@@ -7,6 +7,8 @@ import { getExchangeRate } from '../../utils/exchange-rate'
 import Chart from 'chart.js/auto'
 import Join from '../../components/join'
 import Hero from '../../components/hero'
+import ExchangeRateDifferencesLinks from '../../components/exchange-rate-differences-links'
+import Subscribe from '../../components/subscribe'
 
 interface Row {
   year: number
@@ -268,6 +270,8 @@ const Forecast = () => {
         <canvas ref={chartRef} />
       </div>
 
+      <ExchangeRateDifferencesLinks />
+      <Subscribe />
       <Join />
     </main>
   )

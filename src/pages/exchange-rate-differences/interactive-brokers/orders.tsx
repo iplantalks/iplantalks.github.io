@@ -10,6 +10,8 @@ import msmoney from '../../../images/exchange-rate-differences/msmoney.png'
 import popup from '../../../images/exchange-rate-differences/popup.png'
 import Join from '../../../components/join'
 import Hero from '../../../components/hero'
+import ExchangeRateDifferencesLinks from '../../../components/exchange-rate-differences-links'
+import Subscribe from '../../../components/subscribe'
 
 const sample = `
 OFXHEADER:100
@@ -660,6 +662,8 @@ const Orders = () => {
         )}
       </div>
 
+      <ExchangeRateDifferencesLinks />
+      <Subscribe />
       <Join />
     </main>
   )
