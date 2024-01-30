@@ -237,6 +237,22 @@ const Orders = () => {
                 </tr>
               ))}
             </tbody>
+            <tfoot className="table-group-divider table-secondary">
+              <tr>
+                <td>Разом</td>
+                <td></td>
+                <td>{filtered.reduce((acc, x) => acc + x.shares, 0)}</td>
+                <td>{currency(filtered.reduce((acc, x) => acc + x.price, 0))}</td>
+                <td>{currency(filtered.reduce((acc, x) => acc + x.currentPrice, 0))}</td>
+                <td>{currency(filtered.reduce((acc, x) => acc + x.commision, 0))}</td>
+                <td></td>
+                <td>{currency(filtered.reduce((acc, x) => acc + x.spendUah, 0))}</td>
+                <td>{currency(filtered.reduce((acc, x) => acc + x.valueUah, 0))}</td>
+                <td>{currency(filtered.reduce((acc, x) => acc + x.incomeUah, 0))}</td>
+                <td>{currency(filtered.reduce((acc, x) => acc + x.taxUah, 0))}</td>
+                <td>{currency(filtered.reduce((acc, x) => acc + x.netIncomeUah, 0))}</td>
+              </tr>
+            </tfoot>
           </table>
         )}
         {negative && (
@@ -245,6 +261,7 @@ const Orders = () => {
             <span className="text-danger">{currency(negative.netIncomeUah)} грн</span>, навіть з урахуванням курсових різниць.
           </p>
         )}
+        <p>Важливо - цей калькулятор рахує курсові різниці для всіх активів куплених у звітний період без урахування продажів, коммісій тощо, метою є саме розрахунок курсових різниць</p>
       </div>
 
       <ExchangeRateDifferencesLinks />
