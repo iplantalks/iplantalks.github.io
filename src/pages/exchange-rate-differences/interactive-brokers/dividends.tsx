@@ -310,7 +310,7 @@ const Dividends = () => {
             </tbody>
             <tfoot className="table-group-divider table-secondary">
               <tr>
-                <td></td>
+                <td>Разом</td>
                 <td></td>
                 <td></td>
                 <td></td>
