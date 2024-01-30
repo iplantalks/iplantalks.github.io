@@ -117,7 +117,7 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
     var uah = chart.addLineSeries({ color: 'red', title: 'UAH' })
     var usd = chart.addLineSeries({ color: 'blue', title: 'USD' })
 
-    chart.applyOptions({ localization: { priceFormatter: Intl.NumberFormat(undefined, { style: 'currency', currency: 'UAH' }).format } })
+    chart.applyOptions({ localization: { priceFormatter: Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format } })
 
     uah.setData(
       rows.map((row) => ({
