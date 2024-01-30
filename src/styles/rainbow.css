@@ -1,29 +1,29 @@
 @property --c1 {
   syntax: '<color>';
   inherits: false;
-  initial-value: var(--bs-primary);
+  initial-value: #11598b;
 }
 @property --c2 {
   syntax: '<color>';
   inherits: false;
-  initial-value: var(--bs-success);
+  initial-value: #49a85d;
 }
 @property --c3 {
   syntax: '<color>';
   inherits: false;
-  initial-value: var(--bs-warning);
+  initial-value: #fabd05;
 }
 
 @keyframes bgrotate {
   from {
-    --c1: var(--bs-primary);
-    --c2: var(--bs-success);
-    --c3: var(--bs-warning);
+    --c1: #11598b;
+    --c2: #49a85d;
+    --c3: #fabd05;
   }
   to {
-    --c1: var(--bs-success);
-    --c2: var(--bs-primary);
-    --c3: var(--bs-warning);
+    --c1: #49a85d;
+    --c2: #11598b;
+    --c3: #fabd05;
   }
 }
 
