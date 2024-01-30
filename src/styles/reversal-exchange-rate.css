@@ -3,9 +3,9 @@
 }
 
 #result tr:last-child td:nth-child(1) {
-  color: var(--bs-primary);
+  color: var(--bs-primary) !important;
 }
 
 #result tr:last-child td:nth-child(2) {
-  color: var(--bs-warning);
+  color: var(--bs-warning) !important;
 }

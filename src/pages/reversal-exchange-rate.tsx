@@ -254,8 +254,8 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
           <tbody id="result" className="table-group-divider">
             {rows.map(({ uah, usd, reverse, year, change, forecast }) => (
               <tr key={year}>
-                <td>{currency(uah)}</td>
-                <td>{currency(usd)}</td>
+                <td style={{ color: 'red' }}>{currency(uah)}</td>
+                <td style={{ color: 'blue' }}>{currency(usd)}</td>
                 <td>{currency(reverse)}</td>
                 <td>{year}</td>
                 <td>{currency(change)}</td>
