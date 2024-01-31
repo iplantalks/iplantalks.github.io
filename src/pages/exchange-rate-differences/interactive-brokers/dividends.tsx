@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { HeadFC } from 'gatsby'
 import '../../../styles/common.css'
 import Chart, { CoreChartOptions } from 'chart.js/auto'
-import { currency } from '../../../utils/formatters'
+import { currency, round } from '../../../utils/formatters'
 import { getExchangeRate } from '../../../utils/exchange-rate'
 import statements from '../../../images/exchange-rate-differences/statements.png'
 import msmoney from '../../../images/exchange-rate-differences/msmoney.png'
@@ -78,6 +78,8 @@ const Dividends = () => {
   const [chart, setChart] = useState<Chart>()
 
   const [rows, setRows] = useState<Row[]>([])
+
+  const tax30 = useMemo(() => rows.filter((row) => (Math.abs(row.tax) / row.income) * 100 > 20).sort((a, b) => Math.abs(b.tax) - Math.abs(a.tax))?.[0], [rows])
 
   const handle = (text: string) => {
     const ofx = parseMsMoneyOfxReport(text)
@@ -274,6 +276,9 @@ const Dividends = () => {
                 <th title="Утримано податків зі сторони IBKR на користь США у доларах" className="fw-normal">
                   tax <span className="text-secondary">$</span>
                 </th>
+                <th title="Розрахований процент податку" className="fw-normal">
+                  tax <span className="text-secondary">%</span>
+                </th>
                 <th title="Нараховано чистими після податку США у доларах" className="fw-normal">
                   net income <span className="text-secondary">$</span>
                 </th>
@@ -300,6 +305,7 @@ const Dividends = () => {
                   <td>{Math.round(row.income / row.metadata.income.price)}</td>
                   <td title={row.metadata.income.memo}>{currency(row.income)}</td>
                   <td title={row.metadata.tax.memo}>{currency(row.tax)}</td>
+                  <td>{round((Math.abs(row.tax) / row.income) * 100, 2)}</td>
                   <td title={`net income = income-tax = ${currency(row.income)}${currency(row.tax)} = ${currency(row.netIncome)}`}>{currency(row.netIncome)}</td>
                   <td>{currency(row.exchangeRate)}</td>
                   <td title={`income = net income * exchange rate = ${currency(row.netIncome)} * ${currency(row.exchangeRate)} = ${currency(row.incomeUah)}`}>{currency(row.incomeUah)}</td>
@@ -316,6 +322,7 @@ const Dividends = () => {
                 <td></td>
                 <td title="Загальна сума нарахованих дивідендів у доларах">{currency(rows.map((row) => row.income).reduce((a, b) => a + b, 0))}</td>
                 <td title="Загальна сума утриманих податків на користь США у доларах">{currency(rows.map((row) => -1 * row.tax).reduce((a, b) => a + b, 0))}</td>
+                <td></td>
                 <td title="Нараховано чистими після сплати податків США у доларах">{currency(rows.map((row) => row.netIncome).reduce((a, b) => a + b, 0))}</td>
                 <td></td>
                 <td title="Загальна сума нарахованих дивідендів у гривні, після сплати податку США">{currency(rows.map((row) => row.incomeUah).reduce((a, b) => a + b, 0))}</td>
@@ -334,6 +341,24 @@ const Dividends = () => {
           </div>
         </div>
       </div>
+
+      {tax30 && (
+        <div className="bg-danger-subtle">
+          <div className="container py-5">
+            <h3>Зі звіту, схоже що відбувається подвійне оподаткування</h3>
+            <p>Між Україною та США є домовленність про відсутність подвійного оподаткування, тобто якщо я сплати податки в США то не маю повторно їх сплачувати тут</p>
+            <p>Але за замовчанням ця опція виключена</p>
+            <p>
+              І замість очікуваних <b>15%</b> податку, IB списує усі <b>30%</b>, так наприклад <b>{tax30?.ticker}</b> мав би списати <b>{currency(tax30?.income * 0.15)}</b>, а списав{' '}
+              <b>{currency(Math.abs(tax30.tax))}</b>
+            </p>
+            <details>
+              <summary>Як виправити</summary>
+              <p>TODO: нужны скриншоты, где то там это в недрах акканта включается галочкой одной</p>
+            </details>
+          </div>
+        </div>
+      )}
 
       <ExchangeRateDifferencesLinks />
       <Subscribe />
