@@ -22,6 +22,32 @@ function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
 }
 
+function ago(date: Date): string {
+  let difference = (new Date().getTime() - date.getTime()) / 1000
+
+  const periods = [
+    ['секунду', 'секурнди', 'секунд'],
+    ['хвилину', 'хвилини', 'хвилин'],
+    ['годину', 'години', 'годин'],
+    ['день', 'дня', 'днів'],
+    ['неділю', 'неділь', 'неділь'],
+    ['місяць', 'місяця', 'місяців'],
+    ['рік', 'роки', 'років'],
+  ]
+
+  const lengths = [60, 60, 24, 7, 4.35, 12, 10]
+
+  for (var i = 0; difference >= lengths[i]; i++) {
+    difference = difference / lengths[i]
+  }
+
+  difference = Math.round(difference)
+
+  const cases = [2, 0, 1, 1, 1, 2]
+  const text = periods[i][difference % 100 > 4 && difference % 100 < 20 ? 2 : cases[Math.min(difference % 10, 5)]]
+  return difference + ' ' + text + ' тому'
+}
+
 const PaymentSystemsPage: React.FC<PageProps> = () => {
   const [transfer, setTransfer] = useState<number>(1000)
   const banks = useBanks()
@@ -118,7 +144,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   <td className={r.limitmonth && r.pay > r.limitmonth ? 'text-danger' : ''}>{currency(r.limitmonth || Infinity)}</td>
                   <td className={r.limitday && r.pay > r.limitday ? 'text-danger' : ''}>{currency(r.limitday || Infinity)}</td>
                   <td className={r.limit && r.pay > r.limit ? 'text-danger' : ''}>{currency(r.limit || Infinity)}</td>
-                  <td>{r.date ? new Date(r.date).toLocaleDateString() : ''}</td>
+                  <td title={r.date ? new Date(r.date).toLocaleDateString() : ''}>{r.date ? ago(new Date(r.date)) : ''}</td>
                 </tr>
               ))}
           </tbody>
@@ -194,6 +220,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <th>
                 Ліміт <span className="text-secondary">$</span>
               </th>
+              <th>Перевірено</th>
             </tr>
           </thead>
           <tbody className="table-group-divider">
@@ -219,6 +246,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   <td className={r.bank.limitmonth && r.pay > r.bank.limitmonth ? 'text-danger' : ''}>{currency(r.bank.limitmonth || Infinity)}</td>
                   <td className={r.bank.limitday && r.pay > r.bank.limitday ? 'text-danger' : ''}>{currency(r.bank.limitday || Infinity)}</td>
                   <td className={r.bank.limit && r.pay > r.bank.limit ? 'text-danger' : ''}>{currency(r.bank.limit || Infinity)}</td>
+                  <td title={r.bank.date?.toLocaleDateString()}>{r.bank.date ? ago(r.bank.date) : ''}</td>
                 </tr>
               ))}
           </tbody>
