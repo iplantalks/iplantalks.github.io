@@ -4,7 +4,7 @@ export interface PaymentSystem {
   key: string
   name: string
   method: string
-  feeusd: number
+  currency: string
   feepct: number
   limitmonth: number
   limitday: number
@@ -19,7 +19,7 @@ export function usePaymentSystems() {
       key: 'p' + i,
       name: row[0],
       method: row[1],
-      feeusd: parseSheetsNumber(row[2]) || 0,
+      currency: row[2],
       feepct: parseSheetsNumber(row[3]) || 0,
       limitmonth: parseSheetsNumber(row[4]) || 0,
       limitday: parseSheetsNumber(row[5]) || 0,

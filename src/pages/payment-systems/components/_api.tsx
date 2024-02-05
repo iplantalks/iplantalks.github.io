@@ -6,7 +6,9 @@ async function fetchGoogleSheetsValues(range: string): Promise<string[][]> {
   url.searchParams.set('range', range)
   url.searchParams.set('cache', '120')
   try {
-    const values = await fetch(url).then((res) => res.json())
+    const res = await fetch(url)
+    const text = await res.text()
+    const values = JSON.parse(text)
     console.groupCollapsed(range)
     console.table(values)
     console.groupEnd()

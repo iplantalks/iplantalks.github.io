@@ -25,7 +25,7 @@ export interface Bank {
    * p2p, applepay, googlepay
    */
   method: string
-  feeusd: number
+  currency: string
   feepct: number
   limitmonth: number
   limitday: number
@@ -43,7 +43,7 @@ export function useBanks() {
       type: row[2],
       paymentSystem: row[3],
       method: row[4],
-      feeusd: parseSheetsNumber(row[5]) || 0,
+      currency: row[5],
       feepct: parseSheetsNumber(row[6]) || 0,
       limitmonth: parseSheetsNumber(row[7]) || 0,
       limitday: parseSheetsNumber(row[8]) || 0,

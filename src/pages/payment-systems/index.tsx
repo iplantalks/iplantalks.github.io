@@ -62,14 +62,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=n33PF4_PYg8" />
 
       <div className="container py-5">
-        <h2>Як це працює</h2>
-        <p>На разі прямі SWIFT перекази не можливі, отже маємо використовувати проміжні платіжні шлюзи. Проходячи шляш, з нашого платежу утримуватимуть комісію як банк так и платіжна система.</p>
-        <p>За для наглядності ось один з можливих маршрутів платужи</p>
-        <p>
-          <img src={howitworks} alt="Як це працює" className="w-100" />
-        </p>
-        <p>Як бачимо, спочатку свою комісії забере Wise, потім Приват забере свою комісію з суми, що має бути переведена у Wise.</p>
-
         <div className="d-flex align-items-center mb-3">
           <div>
             Отже ми хочемо завести в <img src={ibkr} width="140" alt="Interactive Brokers" style={{ marginTop: '-10px' }} />
@@ -81,8 +73,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             <input type="number" className="form-control" value={transfer} onChange={(e) => setTransfer(parseFloat(e.target.value))} />
           </div>
         </div>
-
-        <p>Оскільки на разі прямі SWIFT перекази не можливі ми будемо використовувати одну з доступних платіжних систем</p>
 
         <table className="table">
           <thead>
@@ -97,9 +87,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 </select>
               </th>
               <th>Метод</th>
-              <th>
-                Комісія <span className="text-secondary">$</span>
-              </th>
+              <th>Валюта</th>
               <th>
                 Комісія <span className="text-secondary">%</span>
               </th>
@@ -120,18 +108,15 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           </thead>
           <tbody className="table-group-divider">
             {paymentSystems
-              .filter((r) => r.feepct > 0 || r.feeusd > 0)
-              .map((r) => ({ ...r, pay: transfer + transfer * (r.feepct / 100) + r.feeusd }))
+              .filter((r) => r.feepct > 0)
+              .map((r) => ({ ...r, pay: transfer + transfer * (r.feepct / 100) }))
               .map((r, i, arr) => (
                 <tr key={r.key}>
                   <td className="px-4">{r.name}</td>
                   <td>{r.method}</td>
-                  <td>{currency(r.feeusd)}</td>
+                  <td>{r.currency}</td>
                   <td>{currency(r.feepct)}</td>
-                  <th
-                    className={'table-secondary ' + (r.pay === Math.min(...arr.map((a) => a.pay)) ? 'text-success' : '')}
-                    title={`${currency(transfer)} + ${currency((transfer * r.feepct) / 100)} + ${currency(r.feeusd)}`}
-                  >
+                  <th className={'table-secondary ' + (r.pay === Math.min(...arr.map((a) => a.pay)) ? 'text-success' : '')} title={`${currency(transfer)} + ${currency((transfer * r.feepct) / 100)}`}>
                     {currency(r.pay)}
                   </th>
                   <td className={r.limitmonth && r.pay > r.limitmonth ? 'text-danger' : ''}>{currency(r.limitmonth || Infinity)}</td>
@@ -153,8 +138,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <b>Метод</b> - у різних платіжок можут бути різні методи переказу з різними комісіями, так наприклад, на сьогодні, найдешевшим є переказ через Wise використовуючи Google Pay.
             </li>
             <li>
-              <b>Комісії</b> - в залежності від вибраної платіжної системи та методу залежать комісії, також слід врахувати, що у деяких випадках комісії можут вираховуватися як процент від суми, а в
-              деяких бути фіксованими, саме тому маємо дві окремі колонки, за для більш прозорого розуміння.
+              <b>Комісії</b> - в залежності від вибраної платіжної системи, методу та суми залежитиме загальна сума.
             </li>
             <li>
               <b>Ліміти</b> - як правило в будь яких системах є ліміти. Ліміти ці можуть бути разовими, на добу або місяць. В таблиці виводимо їх усі за для наглядної фільтрації.
@@ -212,7 +196,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
         )}
 
         <p>Переводити кошти будемо з валютного рахунку нашого банку. Наразі перевіреними є наступні банки.</p>
-        <p>Також слід врахувати, що переводити ми вже будемо суму з урахуванням комісій платіжного шлюзу.</p>
 
         <table className="table">
           <thead>
@@ -229,9 +212,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <th>Платіжка</th>
               <th>Вендор</th>
               <th>Метод</th>
-              <th>
-                Комісія <span className="text-secondary">$</span>
-              </th>
+              <th>Валюта</th>
               <th>
                 Комісія <span className="text-secondary">%</span>
               </th>
@@ -251,8 +232,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           </thead>
           <tbody className="table-group-divider">
             {rows
-              .map((r) => ({ ...r, before: transfer + transfer * (r.paymentSystem.feepct / 100) + r.paymentSystem.feeusd }))
-              .map((r) => ({ ...r, pay: r.before + r.bank.feeusd + r.before * (r.bank.feepct / 100) }))
+              .map((r) => ({ ...r, before: transfer + transfer * (r.paymentSystem.feepct / 100) }))
+              .map((r) => ({ ...r, pay: r.before + r.before * (r.bank.feepct / 100) }))
               .map((r, i, arr) => (
                 <tr key={r.key}>
                   <td className="px-4">{r.bank.name}</td>
@@ -261,11 +242,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     <VendorLogo vendor={r.bank.vendor} />
                   </td>
                   <td>{r.bank.method}</td>
-                  <td>{currency(r.bank.feeusd || 0)}</td>
+                  <td>{r.bank.currency}</td>
                   <td>{currency(r.bank.feepct || 0)}</td>
                   <th
                     className={'table-secondary ' + (r.pay === Math.min(...arr.map((a) => a.pay)) ? 'text-success' : '')}
-                    title={`Сума з урахуванням комісії платіжки + комісія банку = ${currency(r.before)} + ${currency(r.before * (r.bank.feepct / 100))} + ${currency(r.bank.feeusd)}`}
+                    title={`Сума з урахуванням комісії платіжки + комісія банку = ${currency(r.before)} + ${currency(r.before * (r.bank.feepct / 100))}`}
                   >
                     {currency(r.pay)}
                   </th>
@@ -316,55 +297,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               ))}
           </ul>
         </details>
-
-        <h2>Посилання</h2>
-        <ul>
-          <li>
-            <b>Сайти</b>
-            <ul>
-              {([] as Links[])
-                .concat(bankLinks, paymentSystemLinks)
-                .filter((l) => !!l.webiste)
-                .map((link, i) => (
-                  <li key={`wl` + i}>
-                    <a href={link.webiste} target="_blank">
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-            </ul>
-          </li>
-          <li>
-            <b>Комісії</b>
-            <ul className="my-0">
-              {([] as Links[])
-                .concat(bankLinks, paymentSystemLinks)
-                .filter((l) => !!l.fees)
-                .map((link, i) => (
-                  <li key={`fl` + i}>
-                    <a href={link.fees} target="_blank">
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-            </ul>
-          </li>
-          <li>
-            <b>Ліміти</b>
-            <ul className="my-0">
-              {([] as Links[])
-                .concat(bankLinks, paymentSystemLinks)
-                .filter((l) => !!l.limits)
-                .map((link, i) => (
-                  <li key={`ll` + i}>
-                    <a href={link.limits} target="_blank">
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-            </ul>
-          </li>
-        </ul>
       </div>
 
       <Join />
