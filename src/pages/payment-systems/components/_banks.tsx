@@ -1,7 +1,7 @@
 import * as React from 'react'
-import visa from '../../images/visa.svg'
-import mastercard from '../../images/mastercard.svg'
-import { parseSheetsNumber, useGoogleSheet } from './api'
+import visa from '../../../images/visa.svg'
+import mastercard from '../../../images/mastercard.svg'
+import { parseSheetsNumber, useGoogleSheet } from './_api'
 
 export interface Bank {
   key: string
