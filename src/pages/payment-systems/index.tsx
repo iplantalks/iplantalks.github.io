@@ -6,10 +6,8 @@ import { currency } from '../../utils/formatters'
 import ibkr from '../../images/interactive-brokers.svg'
 import { Bank, VendorLogo, useBanks } from './components/_banks'
 import { PaymentSystem, usePaymentSystems } from './components/_payment-systems'
-import { Links, useBankLinks, usePaymentSystemLinks, useYouTubeLinks } from './components/_links'
 import Join from '../../components/join'
 import Hero from '../../components/hero'
-import howitworks from './howitworks.svg'
 
 const ANY_BANK = 'Банк'
 const ANY_PAMYNET_SYSTEM = 'Платіжка'
@@ -28,9 +26,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
   const [transfer, setTransfer] = useState<number>(1000)
   const banks = useBanks()
   const paymentSystems = usePaymentSystems()
-  const youTubeLinks = useYouTubeLinks()
-  const bankLinks = useBankLinks()
-  const paymentSystemLinks = usePaymentSystemLinks()
 
   const bankOptions = useMemo(() => [ANY_BANK].concat(getUniqueValues(banks, 'name')), [banks])
   const [selectedBankOption, setSelectedBankOption] = useState<string>(ANY_BANK)
@@ -164,36 +159,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               ))}
           </ul>
         </details>
-
-        {selectedPaymentSystemOption !== ANY_PAMYNET_SYSTEM && youTubeLinks.find((y) => y.paymentSystem === selectedPaymentSystemOption) && (
-          <div className="mb-3">
-            <h2>Відео</h2>
-            <div className="row">
-              {youTubeLinks.find((y) => y.paymentSystem === selectedPaymentSystemOption)?.register && (
-                <div className="col-12 col-md-6">
-                  <div className="ratio ratio-16x9">
-                    <iframe
-                      src={'https://www.youtube.com/embed/' + new URL(youTubeLinks.find((y) => y.paymentSystem === selectedPaymentSystemOption)!.register).searchParams.get('v')}
-                      title="YouTube video"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                </div>
-              )}
-              {youTubeLinks.find((y) => y.paymentSystem === selectedPaymentSystemOption)?.transfer && (
-                <div className="col-12 col-md-6">
-                  <div className="ratio ratio-16x9">
-                    <iframe
-                      src={'https://www.youtube.com/embed/' + new URL(youTubeLinks.find((y) => y.paymentSystem === selectedPaymentSystemOption)!.transfer).searchParams.get('v')}
-                      title="YouTube video"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         <p>Переводити кошти будемо з валютного рахунку нашого банку. Наразі перевіреними є наступні банки.</p>
 
