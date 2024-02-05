@@ -104,6 +104,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           <tbody className="table-group-divider">
             {paymentSystems
               .filter((r) => r.feepct > 0)
+              .filter((r) => selectedPaymentSystemOption === ANY_PAMYNET_SYSTEM || r.name === selectedPaymentSystemOption)
               .map((r) => ({ ...r, pay: transfer + transfer * (r.feepct / 100) }))
               .map((r, i, arr) => (
                 <tr key={r.key}>
