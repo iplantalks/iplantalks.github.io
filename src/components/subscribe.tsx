@@ -1,3 +1,4 @@
+import { HeadFC } from 'gatsby'
 import * as React from 'react'
 import { useState, useMemo } from 'react'
 
@@ -65,6 +66,10 @@ const Subscribe = () => {
             {message && !error && <div className="alert alert-success text-center">{message}</div>}
             {message && error && <div className="alert alert-warning text-center">{message}</div>}
             {error && <div className="alert alert-danger text-center">{error}</div>}
+
+            {/* SENDPULSE */}
+            <script src="https://web.webformscr.com/apps/fc3/build/loader.js" async sp-form-id="3101c6b6bba9c635d8402a35872446f197204626113308f24bfdeb238f517b4a"></script>
+            {/* SENDPULSE */}
           </div>
         </div>
       </div>
