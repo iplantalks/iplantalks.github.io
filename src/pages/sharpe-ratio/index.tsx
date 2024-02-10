@@ -4,6 +4,7 @@ import { IChartApi, createChart } from 'lightweight-charts'
 import { useEffect, useRef, useState, PropsWithChildren, createContext, useMemo } from 'react'
 import { YahooChartRow, queryChart } from '../../utils/yahoo'
 import { currency } from '../../utils/formatters'
+import '../../styles/common.css'
 
 declare global {
   namespace JSX {
