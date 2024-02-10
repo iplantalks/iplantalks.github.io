@@ -440,7 +440,7 @@ const SharpeRatio = () => {
                     <td>{row.time}</td>
                     <td>{currency(row.value)}</td>
                     <td title={i ? `(${currency(row.value)} - ${currency(meta.data[i - 1].value)}) / ${currency(meta.data[i - 1].value)}` : ''}>
-                      {i ? currency((row.value - meta.data[i - 1].value) / meta.data[i - 1].value) : ''}
+                      {i ? currency(((row.value - meta.data[i - 1].value) / meta.data[i - 1].value) * 100) : ''}
                     </td>
                   </tr>
                 ))
@@ -454,7 +454,7 @@ const SharpeRatio = () => {
                     <td>{row.time}</td>
                     <td>{currency(row.value)}</td>
                     <td title={i ? `(${currency(row.value)} - ${currency(meta.data[i - 1].value)}) / ${currency(meta.data[i - 1].value)}` : ''}>
-                      {i ? currency((row.value - meta.data[i - 1].value) / meta.data[i - 1].value) : ''}
+                      {i ? currency(((row.value - meta.data[i - 1].value) / meta.data[i - 1].value) * 100) : ''}
                     </td>
                   </tr>
                 ))
