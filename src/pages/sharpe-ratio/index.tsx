@@ -767,13 +767,15 @@ const SharpeRatio = () => {
             <code>
               =LET(
               <br />
-              symbol,"AAPL",
+              symbol,"VOO",
               <br />
               riskfree,0.04,
               <br />
-              prices,QUERY(INDEX(GOOGLEFINANCE(symbol, "price", EDATE(TODAY(),-12), TODAY(), "DAILY"),,2),"OFFSET 1",0),
+              years,1,
               <br />
-              cagr,RRI(1,INDEX(prices,1,1),INDEX(prices,COUNT(prices),1)),
+              prices,QUERY(INDEX(GOOGLEFINANCE(symbol, "price", EDATE(TODAY(),-12*years), TODAY(), "DAILY"),,2),"OFFSET 1",0),
+              <br />
+              cagr,RRI(years,INDEX(prices,1,1),INDEX(prices,COUNT(prices),1)),
               <br />
               stdev,STDEV(MAP(QUERY(prices,"LIMIT "&(COUNT(prices)-1)), QUERY(prices,"OFFSET 1"),LAMBDA(prev,curr,(curr-prev)/prev))) * SQRT(252),
               <br />
