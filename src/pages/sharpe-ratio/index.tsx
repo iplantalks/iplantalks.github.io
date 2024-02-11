@@ -194,15 +194,14 @@ const SharpeRatio = () => {
       handleScale: false,
       handleScroll: false,
     })
-
     const items: Array<{ time: string; value: number }> = []
-    for (let i = aapl.length - 252; i < aapl.length; i++) {
-      const bv = aapl[i - 251].close
+    for (let i = aapl.length - 250; i < aapl.length; i++) {
+      const bv = aapl[i - 250].close
       const ev = aapl[i].close
       const cagr = Math.pow(ev / bv, 1 / 1) - 1
 
       const changes = aapl
-        .slice(i - 252, i)
+        .slice(i - 250, i)
         .map((row, i, arr) => (i ? (row.close - arr[i - 1].close) / arr[i - 1].close : 0))
         .slice(1)
       const stdev = Math.sqrt(changes.reduce((sum, value) => sum + Math.pow(value - changes.reduce((sum, value) => sum + value, 0) / changes.length, 2), 0) / changes.length) * Math.sqrt(252)
