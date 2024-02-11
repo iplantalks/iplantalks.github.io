@@ -5,6 +5,10 @@ import { useEffect, useRef, useState, PropsWithChildren, createContext, useMemo 
 import { YahooChartRow, queryChart } from '../../utils/yahoo'
 import { currency } from '../../utils/formatters'
 import '../../styles/common.css'
+import statements from '../../images/exchange-rate-differences/statements.png'
+import msmoney from '../../images/exchange-rate-differences/msmoney.png'
+import popup from '../../images/exchange-rate-differences/popup.png'
+import { parseMsMoneyOfxReport } from '../../utils/ibkr/ofx'
 
 declare global {
   namespace JSX {
@@ -42,6 +46,17 @@ declare global {
       semantics: React.DetailedHTMLProps<React.HTMLAttributes<MathMLElement>, MathMLElement>
     }
   }
+}
+
+interface PortfolioItem {
+  symbol: string
+  units: number
+  price: number
+  value: number
+  allocation: number
+  cagr: number
+  stdev: number
+  sharpe: number
 }
 
 function useStock(symbol: string, period1: Date, period2: Date) {
@@ -97,6 +112,7 @@ const SharpeRatio = () => {
   const [rightSharpe, setRightSharpe] = useState(0)
   const [leftCagr, setLeftCagr] = useState(0)
   const [rightCagr, setRightCagr] = useState(0)
+  const [rows, setRows] = useState<Array<PortfolioItem>>([])
 
   useEffect(() => {
     if (!chartSample1.current || !pep.data.length || !meta.data.length) {
@@ -273,6 +289,87 @@ const SharpeRatio = () => {
   const allocatedCagr = useMemo(() => {
     return (leftCagr * leftSymbolAllocation + rightCagr * (100 - leftSymbolAllocation)) / 100
   }, [leftCagr, rightCagr, leftSymbolAllocation])
+
+  const handle = (text: string) => {
+    const ofx = parseMsMoneyOfxReport(text)
+    const stocks =
+      ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVPOSLIST?.POSSTOCK?.map((pos) => ({
+        symbol:
+          ofx.SECLISTMSGSRSV1?.SECLIST?.STOCKINFO?.find((s) => s.SECINFO.SECID.UNIQUEID === pos.INVPOS.SECID.UNIQUEID && s.SECINFO.SECID.UNIQUEIDTYPE === pos.INVPOS.SECID.UNIQUEIDTYPE)?.SECINFO
+            ?.TICKER || '',
+        units: pos.INVPOS.UNITS,
+        price: pos.INVPOS.UNITPRICE,
+      }))
+        .filter((s) => !!s.symbol)
+        .reduce((acc, stock) => {
+          const found = acc.find((s) => s.symbol === stock.symbol)
+          if (found) {
+            found.units += stock.units
+          } else {
+            acc.push(stock)
+          }
+          return acc
+        }, [] as Array<{ symbol: string; units: number; price: number }>) || []
+
+    const totalValue = stocks.reduce((sum, stock) => sum + stock.units * stock.price, 0)
+    const period2 = new Date()
+    const period1 = new Date(period2.getFullYear() - 1, period2.getMonth(), period2.getDate())
+    const rows: Array<PortfolioItem> = []
+    for (const stock of stocks) {
+      const value = stock.units * stock.price
+      const allocation = value / totalValue
+
+      queryChart(stock.symbol, period1, period2).then((items) => {
+        const bv = items[0].close
+        const ev = items[items.length - 1].close
+        const cagr = Math.pow(ev / bv, 1 / 1) - 1
+
+        const changes = items.map((row, i, arr) => (i ? (row.close - arr[i - 1].close) / arr[i - 1].close : 0)).slice(1)
+        const stdev = Math.sqrt(changes.reduce((sum, value) => sum + Math.pow(value - changes.reduce((sum, value) => sum + value, 0) / changes.length, 2), 0) / changes.length) * Math.sqrt(252)
+        const sharpe = (cagr - 0.04) / stdev
+
+        const next = [...rows]
+        next.forEach((t) => {
+          if (t.symbol == stock.symbol) {
+            t.cagr = cagr
+            t.stdev = stdev
+            t.sharpe = sharpe
+          }
+          return t
+        })
+        setRows(next)
+      })
+
+      rows.push({
+        symbol: stock.symbol,
+        units: stock.units,
+        price: stock.price,
+        value: value,
+        allocation: allocation,
+        cagr: 0,
+        stdev: 0,
+        sharpe: 0,
+      })
+    }
+
+    setRows(rows)
+    console.table(rows)
+  }
+
+  const handleFileChoosen = async (file: File) => {
+    const text = await file.text()
+    handle(text)
+  }
+
+  useEffect(() => {
+    fetch('/sharpe-ratio/sample.ofx')
+      .then((res) => res.text())
+      .then(handle)
+  }, [])
+
+  const portfolioSharpe = useMemo(() => {
+    return rows.map((r) => r.sharpe * r.allocation).reduce((a, b) => a + b, 0)
+  }, [rows])
 
   return (
     <main>
@@ -686,6 +783,95 @@ const SharpeRatio = () => {
               <br />)
             </code>
           </p>
+        </div>
+
+        <div id="ib">
+          <h2 className="my-5">Не хочу нічого рахувати, ось мій портфель, порахуйте за мене</h2>
+          <p>Або як подивитися Sharp Ratio свого портфеля з Interactive Brokers</p>
+          <p>За для цього нам знадобиться виписка MS Money</p>
+          <div className="row">
+            <p className="col-12 col-sm-6">
+              <label htmlFor="ofx" className="form-label">
+                Звіт MS Money{' '}
+                <a href="sample.ofx" download>
+                  приклад
+                </a>
+              </label>
+              <input id="ofx" className="form-control" type="file" accept=".ofx" onChange={(e) => handleFileChoosen(e.target.files![0])} />
+            </p>
+          </div>
+          <details className="my-3">
+            <summary>Покрокова інструкція &mdash; як сформувати звіт</summary>
+            <p>
+              Переходимо на сторінку <b>Statements</b> розділу <b>Performance & Reports</b>
+            </p>
+            <p>
+              <img src={statements} style={{ maxWidth: '50vw' }} />
+            </p>
+            <p>
+              Зправа, знизу, буде кнопка для формування звіту <b>MS Money</b>
+            </p>
+            <p>
+              <img src={msmoney} style={{ maxWidth: '50vw' }} />
+            </p>
+            <p>Зʼявиться віконце для вибору дат, за якими буде сформовано звіт. Виберіть, приблизні, дати коли ви купляли будь які акції</p>
+            <p>
+              <img src={popup} style={{ maxWidth: '50vw' }} />
+            </p>
+          </details>
+          <table className="table table-striped my-5">
+            <thead className="table-dark">
+              <tr>
+                <th>symbol</th>
+                <th>units</th>
+                <th>
+                  price <span className="text-secondary">$</span>
+                </th>
+                <th>
+                  value <span className="text-secondary">$</span>
+                </th>
+                <th>
+                  allocation <span className="text-secondary">%</span>
+                </th>
+                <th>
+                  cagr <span className="text-secondary">%</span>
+                </th>
+                <th>stdev</th>
+                <th>sharpe</th>
+              </tr>
+            </thead>
+            <tbody className="table-group-divider">
+              {rows.map((row, i) => (
+                <tr key={i}>
+                  <th>{row.symbol}</th>
+                  <td>{row.units}</td>
+                  <td>{currency(row.price)}</td>
+                  <td>{currency(row.value)}</td>
+                  <td>{currency(row.allocation * 100)}</td>
+                  <td className={row.cagr < 0 ? 'text-danger' : ''}>{currency(row.cagr * 100)}</td>
+                  <td>{currency(row.stdev)}</td>
+                  <th className={row.sharpe < 0 ? 'text-danger' : ''}>{currency(row.sharpe)}</th>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot className="table-secondary table-group-divider">
+              <tr>
+                <th>Загалом</th>
+                <td>&mdash;</td>
+                <td>&mdash;</td>
+                <td title="Загальна вартість портфелю">{currency(rows.reduce((sum, x) => sum + x.value, 0))}</td>
+                <td title="За для перевірки, має будти 100%" className="text-secondary">
+                  {currency(rows.reduce((sum, x) => sum + x.allocation, 0) * 100)}
+                </td>
+                <td title="Загальний річний здобуток з урахуванням аллокації активів">{currency(rows.map((r) => r.cagr * r.allocation).reduce((a, b) => a + b, 0) * 100)}</td>
+                <td>&mdash;</td>
+                <th title="Загальний Sharpe Ratio для портфеля, з урахуванням аллокації активів">{currency(portfolioSharpe)}</th>
+              </tr>
+            </tfoot>
+          </table>
+          <p>Отже, за останній рік, Sharpe цього портфелю &mdash; {currency(portfolioSharpe)}.</p>
+          {portfolioSharpe > 0.5 && <p>Що є досить не погано, адже вважається, що значення більші за 0.5 вже не погано.</p>}
+          {portfolioSharpe < 0 && <p>Що є занадто мало, виглядає так, що було б краще вкластися в якийсь депозит чи облігації.</p>}
         </div>
       </div>
     </main>
