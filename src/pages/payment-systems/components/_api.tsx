@@ -26,7 +26,12 @@ export function parseSheetsNumber(value: string | undefined): number | undefined
     return undefined
   }
 
-  return parseFloat(value.replaceAll(' ', '').replaceAll(',', '.').replaceAll('$', '').replaceAll('%', ''))
+  // const result = parseFloat(value.replaceAll('$', '').replaceAll('%', '').replace(/\s+/g, '').replaceAll(',', '.'))
+  // console.log('parse', value, value.replaceAll('$', '').replaceAll('%', '').replace(/\s+/g, '').replaceAll(',', '.'), result)
+  // return result
+
+  // wtf: do not forget about "special" space symbols
+  return parseFloat(value.replaceAll('$', '').replaceAll('%', '').replace(/\s+/g, '').replaceAll(',', '.'))
 
   // // "$1 000,00" - UA
   // if (value.includes(' ') && value.includes(',') && !value.includes('.')) {
