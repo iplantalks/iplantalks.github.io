@@ -8,6 +8,8 @@ import { Bank, VendorLogo, useBanks } from './components/_banks'
 import { PaymentSystem, usePaymentSystems } from './components/_payment-systems'
 import Join from '../../components/join'
 import Hero from '../../components/hero'
+import { SheetLink, useBankLinks, usePaymentSystemLinks } from './components/_links'
+import { useVideoLinks } from './components/_videos'
 
 const ANY_BANK = 'Банк'
 const ANY_PAMYNET_SYSTEM = 'Платіжка'
@@ -16,6 +18,8 @@ export interface Row {
   key: string
   bank: Bank
   paymentSystem: PaymentSystem
+  bankLink?: SheetLink
+  paymentSystemLink?: SheetLink
 }
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
@@ -52,6 +56,9 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
   const [transfer, setTransfer] = useState<number>(1000)
   const banks = useBanks()
   const paymentSystems = usePaymentSystems()
+  const bankLinks = useBankLinks()
+  const paymentSystemLinks = usePaymentSystemLinks()
+  const videoLinks = useVideoLinks()
 
   const bankOptions = useMemo(() => [ANY_BANK].concat(getUniqueValues(banks, 'name')), [banks])
   const [selectedBankOption, setSelectedBankOption] = useState<string>(ANY_BANK)
@@ -73,10 +80,14 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       if (!paymentSystem) {
         continue
       }
-      rows.push({ key, bank, paymentSystem })
+      const bankLink = bankLinks.find((l) => l.name === bank.name)
+      const paymentSystemLink = paymentSystemLinks.find((l) => l.name === paymentSystem.name)
+      rows.push({ key, bank, paymentSystem, bankLink, paymentSystemLink })
     }
     return rows
-  }, [banks, paymentSystems])
+  }, [banks, paymentSystems, bankLinks, paymentSystemLinks])
+
+  const videoLinkCategories = useMemo(() => Array.from(new Set(videoLinks.map((l) => l.category))), [videoLinks])
 
   return (
     <main>
@@ -131,13 +142,29 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             {paymentSystems
               .filter((r) => r.feepct > 0)
               .filter((r) => selectedPaymentSystemOption === ANY_PAMYNET_SYSTEM || r.name === selectedPaymentSystemOption)
-              .map((r) => ({ ...r, pay: transfer + transfer * (r.feepct / 100) }))
+              .map((r) => ({ ...r, pay: transfer + transfer * (r.feepct / 100), link: paymentSystemLinks.find((l) => l.name === r.name) }))
               .map((r, i, arr) => (
                 <tr key={r.key}>
-                  <td className="px-4">{r.name}</td>
+                  <td className="px-4">
+                    {r.link ? (
+                      <a className="text-decoration-none" href={r.link.website} target="_blank">
+                        {r.name}
+                      </a>
+                    ) : (
+                      r.name
+                    )}
+                  </td>
                   <td>{r.method}</td>
                   <td>{r.currency}</td>
-                  <td>{currency(r.feepct)}</td>
+                  <td>
+                    {r.link && r.link.fees ? (
+                      <a className="text-decoration-none" href={r.link.fees} target="_blank">
+                        {currency(r.feepct)}
+                      </a>
+                    ) : (
+                      currency(r.feepct)
+                    )}
+                  </td>
                   <th className={'table-secondary ' + (r.pay === Math.min(...arr.map((a) => a.pay)) ? 'text-success' : '')} title={`${currency(transfer)} + ${currency((transfer * r.feepct) / 100)}`}>
                     {currency(r.pay)}
                   </th>
@@ -229,14 +256,38 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               .map((r) => ({ ...r, pay: r.before + r.before * (r.bank.feepct / 100) }))
               .map((r, i, arr) => (
                 <tr key={r.key}>
-                  <td className="px-4">{r.bank.name}</td>
-                  <td>{r.paymentSystem.name}</td>
+                  <td className="px-4">
+                    {r.bankLink ? (
+                      <a className="text-decoration-none" href={r.bankLink.website} target="_blank">
+                        {r.bank.name}
+                      </a>
+                    ) : (
+                      r.bank.name
+                    )}
+                  </td>
+                  <td>
+                    {r.paymentSystemLink ? (
+                      <a className="text-decoration-none" href={r.paymentSystemLink.website} target="_blank">
+                        {r.paymentSystem.name}
+                      </a>
+                    ) : (
+                      r.paymentSystem.name
+                    )}
+                  </td>
                   <td>
                     <VendorLogo vendor={r.bank.vendor} />
                   </td>
                   <td>{r.bank.method}</td>
                   <td>{r.bank.currency}</td>
-                  <td>{currency(r.bank.feepct || 0)}</td>
+                  <td>
+                    {r.bankLink && r.bankLink.fees ? (
+                      <a className="text-decoration-none" href={r.bankLink.fees} target="_blank">
+                        {currency(r.bank.feepct || 0)}
+                      </a>
+                    ) : (
+                      currency(r.bank.feepct || 0)
+                    )}
+                  </td>
                   <th
                     className={'table-secondary ' + (r.pay === Math.min(...arr.map((a) => a.pay)) ? 'text-success' : '')}
                     title={`Сума з урахуванням комісії платіжки + комісія банку = ${currency(r.before)} + ${currency(r.before * (r.bank.feepct / 100))}`}
@@ -291,6 +342,38 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               ))}
           </ul>
         </details>
+      </div>
+
+      <div className="bg-body-secondary">
+        <div className="container py-5">
+          <h2>Корисні відео</h2>
+          <p>Підбірка корисних відео щодо банків та платіжних систем.</p>
+          {/* {JSON.stringify(videoLinkCategories)} */}
+
+          <div className="row">
+            {videoLinks.map((link, i) => (
+              <div key={i} className="col-12 col-md-6 my-3">
+                <div className="card" style={{ overflow: 'hidden' }}>
+                  <div className="ratio ratio-16x9">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src={'https://www.youtube.com/embed/' + new URL(link.youtube).searchParams.get('v')}
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                  <div className="card-body">
+                    <b>{link.category}</b>
+                    <br />
+                    {link.name}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <Join />
