@@ -25,7 +25,19 @@ export function parseSheetsNumber(value: string | undefined): number | undefined
   if (!value) {
     return undefined
   }
-  return parseFloat(value.replaceAll(',', '').replaceAll('$', '').replaceAll('%', ''))
+
+  return parseFloat(value.replaceAll(' ', '').replaceAll(',', '.').replaceAll('$', '').replaceAll('%', ''))
+
+  // // "$1 000,00" - UA
+  // if (value.includes(' ') && value.includes(',') && !value.includes('.')) {
+  //   console.log('UA', value)
+  //   return parseFloat(value.replaceAll(' ', '').replaceAll(',', '.').replaceAll('$', '').replaceAll('%', ''))
+  // }
+  // // "$1,000.00" - US
+  // else {
+  //   console.log('US', value)
+  //   return parseFloat(value.replaceAll(',', '').replaceAll('$', '').replaceAll('%', ''))
+  // }
 }
 
 export function useGoogleSheet(range: string) {

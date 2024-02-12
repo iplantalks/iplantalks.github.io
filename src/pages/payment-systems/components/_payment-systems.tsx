@@ -24,7 +24,7 @@ export function usePaymentSystems() {
       limitmonth: parseSheetsNumber(row[4]) || 0,
       limitday: parseSheetsNumber(row[5]) || 0,
       limit: parseSheetsNumber(row[6]) || 0,
-      date: row[7],
+      date: row[7] ? row[7].split('.').reverse().join('-') : '',
       comment: row[8],
     })
   )

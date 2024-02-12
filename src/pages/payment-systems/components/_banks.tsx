@@ -48,7 +48,7 @@ export function useBanks() {
       limitmonth: parseSheetsNumber(row[7]) || 0,
       limitday: parseSheetsNumber(row[8]) || 0,
       limit: parseSheetsNumber(row[9]) || 0,
-      date: row[10] ? new Date(row[10]) : undefined,
+      date: row[10] ? new Date(row[10].split('.').reverse().join('-')) : undefined,
       comment: row[11],
     })
   )
