@@ -257,21 +257,23 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               .map((r, i, arr) => (
                 <tr key={r.key}>
                   <td className="px-4">
-                    {r.bankLink ? (
-                      <a className="text-decoration-none" href={r.bankLink.website} target="_blank">
-                        {r.bank.name}
+                    {r.bank.name}
+                    {r.bankLink && (
+                      <a className="text-decoration-none ms-2" href={r.bankLink.website} target="_blank">
+                        <small>
+                          <i className="fa-solid fa-arrow-up-right-from-square" />
+                        </small>
                       </a>
-                    ) : (
-                      r.bank.name
                     )}
                   </td>
                   <td>
-                    {r.paymentSystemLink ? (
-                      <a className="text-decoration-none" href={r.paymentSystemLink.website} target="_blank">
-                        {r.paymentSystem.name}
+                    {r.paymentSystem.name}
+                    {r.paymentSystemLink && (
+                      <a className="text-decoration-none ms-2" href={r.paymentSystemLink.website} target="_blank">
+                        <small>
+                          <i className="fa-solid fa-arrow-up-right-from-square" />
+                        </small>
                       </a>
-                    ) : (
-                      r.paymentSystem.name
                     )}
                   </td>
                   <td>
@@ -280,12 +282,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   <td>{r.bank.method}</td>
                   <td>{r.bank.currency}</td>
                   <td>
-                    {r.bankLink && r.bankLink.fees ? (
-                      <a className="text-decoration-none" href={r.bankLink.fees} target="_blank">
-                        {currency(r.bank.feepct || 0)}
+                    {currency(r.bank.feepct || 0)}
+                    {r.bankLink && (
+                      <a className="text-decoration-none ms-2" href={r.bankLink.fees} target="_blank">
+                        <small>
+                          <i className="fa-solid fa-arrow-up-right-from-square" />
+                        </small>
                       </a>
-                    ) : (
-                      currency(r.bank.feepct || 0)
                     )}
                   </td>
                   <th
