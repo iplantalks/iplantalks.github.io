@@ -23,6 +23,7 @@ const Zero = () => {
   const tax = 19.5
   const [symbol, setSymbol] = useState('AAPL')
   const [date, setDate] = useState(new Date('2020-03-20'))
+  const [price, setPrice] = useState(0)
   const [shares, setShares] = useState(10)
   const [currentPrice, setCurrentPrice] = useState(0)
   const [previousPrice, setPreviousPrice] = useState(0)
@@ -75,7 +76,7 @@ const Zero = () => {
   }, [symbol, date, shares])
 
   const calculate = async () => {
-    const currentPrice = await getPrice(symbol)
+    const currentPrice = price ? price : await getPrice(symbol)
     if (!currentPrice) {
       alert(`Нажаль не вдалося визначити поточну вартість акції ${symbol}, спробуйте інший тікер.`)
       return
@@ -114,28 +115,27 @@ const Zero = () => {
 
       <div className="container py-5">
         <div className="row">
-          <p className="col-12 col-sm-3">
-            <label htmlFor="date" className="form-label">
-              Дата купівлі
-            </label>
+          <p className="col-12 col-sm-2">
+            <label className="form-label">Дата купівлі</label>
             <input type="date" className="form-control" value={date.toISOString().substring(0, 10)} onChange={(e) => setDate(e.target.valueAsDate || new Date())} />
           </p>
 
-          <p className="col-12 col-sm-3">
-            <label htmlFor="date" className="form-label">
-              Тікер
-            </label>
+          <p className="col-12 col-sm-2">
+            <label className="form-label">Тікер</label>
             <input type="text" className="form-control" value={symbol} onChange={(e) => setSymbol(e.target.value)} />
           </p>
 
-          <p className="col-12 col-sm-3">
-            <label htmlFor="date" className="form-label">
-              Кількість
-            </label>
+          <p className="col-12 col-sm-2">
+            <label className="form-label">Кількість</label>
             <input type="number" className="form-control" min="1" max="999" value={shares} onChange={(e) => setShares(e.target.valueAsNumber)} />
           </p>
 
-          <p className="col-12 col-sm-3">
+          <p className="col-12 col-sm-2" title="Якщо залишити пустим, або нуль, буде використана вартість акції на дату покупки за данними Yahoo Finance">
+            <label className="form-label">Ціна купівлі*</label>
+            <input type="number" className="form-control" min="0" max="999" value={price} onChange={(e) => setPrice(e.target.valueAsNumber)} />
+          </p>
+
+          <p className="col-12 col-sm-4">
             <label htmlFor="btnCalculate" className="form-label d-block">
               &nbsp;
             </label>
