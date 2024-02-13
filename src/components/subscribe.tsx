@@ -2,7 +2,7 @@ import { HeadFC } from 'gatsby'
 import * as React from 'react'
 import { useState, useMemo } from 'react'
 
-const Subscribe = () => {
+const Subscribe = ({ youtube }: { youtube?: string }) => {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -40,7 +40,7 @@ const Subscribe = () => {
               <iframe
                 width="560"
                 height="315"
-                src="https://www.youtube.com/embed/4zb1xB3qsX8?si=h2pYwOoZOZD_0yj3"
+                src={'https://www.youtube.com/embed/' + new URL(youtube || 'https://www.youtube.com/watch?v=4zb1xB3qsX8').searchParams.get('v')}
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen

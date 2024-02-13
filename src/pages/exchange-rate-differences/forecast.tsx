@@ -271,7 +271,7 @@ const Forecast = () => {
       </div>
 
       <ExchangeRateDifferencesLinks />
-      <Subscribe />
+      <Subscribe youtube="https://www.youtube.com/watch?v=Fiylm8c8yAc" />
       <Join />
     </main>
   )
