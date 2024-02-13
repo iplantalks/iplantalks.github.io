@@ -146,23 +146,25 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               .map((r, i, arr) => (
                 <tr key={r.key}>
                   <td className="px-4">
-                    {r.link ? (
-                      <a className="text-decoration-none" href={r.link.website} target="_blank">
-                        {r.name}
+                    {r.name}
+                    {r.link && (
+                      <a className="text-decoration-none ms-2" href={r.link.website} target="_blank">
+                        <small>
+                          <i className="fa-solid fa-arrow-up-right-from-square" />
+                        </small>
                       </a>
-                    ) : (
-                      r.name
                     )}
                   </td>
                   <td>{r.method}</td>
                   <td>{r.currency}</td>
                   <td>
-                    {r.link && r.link.fees ? (
-                      <a className="text-decoration-none" href={r.link.fees} target="_blank">
-                        {currency(r.feepct)}
+                    {r.feepct}
+                    {r.link && (
+                      <a className="text-decoration-none ms-2" href={r.link.fees} target="_blank">
+                        <small>
+                          <i className="fa-solid fa-arrow-up-right-from-square" />
+                        </small>
                       </a>
-                    ) : (
-                      currency(r.feepct)
                     )}
                   </td>
                   <th className={'table-secondary ' + (r.pay === Math.min(...arr.map((a) => a.pay)) ? 'text-success' : '')} title={`${currency(transfer)} + ${currency((transfer * r.feepct) / 100)}`}>
@@ -351,30 +353,31 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
         <div className="container py-5">
           <h2>Корисні відео</h2>
           <p>Підбірка корисних відео щодо банків та платіжних систем.</p>
-          {/* {JSON.stringify(videoLinkCategories)} */}
 
           <div className="row">
-            {videoLinks.map((link, i) => (
-              <div key={i} className="col-12 col-md-6 my-3">
-                <div className="card" style={{ overflow: 'hidden' }}>
-                  <div className="ratio ratio-16x9">
-                    <iframe
-                      width="560"
-                      height="315"
-                      src={'https://www.youtube.com/embed/' + new URL(link.youtube).searchParams.get('v')}
-                      title="YouTube video player"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    ></iframe>
-                  </div>
-                  <div className="card-body">
-                    <b>{link.category}</b>
-                    <br />
-                    {link.name}
+            {videoLinks
+              .filter((link) => (selectedBankOption === ANY_BANK && selectedPaymentSystemOption === ANY_PAMYNET_SYSTEM) || [selectedBankOption, selectedPaymentSystemOption].includes(link.name))
+              .map((link, i) => (
+                <div key={i} className="col-12 col-md-6 my-3">
+                  <div className="card" style={{ overflow: 'hidden' }}>
+                    <div className="ratio ratio-16x9">
+                      <iframe
+                        width="560"
+                        height="315"
+                        src={'https://www.youtube.com/embed/' + new URL(link.youtube).searchParams.get('v')}
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                    <div className="card-body">
+                      <b>{link.category}</b>
+                      <br />
+                      {link.name}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
