@@ -65,7 +65,7 @@ const Calendar = ({ rows }: { rows: Row[] }) => {
   return (
     <div className="row">
       {numbers.map((month) => (
-        <div className="col-4 mb-3">
+        <div className="col-4 mb-3" key={month}>
           <CalendarMonth month={month} rows={rows} />
         </div>
       ))}
@@ -256,7 +256,7 @@ const Dividends = () => {
         </details>
         {rows.length && (
           <table className="table table-striped table-sm">
-            <thead className="table-primary" style={{ position: 'sticky', top: 0 }}>
+            <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
               <tr>
                 <th title="Дата" className="fw-normal">
                   date
@@ -307,7 +307,7 @@ const Dividends = () => {
                   <td title={row.metadata.tax.memo}>{currency(row.tax)}</td>
                   <td>{round((Math.abs(row.tax) / row.income) * 100, 2)}</td>
                   <td title={`net income = income-tax = ${currency(row.income)}${currency(row.tax)} = ${currency(row.netIncome)}`}>{currency(row.netIncome)}</td>
-                  <td>{currency(row.exchangeRate)}</td>
+                  <td className="table-secondary">{currency(row.exchangeRate)}</td>
                   <td title={`income = net income * exchange rate = ${currency(row.netIncome)} * ${currency(row.exchangeRate)} = ${currency(row.incomeUah)}`}>{currency(row.incomeUah)}</td>
                   <td title={`tax = income * 0.195 = ${currency(row.incomeUah)} * 0.195 = ${currency(row.taxUah)}`}>{currency(row.taxUah)}</td>
                   <td title={`net income = income-tax = ${currency(row.incomeUah)}${currency(row.taxUah)} = ${currency(row.netIncomeUah)}`}>{currency(row.netIncomeUah)}</td>
@@ -332,6 +332,69 @@ const Dividends = () => {
             </tfoot>
           </table>
         )}
+        <details className="my-3" open>
+          <summary>Примітки</summary>
+          <p>Ідея цієї таблички швиденько подивитися курсові різниці без необхідності вираховувати все руками, за для можливості звіритися з іншими тулами.</p>
+          <p>Майже кожна комірка у табличці має пояснення з формулою та цифрами розрахунку, за для того щоб його побачити слід підвести курсор мишки та трохи зачекати.</p>
+          <ul>
+            <li>
+              Данні з виписки Interactive Brokers
+              <ul>
+                <li>
+                  <b>date</b> - дата надходження дивідендів з виписки Interactive Brokers
+                </li>
+                <li>
+                  <b>ticker</b> - символ компанії що сплатила дивіденді
+                </li>
+                <li>
+                  <b>price</b> - нарахування за кожну акцію, береться з повідомлення &laquo;AAPL(US0378331005) CASH DIVIDEND USD 0.22 PER SHARE (Ordinary Dividend)&raquo;
+                </li>
+                <li>
+                  <b>income</b> - нарахування дивідендів у долларах до оподаткування
+                </li>
+                <li>
+                  <b>tax</b> - податок утриманий на стороні Interactive Brokers, в ідеалі має бути 15%, списуется автоматично
+                </li>
+              </ul>
+            </li>
+            <li>
+              Розрахунки
+              <ul>
+                <li>
+                  <b>units</b> - кількість акцій з яких було виплачено дивіденді, розрахунок - <code>income / price</code>
+                </li>
+                <li>
+                  <b>tax %</b> - рохрахунок проценту податку, рахується так <code>tax / income * 100</code>, мета - наглядно побачити де скільки утримуется
+                </li>
+                <li>
+                  <b>net income</b> - розрахований чистий прибуток, який фактично прибавився до балансу аккаунту після утримання податку Interactive Brokers. Рахуемо як <code>income - tax</code>
+                </li>
+              </ul>
+            </li>
+            <li>
+              Курсові різниці
+              <ul>
+                <li>
+                  <b>usd/uah</b> - курс доллара на дату виплати дивідендів, данні тягнемо з <a href="https://bank.gov.ua">bank.gov.ua</a> на дату виплати дивідендів, так наприклад для 2022-12-30 данні
+                  забираються{' '}
+                  <a href="https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=USD&date=20221230&json" target="_blank">
+                    звідси
+                  </a>{' '}
+                  і ця ж <a href="https://bank.gov.ua/ua/markets/exchangerates?date=30.12.2023">сторінка для людей</a>
+                </li>
+                <li>
+                  <b>income</b> - дохід у гривні, рахується як <code>net income * usd/uah</code>, тобто ми беремо вже оподаткований дохід у долларах та множимо на курс на дату
+                </li>
+                <li>
+                  <b>tax</b> - податок України 19.5%, розраховується відносно доходу у гривні розрахованого у попередньому кроці як <code>income * tax</code>
+                </li>
+                <li>
+                  <b>net income</b> - дохід &laquo;чистими&raquo; у гривні, після вирахування податку
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </details>
         <div className="row">
           <div className="col-12 col-sm-6">
             <canvas ref={chartRef} />
