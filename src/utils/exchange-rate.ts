@@ -22,6 +22,23 @@ export async function getExchangeRate(date: Date): Promise<number> {
     .then((r) => r[0].rate)
 }
 
+/**
+ * Retrieve exchange rate at given date
+ */
+export async function getExchangeRates(start: Date, end: Date): Promise<Record<string, number>> {
+  const url = new URL('https://bank.gov.ua/NBU_Exchange/exchange_site?start=20220115&end=20220131&valcode=usd&json')
+  url.searchParams.set('start', getDateShortString(start))
+  url.searchParams.set('end', getDateShortString(end))
+
+  const items = await proxy(url, 3600).then((r) => r.json())
+  const result: Record<string, number> = {}
+  for (const item of items) {
+    const date = new Date(item.exchangedate.split('.').reverse().join('-')).toISOString().split('T').shift()!
+    result[date] = item.rate
+  }
+  return result
+}
+
 export async function getExhcangeRateHistory() {
   const items: YahooChart[] = []
   const url = new URL('https://query1.finance.yahoo.com/v8/finance/chart/UAH=X?period1=653691600&interval=1d')

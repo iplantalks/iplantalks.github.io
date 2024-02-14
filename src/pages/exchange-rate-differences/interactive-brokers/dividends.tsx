@@ -4,7 +4,7 @@ import { HeadFC } from 'gatsby'
 import '../../../styles/common.css'
 import Chart, { CoreChartOptions } from 'chart.js/auto'
 import { currency, round } from '../../../utils/formatters'
-import { getExchangeRate } from '../../../utils/exchange-rate'
+import { getExchangeRate, getExchangeRates } from '../../../utils/exchange-rate'
 import statements from '../../../images/exchange-rate-differences/statements.png'
 import msmoney from '../../../images/exchange-rate-differences/msmoney.png'
 import popup from '../../../images/exchange-rate-differences/popup.png'
@@ -131,6 +131,22 @@ const Dividends = () => {
       })
     }
 
+    const minDate = new Date(Math.min(...rows.map((t) => t.date.getTime())))
+    const maxDate = new Date(Math.max(...rows.map((t) => t.date.getTime())))
+    getExchangeRates(minDate, maxDate).then((rates) => {
+      const next = [...rows]
+      console.log(rates)
+      next.forEach((t) => {
+        t.exchangeRate = rates[t.date.toISOString().split('T').shift()!]
+        t.incomeUah = t.netIncome * t.exchangeRate
+        t.taxUah = t.incomeUah * 0.195
+        t.netIncomeUah = t.incomeUah - t.taxUah
+        return t
+      })
+      setRows(next)
+    })
+
+    /*
     for (const date of Array.from(new Set(rows.map((t) => t.date)))) {
       getExchangeRate(date).then((exchangeRate) => {
         const next = [...rows]
@@ -146,6 +162,7 @@ const Dividends = () => {
         setRows(next)
       })
     }
+    */
 
     setRows(rows)
     //console.table(rows)
