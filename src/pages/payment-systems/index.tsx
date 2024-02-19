@@ -1,26 +1,15 @@
 import * as React from 'react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { HeadFC, PageProps } from 'gatsby'
 import '../../styles/common.css'
 import { currency } from '../../utils/formatters'
 import ibkr from '../../images/interactive-brokers.svg'
-import { Bank, VendorLogo, useBanks } from './components/_banks'
-import { PaymentSystem, usePaymentSystems } from './components/_payment-systems'
+import { VendorLogo } from './components/_banks'
 import Join from '../../components/join'
 import Hero from '../../components/hero'
-import { SheetLink, useBankLinks, usePaymentSystemLinks } from './components/_links'
+import { useBankLinks, usePaymentSystemLinks } from './components/_links'
 import { useVideoLinks } from './components/_videos'
-
-const ANY_BANK = 'Банк'
-const ANY_PAMYNET_SYSTEM = 'Платіжка'
-
-export interface Row {
-  key: string
-  bank: Bank
-  paymentSystem: PaymentSystem
-  bankLink?: SheetLink
-  paymentSystemLink?: SheetLink
-}
+import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -52,42 +41,42 @@ function ago(date: Date): string {
   return difference + ' ' + text + ' тому'
 }
 
+const Checkboxes = ({ names, checkboxes, onChange }: { names: string[]; checkboxes: Record<string, boolean>; onChange: (name: string) => void }) => (
+  <div>
+    {names.map((name) => (
+      <div className="form-check form-check-inline" key={`bank-checkbox-${name}`}>
+        <input className="form-check-input" type="checkbox" id={`bank-checkbox-${name}`} checked={!checkboxes[name]} onChange={() => onChange(name)} />
+        <label className="form-check-label" htmlFor={`bank-checkbox-${name}`}>
+          {name}
+        </label>
+      </div>
+    ))}
+  </div>
+)
+
 const PaymentSystemsPage: React.FC<PageProps> = () => {
   const [transfer, setTransfer] = useState<number>(1000)
-  const banks = useBanks()
-  const paymentSystems = usePaymentSystems()
+  const rows = useGoogleSheetTable('Data!A1:Z').map((row) => ({
+    bank: row['bank'],
+    vendor: row['vendor'],
+    card: row['card'],
+    card_currency: row['card_currency'],
+    bank_fee: parseSheetsNumber(row['bank_fee']) || 0,
+    service: row['service'],
+    service_currency: row['service_currency'],
+    method: row['method'],
+    service_fee: parseSheetsNumber(row['service_fee']) || 0,
+    date: new Date(row['date'].split('.').reverse().join('-')),
+    comment: row['comment'],
+  }))
+  const [bankCheckboxes, setBankCheckboxes] = useState<Record<string, boolean>>({})
+  const [serviceCheckboxes, setServiceCheckboxes] = useState<Record<string, boolean>>({})
+  const [methodCheckboxes, setMethodCheckboxes] = useState<Record<string, boolean>>({})
+  const [currencyCheckboxes, setCurrencyCheckboxes] = useState<Record<string, boolean>>({})
+
   const bankLinks = useBankLinks()
   const paymentSystemLinks = usePaymentSystemLinks()
   const videoLinks = useVideoLinks()
-
-  const bankOptions = useMemo(() => [ANY_BANK].concat(getUniqueValues(banks, 'name')), [banks])
-  const [selectedBankOption, setSelectedBankOption] = useState<string>(ANY_BANK)
-
-  const paymentSystemOptions = useMemo(() => [ANY_PAMYNET_SYSTEM].concat(getUniqueValues(paymentSystems, 'name')), [paymentSystems])
-  const [selectedPaymentSystemOption, setSelectedPaymentSystemOption] = useState<string>(ANY_PAMYNET_SYSTEM)
-
-  const rows = useMemo<Row[]>(() => {
-    const rows: Row[] = []
-    for (const bank of banks) {
-      if (selectedBankOption !== ANY_BANK && bank.name !== selectedBankOption) {
-        continue
-      }
-      if (selectedPaymentSystemOption !== ANY_PAMYNET_SYSTEM && bank.paymentSystem !== selectedPaymentSystemOption) {
-        continue
-      }
-      const key = bank.key.replace('b', 'r')
-      const paymentSystem = paymentSystems.find((p) => p.name === bank.paymentSystem && p.method === bank.method)
-      if (!paymentSystem) {
-        continue
-      }
-      const bankLink = bankLinks.find((l) => l.name === bank.name)
-      const paymentSystemLink = paymentSystemLinks.find((l) => l.name === paymentSystem.name)
-      rows.push({ key, bank, paymentSystem, bankLink, paymentSystemLink })
-    }
-    return rows
-  }, [banks, paymentSystems, bankLinks, paymentSystemLinks])
-
-  const videoLinkCategories = useMemo(() => Array.from(new Set(videoLinks.map((l) => l.category))), [videoLinks])
 
   return (
     <main>
@@ -106,162 +95,84 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           </div>
         </div>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th>
-                <select className="form-select" value={selectedPaymentSystemOption} onChange={(e) => setSelectedPaymentSystemOption(e.target.value)}>
-                  {paymentSystemOptions.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </select>
-              </th>
-              <th>Метод</th>
-              <th>Валюта</th>
-              <th>
-                Комісія <span className="text-secondary">%</span>
-              </th>
-              <th>
-                До сплати <span className="text-secondary">$</span>
-              </th>
-              <th>
-                Ліміт на місяць <span className="text-secondary">$</span>
-              </th>
-              <th>
-                Ліміт на день <span className="text-secondary">$</span>
-              </th>
-              <th>
-                Разовий ліміт <span className="text-secondary">$</span>
-              </th>
-              <th>Перевірено</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {paymentSystems
-              .filter((r) => r.feepct > 0)
-              .filter((r) => selectedPaymentSystemOption === ANY_PAMYNET_SYSTEM || r.name === selectedPaymentSystemOption)
-              .map((r) => ({ ...r, pay: transfer + transfer * (r.feepct / 100), link: paymentSystemLinks.find((l) => l.name === r.name) }))
-              .map((r, i, arr) => (
-                <tr key={r.key}>
-                  <td className="px-4">
-                    {r.name}
-                    {r.link && (
-                      <a className="text-decoration-none ms-2" href={r.link.website} target="_blank">
-                        <small>
-                          <i className="fa-solid fa-arrow-up-right-from-square" />
-                        </small>
-                      </a>
-                    )}
-                  </td>
-                  <td>{r.method}</td>
-                  <td>{r.currency}</td>
-                  <td>
-                    {r.feepct}
-                    {r.link && (
-                      <a className="text-decoration-none ms-2" href={r.link.fees} target="_blank">
-                        <small>
-                          <i className="fa-solid fa-arrow-up-right-from-square" />
-                        </small>
-                      </a>
-                    )}
-                  </td>
-                  <th className={'table-secondary ' + (r.pay === Math.min(...arr.map((a) => a.pay)) ? 'text-success' : '')} title={`${currency(transfer)} + ${currency((transfer * r.feepct) / 100)}`}>
-                    {currency(r.pay)}
-                  </th>
-                  <td className={r.limitmonth && r.pay > r.limitmonth ? 'text-danger' : ''}>{currency(r.limitmonth || Infinity)}</td>
-                  <td className={r.limitday && r.pay > r.limitday ? 'text-danger' : ''}>{currency(r.limitday || Infinity)}</td>
-                  <td className={r.limit && r.pay > r.limit ? 'text-danger' : ''}>{currency(r.limit || Infinity)}</td>
-                  <td title={r.date ? new Date(r.date).toLocaleDateString() : ''}>{r.date ? ago(new Date(r.date)) : ''}</td>
-                </tr>
-              ))}
-          </tbody>
+        <table className="my-3">
+          <tr>
+            <th className="pe-3">Банк:</th>
+            <td>
+              <Checkboxes names={getUniqueValues(rows, 'bank')} checkboxes={bankCheckboxes} onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })} />
+            </td>
+          </tr>
+          <tr>
+            <th className="pe-3">Платіжка:</th>
+            <td>
+              <Checkboxes
+                names={getUniqueValues(rows, 'service')}
+                checkboxes={serviceCheckboxes}
+                onChange={(name: string) => setServiceCheckboxes({ ...serviceCheckboxes, [name]: !serviceCheckboxes[name] })}
+              />
+            </td>
+          </tr>
+          <tr>
+            <th className="pe-3">Метод:</th>
+            <td>
+              <Checkboxes
+                names={getUniqueValues(rows, 'method')}
+                checkboxes={methodCheckboxes}
+                onChange={(name: string) => setMethodCheckboxes({ ...methodCheckboxes, [name]: !methodCheckboxes[name] })}
+              />
+            </td>
+          </tr>
+          <tr>
+            <th className="pe-3">Валюта:</th>
+            <td>
+              <Checkboxes
+                names={Array.from(new Set([...getUniqueValues(rows, 'card_currency'), ...getUniqueValues(rows, 'service_currency')]))}
+                checkboxes={currencyCheckboxes}
+                onChange={(name: string) => setCurrencyCheckboxes({ ...currencyCheckboxes, [name]: !currencyCheckboxes[name] })}
+              />
+            </td>
+          </tr>
         </table>
 
-        <details className="mb-3">
-          <summary>Пояснення</summary>
-          <ul className="mt-3">
-            <li>
-              <b>Платіжка</b> - одна з доступних платіжних систем через яку, на разі, можна завести кошти в Interactive Brokers.
-            </li>
-            <li>
-              <b>Метод</b> - у різних платіжок можут бути різні методи переказу з різними комісіями, так наприклад, на сьогодні, найдешевшим є переказ через Wise використовуючи Google Pay.
-            </li>
-            <li>
-              <b>Комісії</b> - в залежності від вибраної платіжної системи, методу та суми залежитиме загальна сума.
-            </li>
-            <li>
-              <b>Ліміти</b> - як правило в будь яких системах є ліміти. Ліміти ці можуть бути разовими, на добу або місяць. В таблиці виводимо їх усі за для наглядної фільтрації.
-            </li>
-            <li>
-              <b>Дата</b> - дата останьої підтверженої перевірки одним з планерів або участників iTalks з підтверженням.
-            </li>
-          </ul>
-        </details>
-
-        <details className="mb-3">
-          <summary>Коментарі</summary>
-          <ul className="mt-3">
-            {paymentSystems
-              .filter((r) => !!r.comment)
-              .map((r, i) => (
-                <li key={`psc` + i}>
-                  <b>
-                    {r.name} - {r.method}
-                  </b>{' '}
-                  - {r.comment}
-                </li>
-              ))}
-          </ul>
-        </details>
-
-        <p>Переводити кошти будемо з валютного рахунку нашого банку. Наразі перевіреними є наступні банки.</p>
-
         <table className="table">
           <thead>
             <tr>
+              <th>Банк</th>
+              <th>Вендор</th>
+              <th>Карта</th>
+              <th>Валюта</th>
               <th>
-                <select className="form-select" value={selectedBankOption} onChange={(e) => setSelectedBankOption(e.target.value)}>
-                  {bankOptions.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </select>
+                Комісія <span className="text-secondary">%</span>
               </th>
               <th>Платіжка</th>
-              <th>Вендор</th>
-              <th>Метод</th>
               <th>Валюта</th>
+              <th>Метод</th>
               <th>
                 Комісія <span className="text-secondary">%</span>
               </th>
               <th>
                 До сплати <span className="text-secondary">$</span>
               </th>
-              <th>
-                Ліміт на місяць <span className="text-secondary">$</span>
-              </th>
-              <th>
-                Ліміт на день <span className="text-secondary">$</span>
-              </th>
-              <th>
-                Ліміт <span className="text-secondary">$</span>
-              </th>
               <th>Перевірено</th>
+              <th>{/* Коментар */}</th>
             </tr>
           </thead>
           <tbody className="table-group-divider">
             {rows
-              .map((r) => ({ ...r, before: transfer + transfer * (r.paymentSystem.feepct / 100) }))
-              .map((r) => ({ ...r, pay: r.before + r.before * (r.bank.feepct / 100) }))
-              .map((r, i, arr) => (
-                <tr key={r.key}>
-                  <td className="px-4">
-                    {r.bank.name}
-                    {r.bankLink && (
-                      <a className="text-decoration-none ms-2" href={r.bankLink.website} target="_blank">
+              .filter((r) => !bankCheckboxes[r.bank])
+              .filter((r) => !serviceCheckboxes[r.service])
+              .filter((r) => !methodCheckboxes[r.method])
+              .filter((r) => !currencyCheckboxes[r.card_currency] && !currencyCheckboxes[r.service_currency])
+              .map((r) => ({ ...r, bank_links: bankLinks.find((l) => l.name === r.bank) }))
+              .map((r) => ({ ...r, service_links: paymentSystemLinks.find((l) => l.name === r.service) }))
+              .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
+              .sort((a, b) => a.payment - b.payment)
+              .map((r, i) => (
+                <tr key={i}>
+                  <td>
+                    {r.bank}
+                    {r.bank_links && (
+                      <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
                         <small>
                           <i className="fa-solid fa-arrow-up-right-from-square" />
                         </small>
@@ -269,9 +180,14 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     )}
                   </td>
                   <td>
-                    {r.paymentSystem.name}
-                    {r.paymentSystemLink && (
-                      <a className="text-decoration-none ms-2" href={r.paymentSystemLink.website} target="_blank">
+                    <VendorLogo vendor={r.vendor} />
+                  </td>
+                  <td>{r.card}</td>
+                  <td>{r.card_currency}</td>
+                  <td>
+                    {currency(r.bank_fee)}
+                    {r.bank_links && (
+                      <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
                         <small>
                           <i className="fa-solid fa-arrow-up-right-from-square" />
                         </small>
@@ -279,74 +195,38 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     )}
                   </td>
                   <td>
-                    <VendorLogo vendor={r.bank.vendor} />
-                  </td>
-                  <td>{r.bank.method}</td>
-                  <td>{r.bank.currency}</td>
-                  <td>
-                    {currency(r.bank.feepct || 0)}
-                    {r.bankLink && (
-                      <a className="text-decoration-none ms-2" href={r.bankLink.fees} target="_blank">
+                    {r.service}
+                    {r.service_links && (
+                      <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
                         <small>
                           <i className="fa-solid fa-arrow-up-right-from-square" />
                         </small>
                       </a>
                     )}
                   </td>
-                  <th
-                    className={'table-secondary ' + (r.pay === Math.min(...arr.map((a) => a.pay)) ? 'text-success' : '')}
-                    title={`Сума з урахуванням комісії платіжки + комісія банку = ${currency(r.before)} + ${currency(r.before * (r.bank.feepct / 100))}`}
-                  >
-                    {currency(r.pay)}
-                  </th>
-                  <td className={r.bank.limitmonth && r.pay > r.bank.limitmonth ? 'text-danger' : ''}>{currency(r.bank.limitmonth || Infinity)}</td>
-                  <td className={r.bank.limitday && r.pay > r.bank.limitday ? 'text-danger' : ''}>{currency(r.bank.limitday || Infinity)}</td>
-                  <td className={r.bank.limit && r.pay > r.bank.limit ? 'text-danger' : ''}>{currency(r.bank.limit || Infinity)}</td>
-                  <td title={r.bank.date?.toLocaleDateString()}>{r.bank.date ? ago(r.bank.date) : ''}</td>
+                  <td>{r.service_currency}</td>
+                  <td>{r.method}</td>
+                  <td>
+                    {currency(r.service_fee)}
+                    {r.service_links && (
+                      <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
+                        <small>
+                          <i className="fa-solid fa-arrow-up-right-from-square" />
+                        </small>
+                      </a>
+                    )}
+                  </td>
+                  <td className="table-secondary fw-bold">{currency(r.payment)}</td>
+                  <td title={r.date.toLocaleDateString()}>{ago(r.date)}</td>
+                  <td>
+                    <small title={r.comment}>
+                      <i className="fa-regular fa-circle-question" />
+                    </small>
+                  </td>
                 </tr>
               ))}
           </tbody>
         </table>
-
-        <details className="mb-3">
-          <summary>Пояснення</summary>
-          <ul className="mt-3">
-            <li>
-              <b>Банк</b> - один з банків де є підтвержений платіж з підтверженими комісіями.
-            </li>
-            <li>
-              <b>Платіжка</b> - платіжна система через яку поповнюємо Interactive Brokers, див. попередню таблицю.
-            </li>
-            <li>
-              <b>Вендор</b> - Visa та MasterCard можуть мати різні комісії.
-            </li>
-            <li>
-              <b>Метод</b> - метед переказу, що використовуватимемо.
-            </li>
-            <li>
-              <b>Комісії</b> - що утримає банк за переказ коштів. Важливо не забути, що комісія утримуватиметься з суми яку очікує платіжка.
-            </li>
-            <li>
-              <b>Ліміти</b> - банка, маємо враховувати не тільки ліміти платіжних шлюзів, а і банків.
-            </li>
-          </ul>
-        </details>
-
-        <details className="mb-3">
-          <summary>Коментарі</summary>
-          <ul className="mt-3">
-            {banks
-              .filter((r) => !!r.comment)
-              .map((r, i) => (
-                <li key={`psc` + i}>
-                  <b>
-                    {r.name} - {r.method}
-                  </b>{' '}
-                  - {r.comment}
-                </li>
-              ))}
-          </ul>
-        </details>
       </div>
 
       <div className="bg-body-secondary">
@@ -355,29 +235,27 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           <p>Підбірка корисних відео щодо банків та платіжних систем.</p>
 
           <div className="row">
-            {videoLinks
-              .filter((link) => (selectedBankOption === ANY_BANK && selectedPaymentSystemOption === ANY_PAMYNET_SYSTEM) || [selectedBankOption, selectedPaymentSystemOption].includes(link.name))
-              .map((link, i) => (
-                <div key={i} className="col-12 col-md-6 my-3">
-                  <div className="card" style={{ overflow: 'hidden' }}>
-                    <div className="ratio ratio-16x9">
-                      <iframe
-                        width="560"
-                        height="315"
-                        src={'https://www.youtube.com/embed/' + new URL(link.youtube).searchParams.get('v')}
-                        title="YouTube video player"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      ></iframe>
-                    </div>
-                    <div className="card-body">
-                      <b>{link.category}</b>
-                      <br />
-                      {link.name}
-                    </div>
+            {videoLinks.map((link, i) => (
+              <div key={i} className="col-12 col-md-6 my-3">
+                <div className="card" style={{ overflow: 'hidden' }}>
+                  <div className="ratio ratio-16x9">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src={'https://www.youtube.com/embed/' + new URL(link.youtube).searchParams.get('v')}
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                  <div className="card-body">
+                    <b>{link.category}</b>
+                    <br />
+                    {link.name}
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>

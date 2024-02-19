@@ -9,7 +9,7 @@ async function fetchGoogleSheetsValues(range: string): Promise<string[][]> {
     const res = await fetch(url)
     const text = await res.text()
     const values = JSON.parse(text)
-    console.groupCollapsed(range)
+    console.groupCollapsed('values ' + range)
     console.table(values)
     console.groupEnd()
     return values
@@ -19,6 +19,25 @@ async function fetchGoogleSheetsValues(range: string): Promise<string[][]> {
     console.groupEnd()
     return []
   }
+}
+
+async function fetchGoogleSheetsTable(range: string): Promise<Array<Record<string, string>>> {
+  const values = await fetchGoogleSheetsValues(range)
+  const headers = values[0]
+  const rows = values.slice(2)
+  const data = rows.map((row) => {
+    const record: Record<string, string> = {}
+    row.forEach((value, index) => {
+      if (headers[index] && headers[index].match(/[a-z_0-9]/g)) {
+        record[headers[index]] = value || ''
+      }
+    })
+    return record
+  })
+  console.groupCollapsed('table ' + range)
+  console.table(data)
+  console.groupEnd()
+  return data
 }
 
 export function parseSheetsNumber(value: string | undefined): number | undefined {
@@ -51,4 +70,12 @@ export function useGoogleSheet(range: string) {
     fetchGoogleSheetsValues(range).then(setValues)
   }, [range])
   return values
+}
+
+export function useGoogleSheetTable(range: string) {
+  const [data, setData] = useState<Array<Record<string, string>>>([])
+  useEffect(() => {
+    fetchGoogleSheetsTable(range).then(setData)
+  }, [range])
+  return data
 }
