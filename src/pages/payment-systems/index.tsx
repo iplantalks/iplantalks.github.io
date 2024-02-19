@@ -10,7 +10,7 @@ import Hero from '../../components/hero'
 import { useBankLinks, usePaymentSystemLinks } from './components/_links'
 import { useVideoLinks } from './components/_videos'
 import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
-import { Feedback } from './components/feedback'
+import { Feedback } from './components/_feedback'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
