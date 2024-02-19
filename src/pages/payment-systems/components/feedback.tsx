@@ -17,10 +17,22 @@ export const Feedback = () => {
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     console.log('submit')
-    // const url = new URL('https://europe-west3-iplantalks.cloudfunctions.net/subscriber')
-    // url.searchParams.append('email', email)
+    const url = new URL('https://europe-west3-iplantalks.cloudfunctions.net/payment_systems_feedback')
     try {
-      // await fetch(url)
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({
+          comment,
+          bank,
+          vendor,
+          card,
+          card_currency: cardCurrency,
+          service,
+          service_currency: serviceCurrency,
+          method,
+        }),
+      })
       setMessage(`Ваш комментар було відправлено`)
       setError('')
     } catch (error) {
