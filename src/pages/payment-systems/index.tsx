@@ -78,6 +78,17 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
   const paymentSystemLinks = usePaymentSystemLinks()
   const videoLinks = useVideoLinks()
 
+  const demo = useMemo(() => {
+    const found = rows.find((r) => r.bank === 'Privat' && r.service === 'Wise' && r.method === 'P2P' && r.card_currency === 'USD' && r.service_currency === 'USD')
+    const service_payment = transfer + transfer * ((found?.service_fee || 0) / 100)
+    const bank_payment = service_payment + service_payment * ((found?.bank_fee || 0) / 100)
+    return {
+      ...found,
+      service_payment,
+      bank_payment,
+    }
+  }, [rows, transfer])
+
   return (
     <main>
       <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=n33PF4_PYg8" />
@@ -141,13 +152,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <th>Вендор</th>
               <th>Карта</th>
               <th>Валюта</th>
-              <th>
+              <th title="Комісія банку">
                 Комісія <span className="text-secondary">%</span>
               </th>
               <th>Платіжка</th>
               <th>Валюта</th>
               <th>Метод</th>
-              <th>
+              <th title="Комісія платіжки">
                 Комісія <span className="text-secondary">%</span>
               </th>
               <th>
@@ -227,6 +238,20 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               ))}
           </tbody>
         </table>
+
+        <h2 className="mt-5 mb-3">Як це працює?</h2>
+        <p>
+          На прикладі Wise, за для того, щоб в Interactive Brokers потрапила <b>{transfer}</b> долларів, маємо перевести в Wise <b>{currency(demo.service_payment)}</b>, щоб сплатити його комісію.
+        </p>
+        <p>
+          За для того, щоб перевести в Wise <b>{currency(demo.service_payment)}</b> долларів з валютної картки Приват банку, що також хоче свої <b>{demo?.bank_fee}</b> відсотки утримати муситимемо
+          переказати <b>{currency(demo.bank_payment)}</b> долларів.
+        </p>
+        <p>Таким чином колонка "До сплати" розраховує закальну сумму коштів що ми витратимо за для поповнення Interactive Brokers на вказану суму.</p>
+        <p>
+          Примітка: данні в табличці відсортовані за колонкою "До сплати" тобто з початку ідуть найдешевші маргрути. Також, за для зручності, ви можете скористатися фільтрами, за для того, щоб
+          показувати лише цікаві вам маршрути.
+        </p>
       </div>
 
       <div className="bg-body-secondary">
