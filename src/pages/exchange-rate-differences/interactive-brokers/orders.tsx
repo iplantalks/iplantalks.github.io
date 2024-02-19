@@ -12,6 +12,7 @@ import Join from '../../../components/join'
 import Hero from '../../../components/hero'
 import ExchangeRateDifferencesLinks from '../../../components/exchange-rate-differences-links'
 import Subscribe from '../../../components/subscribe'
+import { Shop } from '../../../components/shop'
 
 interface Transaction {
   id: string
@@ -266,6 +267,7 @@ const Orders = () => {
 
       <ExchangeRateDifferencesLinks />
       <Subscribe youtube="https://www.youtube.com/watch?v=Fiylm8c8yAc" />
+      <Shop />
       <Join />
     </main>
   )

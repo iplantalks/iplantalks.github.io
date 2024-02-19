@@ -13,6 +13,7 @@ import Hero from '../../../components/hero'
 import ExchangeRateDifferencesLinks from '../../../components/exchange-rate-differences-links'
 import Subscribe from '../../../components/subscribe'
 import { findSecurityInfo, parseMsMoneyOfxReport, parseOfxDateTime } from '../../../utils/ibkr/ofx'
+import { Shop } from '../../../components/shop'
 
 interface Row {
   id: string
@@ -442,6 +443,7 @@ const Dividends = () => {
 
       <ExchangeRateDifferencesLinks />
       <Subscribe youtube="https://www.youtube.com/watch?v=Fiylm8c8yAc" />
+      <Shop />
       <Join />
     </main>
   )

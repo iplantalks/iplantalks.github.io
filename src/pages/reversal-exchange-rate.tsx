@@ -11,6 +11,7 @@ import { rri } from '../utils/rri'
 import Subscribe from '../components/subscribe'
 import Join from '../components/join'
 import Hero from '../components/hero'
+import { Shop } from '../components/shop'
 
 interface Row {
   year: number
@@ -377,6 +378,7 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
       </div>
 
       <Subscribe />
+      <Shop />
       <Join />
     </main>
   )

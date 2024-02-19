@@ -11,6 +11,7 @@ import { useBankLinks, usePaymentSystemLinks } from './components/_links'
 import { useVideoLinks } from './components/_videos'
 import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
 import { Feedback } from './components/_feedback'
+import { Shop } from '../../components/shop'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -288,6 +289,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
         </div>
       </div>
 
+      <Shop />
       <Join />
     </main>
   )

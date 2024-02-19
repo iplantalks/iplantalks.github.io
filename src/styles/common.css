@@ -11,3 +11,7 @@
 .links a:not(.text-body-emphasis) .fa-solid {
   display: none;
 }
+
+.text-bg-warning.text-bg-warning-light {
+  background-color: #f3e68e !important;
+}
