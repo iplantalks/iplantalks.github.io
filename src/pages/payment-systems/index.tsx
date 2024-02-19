@@ -10,6 +10,7 @@ import Hero from '../../components/hero'
 import { useBankLinks, usePaymentSystemLinks } from './components/_links'
 import { useVideoLinks } from './components/_videos'
 import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
+import { Feedback } from './components/feedback'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -253,6 +254,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           показувати лише цікаві вам маршрути.
         </p>
       </div>
+
+      <Feedback />
 
       <div className="bg-body-secondary">
         <div className="container py-5">
