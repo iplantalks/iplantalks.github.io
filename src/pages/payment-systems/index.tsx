@@ -12,6 +12,7 @@ import { useVideoLinks } from './components/_videos'
 import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
 import { Feedback } from './components/_feedback'
 import { Shop } from '../../components/shop'
+import Hotjar from '@hotjar/browser'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -57,6 +58,11 @@ const Checkboxes = ({ names, checkboxes, onChange }: { names: string[]; checkbox
 )
 
 const PaymentSystemsPage: React.FC<PageProps> = () => {
+  useEffect(() => {
+    if (!window.location.hostname.includes('localhost')) {
+      Hotjar.init(3873202, 6)
+    }
+  }, [])
   const [transfer, setTransfer] = useState<number>(1000)
   const rows = useGoogleSheetTable('Data!A1:Z').map((row) => ({
     bank: row['bank'],
