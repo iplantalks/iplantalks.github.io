@@ -313,17 +313,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             <thead>
               <tr>
                 <th>Банк</th>
-                <th title="Комісія банку" onClick={() => (sortField === 'bank_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank_fee'))}>
-                  {sortField === 'bank_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'bank_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                  Комісія&nbsp;<span className="text-secondary">%</span>
-                </th>
                 <th>Платіжка</th>
-                <th title="Комісія платіжки" onClick={() => (sortField === 'service_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_fee'))}>
-                  {sortField === 'service_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'service_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                  Комісія&nbsp;<span className="text-secondary">%</span>
-                </th>
                 <th onClick={() => (sortField === 'payment' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('payment'))}>
                   {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
                   {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
@@ -375,16 +365,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.card}
                       <br />
                       {r.card_currency}
-                    </td>
-                    <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold' : ''}>
-                      {currency(r.bank_fee)}
-                      {r.bank_links && (
-                        <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
-                          <small>
-                            <i className="fa-solid fa-arrow-up-right-from-square" />
-                          </small>
-                        </a>
-                      )}
+                      <br />
+                      Комісія: {currency(r.bank_fee)}%
                     </td>
                     <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
                       {r.service}
@@ -399,16 +381,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.service_currency}
                       <br />
                       {r.method}
-                    </td>
-                    <td className={sortField === 'service_fee' ? 'table-secondary fw-bold' : ''}>
-                      {currency(r.service_fee)}
-                      {r.service_links && (
-                        <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
-                          <small>
-                            <i className="fa-solid fa-arrow-up-right-from-square" />
-                          </small>
-                        </a>
-                      )}
+                      <br />
+                      Комісія: {currency(r.service_fee)}%
                     </td>
                     <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>{currency(r.payment)}</td>
                   </tr>
