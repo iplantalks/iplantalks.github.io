@@ -7,7 +7,7 @@ export const Shop = () => {
     <div className="text-bg-warning text-bg-warning-light">
       <div className="container">
         <div className="d-flex align-items-center vh-100">
-          <div className="me-5">
+          <div className="me-5 d-none d-md-block">
             <div className="ratio ratio-16x9" style={{ minWidth: '40vw' }}>
               <iframe src={'https://www.youtube.com/embed/' + new URL(link).searchParams.get('v')} title="YouTube video" allowFullScreen></iframe>
             </div>

@@ -156,156 +156,266 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           </tr>
         </table>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th onClick={() => (sortField === 'bank' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank'))}>
-                {sortField === 'bank' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'bank' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Банк
-              </th>
-              <th onClick={() => (sortField === 'vendor' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('vendor'))}>
-                {sortField === 'vendor' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'vendor' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Вендор
-              </th>
-              <th onClick={() => (sortField === 'card' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card'))}>
-                {sortField === 'card' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'card' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Карта
-              </th>
-              <th onClick={() => (sortField === 'card_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card_currency'))}>
-                {sortField === 'card_currency' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'card_currency' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Валюта
-              </th>
-              <th title="Комісія банку" onClick={() => (sortField === 'bank_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank_fee'))}>
-                {sortField === 'bank_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'bank_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Комісія <span className="text-secondary">%</span>
-              </th>
-              <th onClick={() => (sortField === 'service' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service'))}>
-                {sortField === 'service' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'service' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Платіжка
-              </th>
-              <th onClick={() => (sortField === 'service_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_currency'))}>
-                {sortField === 'service_currency' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'service_currency' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Валюта
-              </th>
-              <th onClick={() => (sortField === 'method' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('method'))}>
-                {sortField === 'method' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'method' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Метод
-              </th>
-              <th title="Комісія платіжки" onClick={() => (sortField === 'service_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_fee'))}>
-                {sortField === 'service_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'service_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                Комісія <span className="text-secondary">%</span>
-              </th>
-              <th onClick={() => (sortField === 'payment' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('payment'))}>
-                {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
-                До сплати <span className="text-secondary">$</span>
-              </th>
-              <th onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))}>
-                {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-down me-3" />}
-                {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-up me-3" />}
-                Перевірено
-              </th>
-              <th>{/* Коментар */}</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            {rows.length === 0 && (
+        <div className="d-none d-md-block">
+          <table className="table">
+            <thead>
               <tr>
-                <td colSpan={12} className="text-center">
-                  Завантажуемо данні з Google таблички, трохи зачекайте, вона не така швидка&hellip;
-                </td>
+                <th onClick={() => (sortField === 'bank' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank'))}>
+                  {sortField === 'bank' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'bank' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Банк
+                </th>
+                <th onClick={() => (sortField === 'vendor' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('vendor'))}>
+                  {sortField === 'vendor' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'vendor' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Вендор
+                </th>
+                <th onClick={() => (sortField === 'card' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card'))}>
+                  {sortField === 'card' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'card' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Карта
+                </th>
+                <th onClick={() => (sortField === 'card_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card_currency'))}>
+                  {sortField === 'card_currency' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'card_currency' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Валюта
+                </th>
+                <th title="Комісія банку" onClick={() => (sortField === 'bank_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank_fee'))}>
+                  {sortField === 'bank_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'bank_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Комісія <span className="text-secondary">%</span>
+                </th>
+                <th onClick={() => (sortField === 'service' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service'))}>
+                  {sortField === 'service' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'service' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Платіжка
+                </th>
+                <th onClick={() => (sortField === 'service_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_currency'))}>
+                  {sortField === 'service_currency' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'service_currency' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Валюта
+                </th>
+                <th onClick={() => (sortField === 'method' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('method'))}>
+                  {sortField === 'method' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'method' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Метод
+                </th>
+                <th title="Комісія платіжки" onClick={() => (sortField === 'service_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_fee'))}>
+                  {sortField === 'service_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'service_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Комісія <span className="text-secondary">%</span>
+                </th>
+                <th onClick={() => (sortField === 'payment' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('payment'))}>
+                  {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  До сплати <span className="text-secondary">$</span>
+                </th>
+                <th onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))}>
+                  {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  Перевірено
+                </th>
+                <th>{/* Коментар */}</th>
               </tr>
-            )}
-            {rows
-              .filter((r) => !bankCheckboxes[r.bank])
-              .filter((r) => !serviceCheckboxes[r.service])
-              .filter((r) => !methodCheckboxes[r.method])
-              .filter((r) => !currencyCheckboxes[r.card_currency] && !currencyCheckboxes[r.service_currency])
-              .map((r) => ({ ...r, bank_links: bankLinks.find((l) => l.name === r.bank) }))
-              .map((r) => ({ ...r, service_links: paymentSystemLinks.find((l) => l.name === r.service) }))
-              .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
-              .sort((a, b) => {
-                if (sortDirection === 'asc') {
-                  if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return a[sortField] - b[sortField]
-                  else if (sortField === 'date') return a[sortField].getTime() - b[sortField].getTime()
-                  return a[sortField].toString().localeCompare(b[sortField].toString())
-                } else {
-                  if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return b[sortField] - a[sortField]
-                  else if (sortField === 'date') return b[sortField].getTime() - a[sortField].getTime()
-                  return b[sortField].toString().localeCompare(a[sortField].toString())
-                }
-              })
-              .map((r, i) => (
-                <tr key={i}>
-                  <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
-                    {r.bank}
-                    {r.bank_links && (
-                      <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
-                        <small>
-                          <i className="fa-solid fa-arrow-up-right-from-square" />
-                        </small>
-                      </a>
-                    )}
-                  </td>
-                  <td className={sortField === 'vendor' ? 'table-secondary fw-bold' : ''}>
-                    <VendorLogo vendor={r.vendor} />
-                  </td>
-                  <td className={sortField === 'card' ? 'table-secondary fw-bold' : ''}>{r.card}</td>
-                  <td className={sortField === 'card_currency' ? 'table-secondary fw-bold' : ''}>{r.card_currency}</td>
-                  <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold' : ''}>
-                    {currency(r.bank_fee)}
-                    {r.bank_links && (
-                      <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
-                        <small>
-                          <i className="fa-solid fa-arrow-up-right-from-square" />
-                        </small>
-                      </a>
-                    )}
-                  </td>
-                  <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
-                    {r.service}
-                    {r.service_links && (
-                      <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
-                        <small>
-                          <i className="fa-solid fa-arrow-up-right-from-square" />
-                        </small>
-                      </a>
-                    )}
-                  </td>
-                  <td className={sortField === 'service_currency' ? 'table-secondary fw-bold' : ''}>{r.service_currency}</td>
-                  <td className={sortField === 'method' ? 'table-secondary fw-bold' : ''}>{r.method}</td>
-                  <td className={sortField === 'service_fee' ? 'table-secondary fw-bold' : ''}>
-                    {currency(r.service_fee)}
-                    {r.service_links && (
-                      <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
-                        <small>
-                          <i className="fa-solid fa-arrow-up-right-from-square" />
-                        </small>
-                      </a>
-                    )}
-                  </td>
-                  <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>{currency(r.payment)}</td>
-                  <td className={sortField === 'date' ? 'table-secondary fw-bold' : ''} title={r.date.toLocaleDateString()}>
-                    {ago(r.date)}
-                  </td>
-                  <td>
-                    <small title={r.comment}>
-                      <i className="fa-regular fa-circle-question" />
-                    </small>
+            </thead>
+            <tbody className="table-group-divider">
+              {rows.length === 0 && (
+                <tr>
+                  <td colSpan={12} className="text-center">
+                    Завантажуемо данні з Google таблички, трохи зачекайте, вона не така швидка&hellip;
                   </td>
                 </tr>
-              ))}
-          </tbody>
-        </table>
+              )}
+              {rows
+                .filter((r) => !bankCheckboxes[r.bank])
+                .filter((r) => !serviceCheckboxes[r.service])
+                .filter((r) => !methodCheckboxes[r.method])
+                .filter((r) => !currencyCheckboxes[r.card_currency] && !currencyCheckboxes[r.service_currency])
+                .map((r) => ({ ...r, bank_links: bankLinks.find((l) => l.name === r.bank) }))
+                .map((r) => ({ ...r, service_links: paymentSystemLinks.find((l) => l.name === r.service) }))
+                .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
+                .sort((a, b) => {
+                  if (sortDirection === 'asc') {
+                    if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return a[sortField] - b[sortField]
+                    else if (sortField === 'date') return a[sortField].getTime() - b[sortField].getTime()
+                    return a[sortField].toString().localeCompare(b[sortField].toString())
+                  } else {
+                    if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return b[sortField] - a[sortField]
+                    else if (sortField === 'date') return b[sortField].getTime() - a[sortField].getTime()
+                    return b[sortField].toString().localeCompare(a[sortField].toString())
+                  }
+                })
+                .map((r, i) => (
+                  <tr key={i}>
+                    <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
+                      {r.bank}
+                      {r.bank_links && (
+                        <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
+                          <small>
+                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                          </small>
+                        </a>
+                      )}
+                    </td>
+                    <td className={sortField === 'vendor' ? 'table-secondary fw-bold' : ''}>
+                      <VendorLogo vendor={r.vendor} />
+                    </td>
+                    <td className={sortField === 'card' ? 'table-secondary fw-bold' : ''}>{r.card}</td>
+                    <td className={sortField === 'card_currency' ? 'table-secondary fw-bold' : ''}>{r.card_currency}</td>
+                    <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold' : ''}>
+                      {currency(r.bank_fee)}
+                      {r.bank_links && (
+                        <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
+                          <small>
+                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                          </small>
+                        </a>
+                      )}
+                    </td>
+                    <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
+                      {r.service}
+                      {r.service_links && (
+                        <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
+                          <small>
+                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                          </small>
+                        </a>
+                      )}
+                    </td>
+                    <td className={sortField === 'service_currency' ? 'table-secondary fw-bold' : ''}>{r.service_currency}</td>
+                    <td className={sortField === 'method' ? 'table-secondary fw-bold' : ''}>{r.method}</td>
+                    <td className={sortField === 'service_fee' ? 'table-secondary fw-bold' : ''}>
+                      {currency(r.service_fee)}
+                      {r.service_links && (
+                        <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
+                          <small>
+                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                          </small>
+                        </a>
+                      )}
+                    </td>
+                    <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>{currency(r.payment)}</td>
+                    <td className={sortField === 'date' ? 'table-secondary fw-bold' : ''} title={r.date.toLocaleDateString()}>
+                      {ago(r.date)}
+                    </td>
+                    <td>
+                      <small title={r.comment}>
+                        <i className="fa-regular fa-circle-question" />
+                      </small>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="d-block d-md-none">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Банк</th>
+                <th title="Комісія банку" onClick={() => (sortField === 'bank_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank_fee'))}>
+                  {sortField === 'bank_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'bank_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Комісія&nbsp;<span className="text-secondary">%</span>
+                </th>
+                <th>Платіжка</th>
+                <th title="Комісія платіжки" onClick={() => (sortField === 'service_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_fee'))}>
+                  {sortField === 'service_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'service_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  Комісія&nbsp;<span className="text-secondary">%</span>
+                </th>
+                <th onClick={() => (sortField === 'payment' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('payment'))}>
+                  {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
+                  {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  До сплати&nbsp;<span className="text-secondary">$</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="table-group-divider">
+              {rows.length === 0 && (
+                <tr>
+                  <td colSpan={12} className="text-center">
+                    Завантажуемо данні з Google таблички, трохи зачекайте, вона не така швидка&hellip;
+                  </td>
+                </tr>
+              )}
+              {rows
+                .filter((r) => !bankCheckboxes[r.bank])
+                .filter((r) => !serviceCheckboxes[r.service])
+                .filter((r) => !methodCheckboxes[r.method])
+                .filter((r) => !currencyCheckboxes[r.card_currency] && !currencyCheckboxes[r.service_currency])
+                .map((r) => ({ ...r, bank_links: bankLinks.find((l) => l.name === r.bank) }))
+                .map((r) => ({ ...r, service_links: paymentSystemLinks.find((l) => l.name === r.service) }))
+                .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
+                .sort((a, b) => {
+                  if (sortDirection === 'asc') {
+                    if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return a[sortField] - b[sortField]
+                    else if (sortField === 'date') return a[sortField].getTime() - b[sortField].getTime()
+                    return a[sortField].toString().localeCompare(b[sortField].toString())
+                  } else {
+                    if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return b[sortField] - a[sortField]
+                    else if (sortField === 'date') return b[sortField].getTime() - a[sortField].getTime()
+                    return b[sortField].toString().localeCompare(a[sortField].toString())
+                  }
+                })
+                .map((r, i) => (
+                  <tr key={i}>
+                    <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
+                      {r.bank}
+                      {r.bank_links && (
+                        <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
+                          <small>
+                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                          </small>
+                        </a>
+                      )}
+                      <br />
+                      <VendorLogo vendor={r.vendor} />
+                      <br />
+                      {r.card}
+                      <br />
+                      {r.card_currency}
+                    </td>
+                    <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold' : ''}>
+                      {currency(r.bank_fee)}
+                      {r.bank_links && (
+                        <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
+                          <small>
+                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                          </small>
+                        </a>
+                      )}
+                    </td>
+                    <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
+                      {r.service}
+                      {r.service_links && (
+                        <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
+                          <small>
+                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                          </small>
+                        </a>
+                      )}
+                      <br />
+                      {r.service_currency}
+                      <br />
+                      {r.method}
+                    </td>
+                    <td className={sortField === 'service_fee' ? 'table-secondary fw-bold' : ''}>
+                      {currency(r.service_fee)}
+                      {r.service_links && (
+                        <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
+                          <small>
+                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                          </small>
+                        </a>
+                      )}
+                    </td>
+                    <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>{currency(r.payment)}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
 
         <h2 className="mt-5 mb-3">Як це працює?</h2>
         <p>

@@ -24,7 +24,7 @@ const HeroComplex = ({ title, subtitle, youtube }: { title: string; subtitle: st
           <h1 className="display-5 display-lg-1 fw-bold mt-2">{title}</h1>
           <p className="fs-3">{subtitle}</p>
         </div>
-        <div className="col-6 ms-3">
+        <div className="d-none d-md-block col-6 ms-3">
           <div className="ratio ratio-16x9">
             <iframe src={'https://www.youtube.com/embed/' + new URL(youtube).searchParams.get('v')} title="YouTube video" allowFullScreen></iframe>
           </div>
