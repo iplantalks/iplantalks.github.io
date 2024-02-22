@@ -74,7 +74,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
     service_currency: row['service_currency'],
     method: row['method'],
     service_fee: parseSheetsNumber(row['service_fee']) || 0,
-    date: new Date(row['date'].split('.').reverse().join('-')),
+    date: row['date'] ? new Date(row['date'].split('.').reverse().join('-')) : null,
     comment: row['comment'],
     payment: 0,
   }))
@@ -237,11 +237,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 .sort((a, b) => {
                   if (sortDirection === 'asc') {
                     if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return a[sortField] - b[sortField]
-                    else if (sortField === 'date') return a[sortField].getTime() - b[sortField].getTime()
+                    else if (sortField === 'date') return (a[sortField]?.getTime() || 0) - (b[sortField]?.getTime() || 0)
                     return a[sortField].toString().localeCompare(b[sortField].toString())
                   } else {
                     if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return b[sortField] - a[sortField]
-                    else if (sortField === 'date') return b[sortField].getTime() - a[sortField].getTime()
+                    else if (sortField === 'date') return (b[sortField]?.getTime() || 0) - (a[sortField]?.getTime() || 0)
                     return b[sortField].toString().localeCompare(a[sortField].toString())
                   }
                 })
@@ -295,8 +295,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       )}
                     </td>
                     <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>{currency(r.payment)}</td>
-                    <td className={sortField === 'date' ? 'table-secondary fw-bold' : ''} title={r.date.toLocaleDateString()}>
-                      {ago(r.date)}
+                    <td className={sortField === 'date' ? 'table-secondary fw-bold' : ''} title={r.date?.toLocaleDateString()}>
+                      {r.date ? ago(r.date) : <span>&mdash;</span>}
                     </td>
                     <td>
                       <small title={r.comment}>
@@ -340,11 +340,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 .sort((a, b) => {
                   if (sortDirection === 'asc') {
                     if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return a[sortField] - b[sortField]
-                    else if (sortField === 'date') return a[sortField].getTime() - b[sortField].getTime()
+                    else if (sortField === 'date') return (a[sortField]?.getTime() || 0) - (b[sortField]?.getTime() || 0)
                     return a[sortField].toString().localeCompare(b[sortField].toString())
                   } else {
                     if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return b[sortField] - a[sortField]
-                    else if (sortField === 'date') return b[sortField].getTime() - a[sortField].getTime()
+                    else if (sortField === 'date') return (b[sortField]?.getTime() || 0) - (a[sortField]?.getTime() || 0)
                     return b[sortField].toString().localeCompare(a[sortField].toString())
                   }
                 })
