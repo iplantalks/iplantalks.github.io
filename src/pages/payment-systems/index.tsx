@@ -123,6 +123,14 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             <td>
               <Checkboxes names={getUniqueValues(rows, 'bank')} checkboxes={bankCheckboxes} onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })} />
             </td>
+            <td>
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => setBankCheckboxes(getUniqueValues(rows, 'bank').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(bankCheckboxes).shift() }), {}))}
+              >
+                усі
+              </button>
+            </td>
           </tr>
           <tr>
             <th className="pe-3">Платіжка:</th>
@@ -133,6 +141,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 onChange={(name: string) => setServiceCheckboxes({ ...serviceCheckboxes, [name]: !serviceCheckboxes[name] })}
               />
             </td>
+            <td></td>
           </tr>
           <tr>
             <th className="pe-3">Метод:</th>
@@ -143,6 +152,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 onChange={(name: string) => setMethodCheckboxes({ ...methodCheckboxes, [name]: !methodCheckboxes[name] })}
               />
             </td>
+            <td></td>
           </tr>
           <tr>
             <th className="pe-3">Валюта:</th>
@@ -153,6 +163,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 onChange={(name: string) => setCurrencyCheckboxes({ ...currencyCheckboxes, [name]: !currencyCheckboxes[name] })}
               />
             </td>
+            <td></td>
           </tr>
         </table>
 
@@ -299,9 +310,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.date ? ago(r.date) : <span>&mdash;</span>}
                     </td>
                     <td>
-                      <small title={r.comment}>
-                        <i className="fa-regular fa-circle-question" />
-                      </small>
+                      {r.comment && (
+                        <small title={r.comment}>
+                          <i className="fa-regular fa-circle-question" />
+                        </small>
+                      )}
                     </td>
                   </tr>
                 ))}
