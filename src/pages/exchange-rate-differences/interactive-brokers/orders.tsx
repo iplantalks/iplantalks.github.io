@@ -13,6 +13,7 @@ import Hero from '../../../components/hero'
 import ExchangeRateDifferencesLinks from '../../../components/exchange-rate-differences-links'
 import Subscribe from '../../../components/subscribe'
 import { Shop } from '../../../components/shop'
+import { OFX, parseMsMoneyOfxReport } from '../../../utils/ibkr/ofx'
 
 interface Transaction {
   id: string
@@ -32,51 +33,10 @@ interface Transaction {
   currentPrice: number
 }
 
-export function parseOfx(text: string): Transaction[] {
-  const xml = new DOMParser().parseFromString('<OFX>' + text.split('<OFX>').pop(), 'text/xml')
-
-  const tickers = []
-  for (const secinfo of Array.from(xml.querySelectorAll('SECLIST STOCKINFO'))) {
-    tickers.push({
-      id: secinfo.querySelector('SECID UNIQUEID')?.textContent,
-      type: secinfo.querySelector('SECID UNIQUEIDTYPE')?.textContent,
-      name: secinfo.querySelector('SECNAME')?.textContent,
-      ticker: secinfo.querySelector('TICKER')?.textContent,
-      fiid: secinfo.querySelector('FIID')?.textContent,
-    })
-  }
-
-  const transactions: Transaction[] = []
-  for (const transaction of Array.from(xml.querySelectorAll('INVSTMTRS INVTRANLIST BUYSTOCK, INVSTMTRS INVTRANLIST SELLSTOCK'))) {
-    transactions.push({
-      id: transaction.querySelector('FITID')?.textContent || '',
-      type: transaction.querySelector('BUYTYPE, SELLTYPE')?.textContent || '',
-      date: new Date(
-        transaction
-          .querySelector('DTTRADE')
-          ?.textContent?.substring(0, 8)
-          ?.replace(/^(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') || ''
-      ),
-      ticker: tickers.find((t) => t.id === transaction.querySelector('SECID UNIQUEID')?.textContent)?.ticker || '',
-      shares: parseFloat(transaction.querySelector('UNITS')?.textContent || ''),
-      price: parseFloat(transaction.querySelector('UNITPRICE')?.textContent || ''),
-      commision: parseFloat(transaction.querySelector('COMMISSION')?.textContent || ''),
-
-      spendUah: 0,
-      valueUah: 0,
-      incomeUah: 0,
-      taxUah: 0,
-      netIncomeUah: 0,
-      exchangeRate: 0,
-      currentPrice: 0,
-    })
-  }
-
-  // console.table(transactions)
-  return transactions
-}
-
 const Orders = () => {
+  const [messages, setMessages] = useState<string[]>([])
+  const appendMessage = (message: string) => setMessages((prev) => [...prev, message])
+  const [ofx, setOfx] = useState<OFX>()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [currentExchangeRate, setCurrentExchangeRate] = useState(0)
 
@@ -101,39 +61,75 @@ const Orders = () => {
   }, [transactions, currentExchangeRate])
 
   useEffect(() => {
-    getExchangeRate(new Date()).then(setCurrentExchangeRate)
+    getExchangeRate(new Date()).then((exchangeRate) => {
+      appendMessage(`Курс на сьогодні: ${exchangeRate}`)
+      setCurrentExchangeRate(exchangeRate)
+    })
   }, [])
 
   const negative = useMemo(() => filtered.find((t) => t.netIncomeUah < 0), [filtered])
 
   const handle = (text: string) => {
-    const transactions = parseOfx(text)
+    const ofx = parseMsMoneyOfxReport(text)
+    appendMessage(`Звіт зчитано, знайдено ${ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK?.length} покупок`)
+    setOfx(ofx)
+
+    const transactions: Transaction[] =
+      ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK?.map((t) => ({
+        id: t.INVBUY.INVTRAN.FITID || '',
+        type: t.BUYTYPE || '',
+        date: new Date(t.INVBUY.INVTRAN.DTTRADE?.substring(0, 8)?.replace(/^(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') || ''),
+        ticker:
+          ofx.SECLISTMSGSRSV1.SECLIST.STOCKINFO?.find((s) => t.INVBUY.SECID.UNIQUEID === s.SECINFO.SECID.UNIQUEID && t.INVBUY.SECID.UNIQUEIDTYPE === s.SECINFO.SECID.UNIQUEIDTYPE)?.SECINFO?.TICKER ||
+          '',
+        shares: t.INVBUY.UNITS || 0,
+        price: t.INVBUY.UNITPRICE, // parseFloat(transaction.querySelector('UNITPRICE')?.textContent || ''),
+        commision: t.INVBUY.COMMISSION || 0, // parseFloat(transaction.querySelector('COMMISSION')?.textContent || ''),
+
+        spendUah: 0,
+        valueUah: 0,
+        incomeUah: 0,
+        taxUah: 0,
+        netIncomeUah: 0,
+        exchangeRate: 0,
+        currentPrice: 0,
+      })) || []
     setTransactions(transactions)
 
     for (const date of Array.from(new Set(transactions.map((t) => t.date)))) {
-      getExchangeRate(date).then((exchangeRate) => {
-        const next = [...transactions]
-        next.forEach((t) => {
-          if (t.date == date) {
-            t.exchangeRate = exchangeRate
-          }
-          return t
+      getExchangeRate(date)
+        .then((exchangeRate) => {
+          const next = [...transactions]
+          next.forEach((t) => {
+            if (t.date == date) {
+              t.exchangeRate = exchangeRate
+            }
+            return t
+          })
+          appendMessage(`✅ Курс на ${date.toISOString().split('T').shift()}: ${exchangeRate}`)
+          setTransactions(next)
         })
-        setTransactions(next)
-      })
+        .catch((error) => {
+          appendMessage(`❌ Помилка отримання курсу на ${date.toISOString().split('T').shift()}: ${error.message || error}`)
+        })
     }
 
     for (const ticker of Array.from(new Set(transactions.map((t) => t.ticker)))) {
-      getPrice(ticker).then((price) => {
-        const next = [...transactions]
-        next.forEach((t) => {
-          if (t.ticker == ticker && price) {
-            t.currentPrice = price
-          }
-          return t
+      getPrice(ticker)
+        .then((price) => {
+          const next = [...transactions]
+          next.forEach((t) => {
+            if (t.ticker == ticker && price) {
+              t.currentPrice = price
+            }
+            return t
+          })
+          appendMessage(`✅ Ціна ${ticker} на сьогодні: ${price}`)
+          setTransactions(next)
         })
-        setTransactions(next)
-      })
+        .catch((error) => {
+          appendMessage(`❌ Помилка отримання ціни ${ticker}: ${error.message || error}`)
+        })
     }
   }
 
@@ -188,7 +184,7 @@ const Orders = () => {
         </details>
         {transactions.length > 0 && (
           <table className="table table-striped table-sm">
-            <thead className="table-primary" style={{ position: 'sticky', top: 0 }}>
+            <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
               <tr>
                 <th className="fw-normal">Дата</th>
                 <th className="fw-normal">Тікер</th>
@@ -238,22 +234,6 @@ const Orders = () => {
                 </tr>
               ))}
             </tbody>
-            <tfoot className="table-group-divider table-secondary">
-              <tr>
-                <td>Разом</td>
-                <td></td>
-                <td>{filtered.reduce((acc, x) => acc + x.shares, 0)}</td>
-                <td>{currency(filtered.reduce((acc, x) => acc + x.price, 0))}</td>
-                <td>{currency(filtered.reduce((acc, x) => acc + x.currentPrice, 0))}</td>
-                <td>{currency(filtered.reduce((acc, x) => acc + x.commision, 0))}</td>
-                <td></td>
-                <td>{currency(filtered.reduce((acc, x) => acc + x.spendUah, 0))}</td>
-                <td>{currency(filtered.reduce((acc, x) => acc + x.valueUah, 0))}</td>
-                <td>{currency(filtered.reduce((acc, x) => acc + x.incomeUah, 0))}</td>
-                <td>{currency(filtered.reduce((acc, x) => acc + x.taxUah, 0))}</td>
-                <td>{currency(filtered.reduce((acc, x) => acc + x.netIncomeUah, 0))}</td>
-              </tr>
-            </tfoot>
           </table>
         )}
         {negative && (
@@ -263,6 +243,31 @@ const Orders = () => {
           </p>
         )}
         <p>Важливо - цей калькулятор рахує курсові різниці для всіх активів куплених у звітний період без урахування продажів, коммісій тощо, метою є саме розрахунок курсових різниць</p>
+
+        <details>
+          <summary>Деталі звіту</summary>
+          <p>За для перевірки розхідностей, ось деяка інформація що зможе допомогти</p>
+          <p>Кількість тікерів у звіті: {ofx?.SECLISTMSGSRSV1.SECLIST.STOCKINFO?.length || 0}</p>
+          <p>Кількість позицій у портфелі: {ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVPOSLIST?.POSSTOCK?.length || 0}</p>
+          <p>Кількість покупок: {ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK?.length || 0}</p>
+          <details>
+            <summary>Покупки</summary>
+            <code>
+              <pre>{JSON.stringify(ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK, null, 4)}</pre>
+            </code>
+          </details>
+        </details>
+
+        {messages.length > 0 && (
+          <details>
+            <summary>Повідомлення</summary>
+            <ul>
+              {messages.map((message, i) => (
+                <li key={i}>{message}</li>
+              ))}
+            </ul>
+          </details>
+        )}
       </div>
 
       <ExchangeRateDifferencesLinks />
