@@ -139,7 +139,8 @@ const Dividends = () => {
       console.log(rates)
       next.forEach((t) => {
         t.exchangeRate = rates[t.date.toISOString().split('T').shift()!]
-        t.incomeUah = t.netIncome * t.exchangeRate
+        // t.incomeUah = t.netIncome * t.exchangeRate // WRONG: https://t.me/c/1440806120/12717/27029
+        t.incomeUah = t.income * t.exchangeRate
         t.taxUah = t.incomeUah * 0.105
         t.netIncomeUah = t.incomeUah - t.taxUah
         return t
@@ -303,10 +304,10 @@ const Dividends = () => {
                 <th title="Курс НБУ на дату нарахування" className="fw-normal">
                   usd/uah
                 </th>
-                <th title="Нараховано у гривні, після сплати податку США" className="fw-normal">
+                <th title="Нараховано у гривні загалом, без урахування податків США" className="fw-normal">
                   income <span className="text-secondary">&#8372;</span>
                 </th>
-                <th title="Подакток України - 9% ПДФО та 1.5% війсковий сбір, разом 10.5%" className="fw-normal">
+                <th title="Подакток України - 9% ПДФО та 1.5% війсковий сбір, разом 10.5%. ВАЖЛИВО: податком обклладається зарахована сума, без урахування податку США" className="fw-normal">
                   tax <span className="text-secondary">&#8372;</span>
                 </th>
                 <th title="Фін. результат чистими, після сплати всіх податків у гривні" className="fw-normal">
@@ -326,7 +327,7 @@ const Dividends = () => {
                   <td>{round((Math.abs(row.tax) / row.income) * 100, 2)}</td>
                   <td title={`net income = income-tax = ${currency(row.income)}${currency(row.tax)} = ${currency(row.netIncome)}`}>{currency(row.netIncome)}</td>
                   <td className="table-secondary">{currency(row.exchangeRate)}</td>
-                  <td title={`income = net income * exchange rate = ${currency(row.netIncome)} * ${currency(row.exchangeRate)} = ${currency(row.incomeUah)}`}>{currency(row.incomeUah)}</td>
+                  <td title={`income = income * exchange rate = ${currency(row.netIncome)} * ${currency(row.exchangeRate)} = ${currency(row.incomeUah)}`}>{currency(row.incomeUah)}</td>
                   <td title={`tax = income * 0.105 = ${currency(row.incomeUah)} * 0.105 = ${currency(row.taxUah)}`}>{currency(row.taxUah)}</td>
                   <td title={`net income = income-tax = ${currency(row.incomeUah)}${currency(row.taxUah)} = ${currency(row.netIncomeUah)}`}>{currency(row.netIncomeUah)}</td>
                 </tr>
@@ -401,7 +402,11 @@ const Dividends = () => {
                   і ця ж <a href="https://bank.gov.ua/ua/markets/exchangerates?date=30.12.2023">сторінка для людей</a>
                 </li>
                 <li>
-                  <b>income</b> - дохід у гривні, рахується як <code>net income * usd/uah</code>, тобто ми беремо вже оподаткований дохід у долларах та множимо на курс на дату
+                  <b>income</b> - дохід у гривні, рахується як <code>income * usd/uah</code>, тобто ми беремо <b>не оподаткований</b> дохід у долларах та множимо на курс на дату. Чудова нагода
+                  завітати до iTalks та сказати дякую одному з єкспертів що{' '}
+                  <a href="https://t.me/c/1440806120/12717/27029" target="_blank">
+                    підказав
+                  </a>
                 </li>
                 <li>
                   <b>tax</b> - податок України 9% ПДФО та 1.5% війсковий збір, разом 10.5%, розраховується відносно доходу у гривні розрахованого у попередньому кроці як <code>income * tax</code>
