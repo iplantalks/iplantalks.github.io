@@ -76,6 +76,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
     service_fee: parseSheetsNumber(row['service_fee']) || 0,
     date: row['date'] ? new Date(row['date'].split('.').reverse().join('-')) : null,
     comment: row['comment'],
+    video: row['video'],
     payment: 0,
   }))
   const [bankCheckboxes, setBankCheckboxes] = useState<Record<string, boolean>>({})
@@ -171,6 +172,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           <table className="table">
             <thead>
               <tr>
+                <th></th>
                 <th onClick={() => (sortField === 'bank' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank'))}>
                   {sortField === 'bank' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
                   {sortField === 'bank' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
@@ -258,6 +260,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 })
                 .map((r, i) => (
                   <tr key={i}>
+                    <th>
+                      {r.video && (
+                        <a className="text-decoration-none link-danger" href={r.video} target="_blank">
+                          <i className="fa-brands fa-youtube" />
+                        </a>
+                      )}
+                    </th>
                     <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
                       {r.bank}
                       {r.bank_links && (
