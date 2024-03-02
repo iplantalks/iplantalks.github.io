@@ -57,6 +57,70 @@ const Checkboxes = ({ names, checkboxes, onChange }: { names: string[]; checkbox
   </div>
 )
 
+const Like = ({
+  bank,
+  vendor,
+  card,
+  card_currency,
+  service,
+  service_currency,
+  method,
+  likes,
+}: {
+  bank: string
+  vendor: string
+  card: string
+  card_currency: string
+  service: string
+  service_currency: string
+  method: string
+  likes: number
+}) => {
+  const [loading, setLoading] = useState(false)
+
+  const handleLike = async () => {
+    try {
+      setLoading(true)
+      const url = new URL('https://europe-west3-iplantalks.cloudfunctions.net/payment_systems_like')
+      url.searchParams.set('bank', bank)
+      url.searchParams.set('vendor', vendor)
+      url.searchParams.set('card', card)
+      url.searchParams.set('card_currency', card_currency)
+      url.searchParams.set('service', service)
+      url.searchParams.set('service_currency', service_currency)
+      url.searchParams.set('method', method)
+      const res = await fetch(url)
+      if (res.ok) {
+        alert('Дякуємо за відмітку!\n\nВаш голос враховано та буде відображено при наступному візиті або після оновлення сторінки.')
+        console.log(await res.json())
+      } else {
+        alert('Нажаль сталася помилка, спробуйте пізніше')
+        console.warn(res.status, res.statusText, await res.json())
+      }
+    } catch (error) {
+      console.warn(error)
+      alert('Нажаль сталася помилка, спробуйте пізніше')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <small>
+        {likes}
+        <i className="fa-solid fa-spinner ms-1" />
+      </small>
+    )
+  }
+  return (
+    <small style={{ whiteSpace: 'nowrap' }} onClick={handleLike}>
+      {likes}
+      <i className="fa-solid fa-heart text-danger ms-1" />
+    </small>
+  )
+}
+
 const PaymentSystemsPage: React.FC<PageProps> = () => {
   useEffect(() => {
     if (!window.location.hostname.includes('localhost')) {
@@ -77,6 +141,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
     date: row['date'] ? new Date(row['date'].split('.').reverse().join('-')) : null,
     comment: row['comment'],
     video: row['video'],
+    likes: parseInt(row['likes'] || '0') || 0,
     payment: 0,
   }))
   const [bankCheckboxes, setBankCheckboxes] = useState<Record<string, boolean>>({})
@@ -229,6 +294,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   Перевірено
                 </th>
                 <th>{/* Коментар */}</th>
+                <th>{/* Likes */}</th>
               </tr>
             </thead>
             <tbody className="table-group-divider">
@@ -324,6 +390,9 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <i className="fa-regular fa-circle-question" />
                         </small>
                       )}
+                    </td>
+                    <td className="text-end">
+                      <Like {...r} />
                     </td>
                   </tr>
                 ))}
@@ -426,6 +495,14 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           Примітка: данні в табличці відсортовані за колонкою "До сплати" тобто з початку ідуть найдешевші маргрути. Також, за для зручності, ви можете скористатися фільтрами, за для того, щоб
           показувати лише цікаві вам маршрути.
         </p>
+
+        <h2 className="mt-5 mb-3">
+          Збираємо <i className="fa-solid fa-heart text-danger" />
+        </h2>
+        <p>
+          Якщо бачиш маршрут яким користуєшься - відмічай його натиснувши <i className="fa-solid fa-heart text-danger" />
+        </p>
+        <p>Ідея така щоб ми усі бачили найбільш використовуваніші маршрути серед доступних</p>
       </div>
 
       <Feedback />
