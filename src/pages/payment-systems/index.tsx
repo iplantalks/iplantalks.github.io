@@ -114,9 +114,9 @@ const Like = ({
     )
   }
   return (
-    <small style={{ whiteSpace: 'nowrap' }} onClick={handleLike}>
+    <small style={{ whiteSpace: 'nowrap', opacity: likes > 0 ? 1 : 0.5 }} onClick={handleLike}>
       {likes}
-      <i className="fa-solid fa-heart text-danger ms-1" />
+      <i className={likes > 0 ? 'fa-solid fa-heart text-danger ms-1' : 'fa-solid fa-heart text-secondary ms-1'} />
     </small>
   )
 }
