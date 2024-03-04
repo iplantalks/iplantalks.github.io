@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useState, useMemo, useEffect } from 'react'
 import { HeadFC, PageProps } from 'gatsby'
 import '../../styles/common.css'
+import './styles.css'
 import { currency } from '../../utils/formatters'
 import ibkr from '../../images/interactive-brokers.svg'
 import { VendorLogo } from './components/_banks'
@@ -245,7 +246,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             </td>
             <td></td>
           </tr>
-          <tr>
+          {/* <tr>
             <th className="pe-3">Сортувати&nbsp;за:</th>
             <td>
               <div className="row row-cols-lg-auto">
@@ -260,68 +261,105 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               </div>
             </td>
             <td></td>
-          </tr>
+          </tr> */}
         </table>
 
         <div className="d-none d-md-block">
           <table className="table">
-            <thead>
+            <thead className="table-header-nowrap">
               <tr>
                 <th></th>
-                <th onClick={() => (sortField === 'bank' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank'))}>
-                  {sortField === 'bank' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'bank' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th onClick={() => (sortField === 'bank' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank'))} className={sortField === 'bank' ? 'table-dark' : ''}>
                   Банк
+                  {sortField === 'bank' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'bank' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'bank' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'vendor' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('vendor'))}>
-                  {sortField === 'vendor' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'vendor' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th
+                  onClick={() => (sortField === 'vendor' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('vendor'))}
+                  className={sortField === 'vendor' ? 'table-dark' : ''}
+                >
                   Вендор
+                  {sortField === 'vendor' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'vendor' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'vendor' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'card' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card'))}>
-                  {sortField === 'card' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'card' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th onClick={() => (sortField === 'card' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card'))} className={sortField === 'card' ? 'table-dark' : ''}>
                   Карта
+                  {sortField === 'card' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'card' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'card' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'card_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card_currency'))}>
-                  {sortField === 'card_currency' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'card_currency' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th
+                  onClick={() => (sortField === 'card_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card_currency'))}
+                  className={sortField === 'card_currency' ? 'table-dark' : ''}
+                >
                   Валюта
+                  {sortField === 'card_currency' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'card_currency' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'card_currency' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th title="Комісія банку" onClick={() => (sortField === 'bank_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank_fee'))}>
-                  {sortField === 'bank_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'bank_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th
+                  title="Комісія банку"
+                  onClick={() => (sortField === 'bank_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank_fee'))}
+                  className={sortField === 'bank_fee' ? 'table-dark' : ''}
+                >
                   Комісія <span className="text-secondary">%</span>
+                  {sortField === 'bank_fee' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'bank_fee' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'bank_fee' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'service' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service'))}>
-                  {sortField === 'service' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'service' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th
+                  onClick={() => (sortField === 'service' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service'))}
+                  className={sortField === 'service' ? 'table-dark' : ''}
+                >
                   Платіжка
+                  {sortField === 'service' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'service' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'service' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'service_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_currency'))}>
-                  {sortField === 'service_currency' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'service_currency' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th
+                  onClick={() => (sortField === 'service_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_currency'))}
+                  className={sortField === 'service_currency' ? 'table-dark' : ''}
+                >
                   Валюта
+                  {sortField === 'service_currency' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'service_currency' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'service_currency' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'method' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('method'))}>
-                  {sortField === 'method' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'method' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th
+                  onClick={() => (sortField === 'method' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('method'))}
+                  className={sortField === 'method' ? 'table-dark' : ''}
+                >
                   Метод
+                  {sortField === 'method' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'method' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'method' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th title="Комісія платіжки" onClick={() => (sortField === 'service_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_fee'))}>
-                  {sortField === 'service_fee' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'service_fee' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th
+                  title="Комісія платіжки"
+                  onClick={() => (sortField === 'service_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_fee'))}
+                  className={sortField === 'service_fee' ? 'table-dark' : ''}
+                >
                   Комісія <span className="text-secondary">%</span>
+                  {sortField === 'service_fee' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'service_fee' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'service_fee' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'payment' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('payment'))}>
-                  {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                <th
+                  onClick={() => (sortField === 'payment' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('payment'))}
+                  className={sortField === 'payment' ? 'table-dark' : ''}
+                >
                   До сплати <span className="text-secondary">$</span>
+                  {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'payment' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))}>
-                  {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-down me-3" />}
-                  {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-up me-3" />}
+                <th onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))} className={sortField === 'date' ? 'table-dark' : ''}>
                   Перевірено
+                  {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField !== 'date' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
                 <th>{/* Коментар */}</th>
                 <th>{/* Likes */}</th>
@@ -374,7 +412,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.bank_links && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
                           <small>
-                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                            <i className="fa-solid fa-sort-up-right-from-square" />
                           </small>
                         </a>
                       )}
@@ -389,7 +427,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.bank_links && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
                           <small>
-                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                            <i className="fa-solid fa-sort-up-right-from-square" />
                           </small>
                         </a>
                       )}
@@ -404,7 +442,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.service_links && (
                         <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
                           <small>
-                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                            <i className="fa-solid fa-sort-up-right-from-square" />
                           </small>
                         </a>
                       )}
@@ -416,7 +454,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.service_links && (
                         <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
                           <small>
-                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                            <i className="fa-solid fa-sort-up-right-from-square" />
                           </small>
                         </a>
                       )}
@@ -455,8 +493,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 <th>Банк</th>
                 <th>Платіжка</th>
                 <th onClick={() => (sortField === 'payment' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('payment'))}>
-                  {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-arrow-up me-3" />}
-                  {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-arrow-down me-3" />}
+                  {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                   До сплати&nbsp;<span className="text-secondary">$</span>
                 </th>
               </tr>
@@ -496,7 +534,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.bank_links && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
                           <small>
-                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                            <i className="fa-solid fa-sort-up-right-from-square" />
                           </small>
                         </a>
                       )}
@@ -514,7 +552,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.service_links && (
                         <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
                           <small>
-                            <i className="fa-solid fa-arrow-up-right-from-square" />
+                            <i className="fa-solid fa-sort-up-right-from-square" />
                           </small>
                         </a>
                       )}
