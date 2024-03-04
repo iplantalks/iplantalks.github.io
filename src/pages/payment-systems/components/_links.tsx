@@ -6,6 +6,7 @@ export interface SheetLink {
   website: string
   fees: string
   limits: string
+  comment: string
 }
 
 export function useBankLinks() {
@@ -15,6 +16,7 @@ export function useBankLinks() {
       website: row[1],
       fees: row[2],
       limits: row[3],
+      comment: row[4],
     })
   )
 }
@@ -26,6 +28,7 @@ export function usePaymentSystemLinks() {
       website: row[1],
       fees: row[2],
       limits: row[3],
+      comment: row[4],
     })
   )
 }

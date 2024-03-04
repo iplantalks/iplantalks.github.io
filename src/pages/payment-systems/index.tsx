@@ -142,6 +142,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
     comment: row['comment'],
     video: row['video'],
     likes: parseInt(row['likes'] || '0') || 0,
+    works: row['works'],
     payment: 0,
   }))
   const [bankCheckboxes, setBankCheckboxes] = useState<Record<string, boolean>>({})
@@ -150,6 +151,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
   const [currencyCheckboxes, setCurrencyCheckboxes] = useState<Record<string, boolean>>({})
   const [sortField, setSortField] = useState<keyof (typeof rows)[0]>('payment')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const [hideNotWorking, setHideNotWorking] = useState(true)
 
   const bankLinks = useBankLinks()
   const paymentSystemLinks = usePaymentSystemLinks()
@@ -231,6 +233,34 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             </td>
             <td></td>
           </tr>
+          <tr>
+            <th className="pe-3">Статус:</th>
+            <td>
+              <div className="form-check form-check-inline">
+                <input className="form-check-input" type="checkbox" id="hide-not-working" checked={hideNotWorking} onChange={() => setHideNotWorking(!hideNotWorking)} />
+                <label className="form-check-label" htmlFor="hide-not-working">
+                  приховати не працюючі
+                </label>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <th className="pe-3">Сортувати&nbsp;за:</th>
+            <td>
+              <div className="row row-cols-lg-auto">
+                <div className="col-12">
+                  <select className="form-select" value={sortField} onChange={(e) => setSortField(e.target.value as unknown as keyof (typeof rows)[0])}>
+                    <option value="payment">сумою до сплати</option>
+                    <option value="bank_fee">комісією банку</option>
+                    <option value="service_fee">комісією платіжки</option>
+                    <option value="date">датою перевірки</option>
+                  </select>
+                </div>
+              </div>
+            </td>
+            <td></td>
+          </tr>
         </table>
 
         <div className="d-none d-md-block">
@@ -306,6 +336,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 </tr>
               )}
               {rows
+                .filter((r) => r.works === 'TRUE' || !hideNotWorking)
                 .filter((r) => !bankCheckboxes[r.bank])
                 .filter((r) => !serviceCheckboxes[r.service])
                 .filter((r) => !methodCheckboxes[r.method])
@@ -335,6 +366,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     </th>
                     <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
                       {r.bank}
+                      {r.bank_links && r.bank_links.comment && (
+                        <small title={r.bank_links.comment} className="ms-2">
+                          <i className="fa-regular fa-circle-question" />
+                        </small>
+                      )}
                       {r.bank_links && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
                           <small>
@@ -360,6 +396,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     </td>
                     <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
                       {r.service}
+                      {r.service_links && r.service_links.comment && (
+                        <small title={r.service_links.comment} className="ms-2">
+                          <i className="fa-regular fa-circle-question" />
+                        </small>
+                      )}
                       {r.service_links && (
                         <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
                           <small>
@@ -380,7 +421,15 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                         </a>
                       )}
                     </td>
-                    <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>{currency(r.payment)}</td>
+                    <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
+                      {r.works === 'TRUE' ? (
+                        <span>{currency(r.payment)}</span>
+                      ) : (
+                        <span className="text-danger" title="Цей маршрут не працює">
+                          Не працює
+                        </span>
+                      )}
+                    </td>
                     <td className={sortField === 'date' ? 'table-secondary fw-bold' : ''} title={r.date?.toLocaleDateString()}>
                       {r.date ? ago(r.date) : <span>&mdash;</span>}
                     </td>
@@ -421,6 +470,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 </tr>
               )}
               {rows
+                .filter((r) => r.works === 'TRUE' || !hideNotWorking)
                 .filter((r) => !bankCheckboxes[r.bank])
                 .filter((r) => !serviceCheckboxes[r.service])
                 .filter((r) => !methodCheckboxes[r.method])
@@ -477,7 +527,15 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       <br />
                       <Like {...r} />
                     </td>
-                    <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>{currency(r.payment)}</td>
+                    <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
+                      {r.works === 'TRUE' ? (
+                        <span>{currency(r.payment)}</span>
+                      ) : (
+                        <span className="text-danger" title="Цей маршрут не працює">
+                          Не працює
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))}
             </tbody>
