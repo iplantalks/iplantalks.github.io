@@ -10,25 +10,33 @@ export interface SheetLink {
 }
 
 export function useBankLinks() {
-  return useGoogleSheet('BankLinks!A2:Z').map(
-    (row): SheetLink => ({
-      name: row[0],
-      website: row[1],
-      fees: row[2],
-      limits: row[3],
-      comment: row[4],
-    })
-  )
+  const links = useGoogleSheet('BankLinks!A2:Z')
+    .map(
+      (row): SheetLink => ({
+        name: row[0] || '',
+        website: row[1] || '',
+        fees: row[2] || '',
+        limits: row[3] || '',
+        comment: row[4] || '',
+      })
+    )
+    .filter((link) => !!link.name)
+  console.log('useBankLinks', links)
+  return links
 }
 
 export function usePaymentSystemLinks() {
-  return useGoogleSheet('PaymentsLinks!A2:Z').map(
-    (row): SheetLink => ({
-      name: row[0],
-      website: row[1],
-      fees: row[2],
-      limits: row[3],
-      comment: row[4],
-    })
-  )
+  const links = useGoogleSheet('PaymentsLinks!A2:Z')
+    .map(
+      (row): SheetLink => ({
+        name: row[0] || '',
+        website: row[1] || '',
+        fees: row[2] || '',
+        limits: row[3] || '',
+        comment: row[4] || '',
+      })
+    )
+    .filter((link) => !!link.name)
+  console.log('useBankLinks', links)
+  return links
 }

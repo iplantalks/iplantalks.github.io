@@ -187,66 +187,67 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
         </div>
 
         <table className="my-3">
-          <tr>
-            <th className="pe-3">Банк:</th>
-            <td>
-              <Checkboxes names={getUniqueValues(rows, 'bank')} checkboxes={bankCheckboxes} onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })} />
-            </td>
-            <td>
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={() => setBankCheckboxes(getUniqueValues(rows, 'bank').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(bankCheckboxes).shift() }), {}))}
-              >
-                усі
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <th className="pe-3">Платіжка:</th>
-            <td>
-              <Checkboxes
-                names={getUniqueValues(rows, 'service')}
-                checkboxes={serviceCheckboxes}
-                onChange={(name: string) => setServiceCheckboxes({ ...serviceCheckboxes, [name]: !serviceCheckboxes[name] })}
-              />
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <th className="pe-3">Метод:</th>
-            <td>
-              <Checkboxes
-                names={getUniqueValues(rows, 'method')}
-                checkboxes={methodCheckboxes}
-                onChange={(name: string) => setMethodCheckboxes({ ...methodCheckboxes, [name]: !methodCheckboxes[name] })}
-              />
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <th className="pe-3">Валюта:</th>
-            <td>
-              <Checkboxes
-                names={Array.from(new Set([...getUniqueValues(rows, 'card_currency'), ...getUniqueValues(rows, 'service_currency')]))}
-                checkboxes={currencyCheckboxes}
-                onChange={(name: string) => setCurrencyCheckboxes({ ...currencyCheckboxes, [name]: !currencyCheckboxes[name] })}
-              />
-            </td>
-            <td></td>
-          </tr>
-          <tr>
-            <th className="pe-3">Статус:</th>
-            <td>
-              <div className="form-check form-check-inline">
-                <input className="form-check-input" type="checkbox" id="hide-not-working" checked={hideNotWorking} onChange={() => setHideNotWorking(!hideNotWorking)} />
-                <label className="form-check-label" htmlFor="hide-not-working">
-                  приховати не працюючі
-                </label>
-              </div>
-            </td>
-            <td></td>
-          </tr>
-          {/* <tr>
+          <tbody>
+            <tr>
+              <th className="pe-3">Банк:</th>
+              <td>
+                <Checkboxes names={getUniqueValues(rows, 'bank')} checkboxes={bankCheckboxes} onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })} />
+              </td>
+              <td>
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => setBankCheckboxes(getUniqueValues(rows, 'bank').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(bankCheckboxes).shift() }), {}))}
+                >
+                  усі
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <th className="pe-3">Платіжка:</th>
+              <td>
+                <Checkboxes
+                  names={getUniqueValues(rows, 'service')}
+                  checkboxes={serviceCheckboxes}
+                  onChange={(name: string) => setServiceCheckboxes({ ...serviceCheckboxes, [name]: !serviceCheckboxes[name] })}
+                />
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th className="pe-3">Метод:</th>
+              <td>
+                <Checkboxes
+                  names={getUniqueValues(rows, 'method')}
+                  checkboxes={methodCheckboxes}
+                  onChange={(name: string) => setMethodCheckboxes({ ...methodCheckboxes, [name]: !methodCheckboxes[name] })}
+                />
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th className="pe-3">Валюта:</th>
+              <td>
+                <Checkboxes
+                  names={Array.from(new Set([...getUniqueValues(rows, 'card_currency'), ...getUniqueValues(rows, 'service_currency')]))}
+                  checkboxes={currencyCheckboxes}
+                  onChange={(name: string) => setCurrencyCheckboxes({ ...currencyCheckboxes, [name]: !currencyCheckboxes[name] })}
+                />
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th className="pe-3">Статус:</th>
+              <td>
+                <div className="form-check form-check-inline">
+                  <input className="form-check-input" type="checkbox" id="hide-not-working" checked={hideNotWorking} onChange={() => setHideNotWorking(!hideNotWorking)} />
+                  <label className="form-check-label" htmlFor="hide-not-working">
+                    приховати не працюючі
+                  </label>
+                </div>
+              </td>
+              <td></td>
+            </tr>
+            {/* <tr>
             <th className="pe-3">Сортувати&nbsp;за:</th>
             <td>
               <div className="row row-cols-lg-auto">
@@ -262,6 +263,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             </td>
             <td></td>
           </tr> */}
+          </tbody>
         </table>
 
         <div className="d-none d-md-block">
@@ -409,10 +411,10 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <i className="fa-regular fa-circle-question" />
                         </small>
                       )}
-                      {r.bank_links && (
+                      {r.bank_links && r.bank_links.website && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
                           <small>
-                            <i className="fa-solid fa-sort-up-right-from-square" />
+                            <i className="fa-solid fa-link" />
                           </small>
                         </a>
                       )}
@@ -427,7 +429,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.bank_links && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
                           <small>
-                            <i className="fa-solid fa-sort-up-right-from-square" />
+                            <i className="fa-solid fa-link" />
                           </small>
                         </a>
                       )}
@@ -439,10 +441,10 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <i className="fa-regular fa-circle-question" />
                         </small>
                       )}
-                      {r.service_links && (
+                      {r.service_links && r.service_links.website && (
                         <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
                           <small>
-                            <i className="fa-solid fa-sort-up-right-from-square" />
+                            <i className="fa-solid fa-link" />
                           </small>
                         </a>
                       )}
@@ -454,7 +456,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.service_links && (
                         <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
                           <small>
-                            <i className="fa-solid fa-sort-up-right-from-square" />
+                            <i className="fa-solid fa-link" />
                           </small>
                         </a>
                       )}
@@ -534,7 +536,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.bank_links && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
                           <small>
-                            <i className="fa-solid fa-sort-up-right-from-square" />
+                            <i className="fa-solid fa-link" />
                           </small>
                         </a>
                       )}
@@ -552,7 +554,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.service_links && (
                         <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
                           <small>
-                            <i className="fa-solid fa-sort-up-right-from-square" />
+                            <i className="fa-solid fa-link" />
                           </small>
                         </a>
                       )}
