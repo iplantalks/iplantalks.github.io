@@ -250,6 +250,10 @@ const Orders = () => {
           <p>Кількість тікерів у звіті: {ofx?.SECLISTMSGSRSV1.SECLIST.STOCKINFO?.length || 0}</p>
           <p>Кількість позицій у портфелі: {ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVPOSLIST?.POSSTOCK?.length || 0}</p>
           <p>Кількість покупок: {ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK?.length || 0}</p>
+          <p>
+            За для ще більших деталей ось, усі покупки що є всередині звіту. Тут ідея така - якщо шукома покупка є в середині звіту і не відображається у табличці - то це десь наш косяк і його можна і
+            потрібно виправити, якщо ж шукомої покупки нема в самому звіті то і в табличці вона не зʼявиться і потрібно формувати інший звіт за інший період.
+          </p>
           <details>
             <summary>Покупки</summary>
             <code>
