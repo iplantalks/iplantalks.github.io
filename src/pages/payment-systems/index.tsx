@@ -171,7 +171,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
 
   return (
     <main>
-      <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=n33PF4_PYg8" />
+      <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=23_e_wUAnPA" />
 
       <div className="container py-5">
         <div className="d-flex align-items-center mb-3">
