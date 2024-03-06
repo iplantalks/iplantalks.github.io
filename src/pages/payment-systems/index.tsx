@@ -426,13 +426,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     <td className={sortField === 'card_currency' ? 'table-secondary fw-bold' : ''}>{r.card_currency}</td>
                     <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold' : ''}>
                       {currency(r.bank_fee)}
-                      {r.bank_links && (
+                      {/* {r.bank_links && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
                           <small>
                             <i className="fa-solid fa-link" />
                           </small>
                         </a>
-                      )}
+                      )} */}
                     </td>
                     <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
                       {r.service}
@@ -453,13 +453,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     <td className={sortField === 'method' ? 'table-secondary fw-bold' : ''}>{r.method}</td>
                     <td className={sortField === 'service_fee' ? 'table-secondary fw-bold' : ''}>
                       {currency(r.service_fee)}
-                      {r.service_links && (
+                      {/* {r.service_links && (
                         <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
                           <small>
                             <i className="fa-solid fa-link" />
                           </small>
                         </a>
-                      )}
+                      )} */}
                     </td>
                     <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
                       {r.works === 'TRUE' ? (
