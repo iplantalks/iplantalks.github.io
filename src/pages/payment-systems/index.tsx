@@ -178,10 +178,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           <div>
             Отже ми хочемо завести в <img src={ibkr} width="140" alt="Interactive Brokers" style={{ marginTop: '-10px' }} />
           </div>
-          <div className="input-group mx-3" style={{ width: '10em' }}>
-            <span className="input-group-text" id="basic-addon1">
-              $
-            </span>
+          <div className="ms-3" style={{ width: '10em' }}>
             <input type="number" className="form-control" value={transfer} onChange={(e) => setTransfer(parseFloat(e.target.value))} />
           </div>
         </div>
