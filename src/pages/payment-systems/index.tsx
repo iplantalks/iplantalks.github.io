@@ -147,7 +147,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       works: row['works'],
       payment: 0,
     }))
-    .filter(({ bank }) => !!bank)
+    .filter(({ bank, vendor, card, card_currency, service, service_currency, method }) => !!bank || !!vendor || !!card || !!card_currency || !!service || !!service_currency || !!method)
   const [bankCheckboxes, setBankCheckboxes] = useState<Record<string, boolean>>({})
   const [serviceCheckboxes, setServiceCheckboxes] = useState<Record<string, boolean>>({})
   const [methodCheckboxes, setMethodCheckboxes] = useState<Record<string, boolean>>({})
