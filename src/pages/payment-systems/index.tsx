@@ -129,23 +129,25 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
     }
   }, [])
   const [transfer, setTransfer] = useState<number>(1000)
-  const rows = useGoogleSheetTable('Data!A1:Z').map((row) => ({
-    bank: row['bank'],
-    vendor: row['vendor'],
-    card: row['card'],
-    card_currency: row['card_currency'],
-    bank_fee: parseSheetsNumber(row['bank_fee']) || 0,
-    service: row['service'],
-    service_currency: row['service_currency'],
-    method: row['method'],
-    service_fee: parseSheetsNumber(row['service_fee']) || 0,
-    date: row['date'] ? new Date(row['date'].split('.').reverse().join('-')) : null,
-    comment: row['comment'],
-    video: row['video'],
-    likes: parseInt(row['likes'] || '0') || 0,
-    works: row['works'],
-    payment: 0,
-  }))
+  const rows = useGoogleSheetTable('Data!A1:Z')
+    .map((row) => ({
+      bank: row['bank'],
+      vendor: row['vendor'],
+      card: row['card'],
+      card_currency: row['card_currency'],
+      bank_fee: parseSheetsNumber(row['bank_fee']) || 0,
+      service: row['service'],
+      service_currency: row['service_currency'],
+      method: row['method'],
+      service_fee: parseSheetsNumber(row['service_fee']) || 0,
+      date: row['date'] ? new Date(row['date'].split('.').reverse().join('-')) : null,
+      comment: row['comment'],
+      video: row['video'],
+      likes: parseInt(row['likes'] || '0') || 0,
+      works: row['works'],
+      payment: 0,
+    }))
+    .filter(({ bank }) => !!bank)
   const [bankCheckboxes, setBankCheckboxes] = useState<Record<string, boolean>>({})
   const [serviceCheckboxes, setServiceCheckboxes] = useState<Record<string, boolean>>({})
   const [methodCheckboxes, setMethodCheckboxes] = useState<Record<string, boolean>>({})
@@ -400,6 +402,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <i className="fa-brands fa-youtube" />
                         </a>
                       )}
+                      {r.bank_links && r.bank_links.remote === 'TRUE' && <i className="text-primary fa-brands fa-bluetooth" title="Можливе віддаленне відкриття" />}
                     </th>
                     <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
                       {r.bank}
