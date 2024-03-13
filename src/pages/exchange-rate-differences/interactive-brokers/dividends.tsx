@@ -14,6 +14,7 @@ import ExchangeRateDifferencesLinks from '../../../components/exchange-rate-diff
 import Subscribe from '../../../components/subscribe'
 import { findSecurityInfo, parseMsMoneyOfxReport, parseOfxDateTime } from '../../../utils/ibkr/ofx'
 import { Shop } from '../../../components/shop'
+import tooltip from '../../../images/tooltip.png'
 
 interface Row {
   id: string
@@ -273,6 +274,17 @@ const Dividends = () => {
             <img src={popup} style={{ maxWidth: '50vw' }} />
           </p>
         </details>
+
+        <div className="alert alert-warning">
+          Зверніть увагу, усі розрахунки та колонки мають пояснення, що і як рахується,
+          <br />
+          за для того щоб їх побачити підведіть курсор мишки та трохи зачейкайте
+          <br />
+          <img src={tooltip} width="341" />
+          <br />
+          Була ідея добавити іконки <i className="fa-solid fa-circle-info"></i>, але це треба буде пів таблички обкласти цими іконками і замість них нічого видно не буде :)
+        </div>
+
         {rows.length && (
           <table className="table table-striped table-sm">
             <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
