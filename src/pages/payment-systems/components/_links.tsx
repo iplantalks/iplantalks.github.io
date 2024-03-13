@@ -3,6 +3,7 @@ import { parseSheetsNumber, useGoogleSheet } from './_api'
 
 export interface SheetLink {
   name: string
+  remote: string
   website: string
   fees: string
   limits: string
@@ -14,10 +15,11 @@ export function useBankLinks() {
     .map(
       (row): SheetLink => ({
         name: row[0] || '',
-        website: row[1] || '',
-        fees: row[2] || '',
-        limits: row[3] || '',
-        comment: row[4] || '',
+        remote: row[1] || '',
+        website: row[2] || '',
+        fees: row[3] || '',
+        limits: row[4] || '',
+        comment: row[5] || '',
       })
     )
     .filter((link) => !!link.name)
@@ -30,10 +32,11 @@ export function usePaymentSystemLinks() {
     .map(
       (row): SheetLink => ({
         name: row[0] || '',
-        website: row[1] || '',
-        fees: row[2] || '',
-        limits: row[3] || '',
-        comment: row[4] || '',
+        remote: row[1] || '',
+        website: row[2] || '',
+        fees: row[3] || '',
+        limits: row[4] || '',
+        comment: row[5] || '',
       })
     )
     .filter((link) => !!link.name)
