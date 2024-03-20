@@ -77,14 +77,14 @@ const Zero = () => {
   }, [symbol, date, shares])
 
   const calculate = async () => {
-    const currentPrice = price ? price : await getPrice(symbol)
+    const currentPrice = await getPrice(symbol)
     if (!currentPrice) {
       alert(`Нажаль не вдалося визначити поточну вартість акції ${symbol}, спробуйте інший тікер.`)
       return
     }
     setCurrentPrice(currentPrice)
 
-    const previousPrice = await getPrice(symbol, date)
+    const previousPrice = price ? price : await getPrice(symbol, date)
     if (!previousPrice) {
       alert(`Нажаль не вдалося визначити вартість акції ${symbol} на дату ${date.toISOString().substring(0, 10)}, спробуйте інший тікер або дату.`)
       return
