@@ -9,7 +9,7 @@ const Join = () => (
         <div className="flex-grow-1 ms-3">
           <img width="120" src={logo} />
           <h1 className="display-1 fw-bold mt-2">iPlan Talks</h1>
-          <p className="fs-3">Отримуй цінний досвід планерів iPlan.ua за щомісячною підпискою</p>
+          <p className="fs-3">Отримуй цінний досвід планерів iPlan.ua</p>
           <p>
             <a className="btn btn-outline-light btn-lg" href="https://italks.com.ua/#reasons">
               Дізнатись більше
