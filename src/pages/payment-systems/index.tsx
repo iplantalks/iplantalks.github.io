@@ -363,7 +363,12 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   {sortField !== 'date' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
                 <th>{/* Коментар */}</th>
-                <th>{/* Likes */}</th>
+                <th onClick={() => (sortField === 'likes' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('likes'))} className={sortField === 'likes' ? 'table-dark' : ''}>
+                  Я це <i className="fa-solid fa-heart text-danger ms-1" />
+                  {sortField === 'likes' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                  {sortField === 'likes' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                  {sortField !== 'likes' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                </th>
               </tr>
             </thead>
             <tbody className="table-group-divider">
@@ -385,11 +390,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
                 .sort((a, b) => {
                   if (sortDirection === 'asc') {
-                    if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return a[sortField] - b[sortField]
+                    if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee' || sortField === 'likes') return a[sortField] - b[sortField]
                     else if (sortField === 'date') return (a[sortField]?.getTime() || 0) - (b[sortField]?.getTime() || 0)
                     return a[sortField].toString().localeCompare(b[sortField].toString())
                   } else {
-                    if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee') return b[sortField] - a[sortField]
+                    if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee' || sortField === 'likes') return b[sortField] - a[sortField]
                     else if (sortField === 'date') return (b[sortField]?.getTime() || 0) - (a[sortField]?.getTime() || 0)
                     return b[sortField].toString().localeCompare(a[sortField].toString())
                   }
