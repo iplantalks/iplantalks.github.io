@@ -25,6 +25,7 @@ const Zero = () => {
   const [symbol, setSymbol] = useState('AAPL')
   const [date, setDate] = useState(new Date('2020-03-20'))
   const [price, setPrice] = useState(0)
+  const [commission, setCommission] = useState(0)
   const [shares, setShares] = useState(10)
   const [currentPrice, setCurrentPrice] = useState(0)
   const [previousPrice, setPreviousPrice] = useState(0)
@@ -34,9 +35,9 @@ const Zero = () => {
   const [testPrice, setTestPrice] = useState(0)
 
   const days = useMemo(() => Math.round((new Date().getTime() - date.getTime()) / (1000 * 3600 * 24)), [date])
-  const spendUsd = useMemo(() => guardNaN(shares * previousPrice), [shares, previousPrice])
+  const spendUsd = useMemo(() => guardNaN(shares * previousPrice + commission), [shares, previousPrice, commission])
   const spendUah = useMemo(() => guardNaN(spendUsd * previousExchangeRate), [spendUsd, previousExchangeRate])
-  const valueUsd = useMemo(() => guardNaN(shares * currentPrice), [shares, currentPrice])
+  const valueUsd = useMemo(() => guardNaN(shares * currentPrice - commission), [shares, currentPrice, commission])
   const valueUah = useMemo(() => guardNaN(valueUsd * currentExchangeRate), [valueUsd, currentExchangeRate])
   const incomeUsd = useMemo(() => guardNaN(valueUsd - spendUsd), [valueUsd, spendUsd])
   const incomeUah = useMemo(() => guardNaN(valueUah - spendUah), [valueUah, spendUah])
@@ -77,13 +78,6 @@ const Zero = () => {
   }, [symbol, date, shares])
 
   const calculate = async () => {
-    const currentPrice = await getPrice(symbol)
-    if (!currentPrice) {
-      alert(`Нажаль не вдалося визначити поточну вартість акції ${symbol}, спробуйте інший тікер.`)
-      return
-    }
-    setCurrentPrice(currentPrice)
-
     const previousPrice = price ? price : await getPrice(symbol, date)
     if (!previousPrice) {
       alert(`Нажаль не вдалося визначити вартість акції ${symbol} на дату ${date.toISOString().substring(0, 10)}, спробуйте інший тікер або дату.`)
@@ -91,12 +85,12 @@ const Zero = () => {
     }
     setPreviousPrice(previousPrice)
 
-    const currentExchangeRate = await getExchangeRate(new Date())
-    if (!currentExchangeRate) {
-      alert(`Нажаль не вдалося визначити поточний курс валюти, спробуйте пізніше.`)
+    const currentPrice = await getPrice(symbol)
+    if (!currentPrice) {
+      alert(`Нажаль не вдалося визначити поточну вартість акції ${symbol}, спробуйте інший тікер.`)
       return
     }
-    setCurrentExchangeRate(currentExchangeRate)
+    setCurrentPrice(currentPrice)
 
     const previousExchangeRate = await getExchangeRate(date)
     if (!previousExchangeRate) {
@@ -104,6 +98,13 @@ const Zero = () => {
       return
     }
     setPreviousExchangeRate(previousExchangeRate)
+
+    const currentExchangeRate = await getExchangeRate(new Date())
+    if (!currentExchangeRate) {
+      alert(`Нажаль не вдалося визначити поточний курс валюти, спробуйте пізніше.`)
+      return
+    }
+    setCurrentExchangeRate(currentExchangeRate)
   }
 
   useEffect(() => {
@@ -136,7 +137,15 @@ const Zero = () => {
             <input type="number" className="form-control" min="0" max="999" value={price} onChange={(e) => setPrice(e.target.valueAsNumber)} />
           </p>
 
-          <p className="col-12 col-sm-4">
+          <p
+            className="col-12 col-sm-2"
+            title="Опціонально, сума яку утримує брокер при купівлі чи продажу, якщо буде вказано то врахується двічі. В залежності від типу аккаунту в IB має бути або 1.0, або 0.33. Якщо аккаунт старий, за часів ArtCaptial то може бути 1.5."
+          >
+            <label className="form-label">Комісія*</label>
+            <input type="number" className="form-control" min="0" max="999" value={commission} onChange={(e) => setCommission(e.target.valueAsNumber)} />
+          </p>
+
+          <p className="col-12 col-sm-2">
             <label htmlFor="btnCalculate" className="form-label d-block">
               &nbsp;
             </label>
@@ -325,42 +334,45 @@ const Zero = () => {
                     інвестовано грн
                     <br />
                     <code>
-                      spendUah = shares * previousPrice * exchangeRate = {shares} * {currency(previousPrice)} * {currency(previousExchangeRate)} = {currency(spendUah)}
+                      spendUah = (shares * previousPrice + commission) * exchangeRate = ({shares} * {currency(previousPrice)} + {currency(commission)}) * {currency(previousExchangeRate)} ={' '}
+                      {currency(spendUah)}
                     </code>
                   </td>
                 </tr>
                 <tr>
                   <th className="fw-normal">valueUah</th>
-                  <td>{currency(shares * currentPrice * testExchangeRate)}</td>
+                  <td>{currency((shares * currentPrice - commission) * testExchangeRate)}</td>
                   <td>
                     Поточна вартість активу у гривні
                     <br />
                     <code>
-                      valueUah = shares * currentPrice * testExchangeRate = {shares} * {currency(currentPrice)} * {currency(testExchangeRate)} = {currency(shares * currentPrice * testExchangeRate)}
+                      valueUah = (shares * currentPrice - commission) * testExchangeRate = ({shares} * {currency(currentPrice)} - {currency(commission)}) * {currency(testExchangeRate)} ={' '}
+                      {currency((shares * currentPrice - commission) * testExchangeRate)}
                     </code>
                   </td>
                 </tr>
                 <tr>
                   <th className="fw-normal">incomeUah</th>
-                  <td>{currency(shares * currentPrice * testExchangeRate - spendUah)}</td>
+                  <td>{currency((shares * currentPrice - commission) * testExchangeRate - spendUah)}</td>
                   <td>
                     Прибуток, або збиток, фін. результат, у гривні
                     <br />
                     <code>
-                      incomeUah = valueUah - spendUah = {currency(shares * currentPrice * testExchangeRate)} - {currency(spendUah)} = {currency(shares * currentPrice * testExchangeRate - spendUah)}
+                      incomeUah = valueUah - spendUah = {currency((shares * currentPrice - commission) * testExchangeRate)} - {currency(spendUah)} ={' '}
+                      {currency((shares * currentPrice - commission) * testExchangeRate - spendUah)}
                     </code>
                   </td>
                 </tr>
                 <tr>
                   <th className="fw-normal">taxUah</th>
-                  <td>{shares * currentPrice * testExchangeRate - spendUah > 0 ? currency((shares * currentPrice * testExchangeRate - spendUah) * (tax / 100)) : 0}</td>
+                  <td>{(shares * currentPrice - commission) * testExchangeRate - spendUah > 0 ? currency(((shares * currentPrice - commission) * testExchangeRate - spendUah) * (tax / 100)) : 0}</td>
                   <td>
                     Податок, ПДФО 18% + ВЗ 1,5%
                     <br />
-                    {shares * currentPrice * testExchangeRate - spendUah > 0 && (
+                    {(shares * currentPrice - commission) * testExchangeRate - spendUah > 0 && (
                       <code>
-                        taxUah = incomeUah * (tax / 100) = {currency(shares * currentPrice * testExchangeRate - spendUah)} * ({tax}/100) ={' '}
-                        {currency((shares * currentPrice * testExchangeRate - spendUah) * (tax / 100))}
+                        taxUah = incomeUah * (tax / 100) = {currency((shares * currentPrice - commission) * testExchangeRate - spendUah)} * ({tax}/100) ={' '}
+                        {currency(((shares * currentPrice - commission) * testExchangeRate - spendUah) * (tax / 100))}
                       </code>
                     )}
                   </td>
@@ -368,19 +380,19 @@ const Zero = () => {
                 <tr>
                   <th className="fw-normal">netIncomeUah</th>
                   <td>
-                    {shares * currentPrice * testExchangeRate - spendUah > 0
-                      ? currency(shares * currentPrice * testExchangeRate - spendUah - (shares * currentPrice * testExchangeRate - spendUah) * (tax / 100))
+                    {(shares * currentPrice - commission) * testExchangeRate - spendUah > 0
+                      ? currency((shares * currentPrice - commission) * testExchangeRate - spendUah - ((shares * currentPrice - commission) * testExchangeRate - spendUah) * (tax / 100))
                       : 0}
                   </td>
                   <td>
                     Прибуток, чистими, після податків
                     <br />
-                    {shares * currentPrice * testExchangeRate - spendUah > 0 && (
+                    {(shares * currentPrice - commission) * testExchangeRate - spendUah > 0 && (
                       <code>
-                        netIncomeUah = incomeUah - taxUah = {currency(shares * currentPrice * testExchangeRate - spendUah)} -{' '}
-                        {shares * currentPrice * testExchangeRate - spendUah > 0 ? currency((shares * currentPrice * testExchangeRate - spendUah) * (tax / 100)) : 0} ={' '}
-                        {shares * currentPrice * testExchangeRate - spendUah > 0
-                          ? currency(shares * currentPrice * testExchangeRate - spendUah - (shares * currentPrice * testExchangeRate - spendUah) * (tax / 100))
+                        netIncomeUah = incomeUah - taxUah = {currency((shares * currentPrice - commission) * testExchangeRate - spendUah)} -{' '}
+                        {(shares * currentPrice - commission) * testExchangeRate - spendUah > 0 ? currency(((shares * currentPrice - commission) * testExchangeRate - spendUah) * (tax / 100)) : 0} ={' '}
+                        {(shares * currentPrice - commission) * testExchangeRate - spendUah > 0
+                          ? currency((shares * currentPrice - commission) * testExchangeRate - spendUah - ((shares * currentPrice - commission) * testExchangeRate - spendUah) * (tax / 100))
                           : 0}
                       </code>
                     )}
@@ -393,7 +405,7 @@ const Zero = () => {
                     Курс валюти при якому фін. результат інвестицій буде нульовим
                     <br />
                     <code>
-                      criticalExchangeRate = spendUah / valueUsd = {currency(spendUah)} - {currency(valueUsd)} = {currency(criticalExchangeRate)}
+                      criticalExchangeRate = spendUah / valueUsd = {currency(spendUah)} / {currency(valueUsd)} = {currency(criticalExchangeRate)}
                     </code>
                   </td>
                 </tr>
@@ -444,42 +456,45 @@ const Zero = () => {
                     інвестовано грн
                     <br />
                     <code>
-                      spendUah = shares * previousPrice * exchangeRate = {shares} * {currency(previousPrice)} * {currency(previousExchangeRate)} = {currency(spendUah)}
+                      spendUah = (shares * previousPrice + commission) * exchangeRate = ({shares} * {currency(previousPrice)} + {currency(commission)}) * {currency(previousExchangeRate)} ={' '}
+                      {currency(spendUah)}
                     </code>
                   </td>
                 </tr>
                 <tr>
                   <th className="fw-normal">valueUah</th>
-                  <td>{currency(shares * testPrice * currentExchangeRate)}</td>
+                  <td>{currency((shares * testPrice - commission) * currentExchangeRate)}</td>
                   <td>
                     Поточна вартість активу у гривні
                     <br />
                     <code>
-                      valueUah = shares * testPrice * currentExchangeRate = {shares} * {currency(testPrice)} * {currency(currentExchangeRate)} = {currency(shares * testPrice * currentExchangeRate)}
+                      valueUah = (shares * testPrice - commission) * currentExchangeRate = ({shares} * {currency(testPrice)} - {currency(commission)}) * {currency(currentExchangeRate)} ={' '}
+                      {currency((shares * testPrice - commission) * currentExchangeRate)}
                     </code>
                   </td>
                 </tr>
                 <tr>
                   <th className="fw-normal">incomeUah</th>
-                  <td>{currency(shares * testPrice * currentExchangeRate - spendUah)}</td>
+                  <td>{currency((shares * testPrice - commission) * currentExchangeRate - spendUah)}</td>
                   <td>
                     Прибуток, або збиток, фін. результат, у гривні
                     <br />
                     <code>
-                      incomeUah = valueUah - spendUah = {currency(shares * testPrice * currentExchangeRate)} - {currency(spendUah)} = {currency(shares * testPrice * currentExchangeRate - spendUah)}
+                      incomeUah = valueUah - spendUah = {currency((shares * testPrice - commission) * currentExchangeRate)} - {currency(spendUah)} ={' '}
+                      {currency((shares * testPrice - commission) * currentExchangeRate - spendUah)}
                     </code>
                   </td>
                 </tr>
                 <tr>
                   <th className="fw-normal">taxUah</th>
-                  <td>{shares * testPrice * currentExchangeRate - spendUah > 0 ? currency((shares * testPrice * currentExchangeRate - spendUah) * (tax / 100)) : 0}</td>
+                  <td>{(shares * testPrice - commission) * currentExchangeRate - spendUah > 0 ? currency(((shares * testPrice - commission) * currentExchangeRate - spendUah) * (tax / 100)) : 0}</td>
                   <td>
                     Податок, ПДФО 18% + ВЗ 1,5%
                     <br />
-                    {shares * testPrice * currentExchangeRate - spendUah > 0 && (
+                    {(shares * testPrice - commission) * currentExchangeRate - spendUah > 0 && (
                       <code>
-                        taxUah = incomeUah * (tax / 100) = {currency(shares * testPrice * currentExchangeRate - spendUah)} * ({tax}/100) ={' '}
-                        {currency((shares * testPrice * currentExchangeRate - spendUah) * (tax / 100))}
+                        taxUah = incomeUah * (tax / 100) = {currency((shares * testPrice - commission) * currentExchangeRate - spendUah)} * ({tax}/100) ={' '}
+                        {currency(((shares * testPrice - commission) * currentExchangeRate - spendUah) * (tax / 100))}
                       </code>
                     )}
                   </td>
@@ -487,19 +502,19 @@ const Zero = () => {
                 <tr>
                   <th className="fw-normal">netIncomeUah</th>
                   <td>
-                    {shares * testPrice * currentExchangeRate - spendUah > 0
-                      ? currency(shares * testPrice * currentExchangeRate - spendUah - (shares * testPrice * currentExchangeRate - spendUah) * (tax / 100))
+                    {(shares * testPrice - commission) * currentExchangeRate - spendUah > 0
+                      ? currency((shares * testPrice - commission) * currentExchangeRate - spendUah - ((shares * testPrice - commission) * currentExchangeRate - spendUah) * (tax / 100))
                       : 0}
                   </td>
                   <td>
                     Прибуток, чистими, після податків
                     <br />
-                    {shares * testPrice * currentExchangeRate - spendUah > 0 && (
+                    {(shares * testPrice - commission) * currentExchangeRate - spendUah > 0 && (
                       <code>
-                        netIncomeUah = incomeUah - taxUah = {currency(shares * testPrice * currentExchangeRate - spendUah)} -{' '}
-                        {shares * testPrice * currentExchangeRate - spendUah > 0 ? currency((shares * testPrice * currentExchangeRate - spendUah) * (tax / 100)) : 0} ={' '}
-                        {shares * testPrice * currentExchangeRate - spendUah > 0
-                          ? currency(shares * testPrice * currentExchangeRate - spendUah - (shares * testPrice * currentExchangeRate - spendUah) * (tax / 100))
+                        netIncomeUah = incomeUah - taxUah = {currency((shares * testPrice - commission) * currentExchangeRate - spendUah)} -{' '}
+                        {(shares * testPrice - commission) * currentExchangeRate - spendUah > 0 ? currency(((shares * testPrice - commission) * currentExchangeRate - spendUah) * (tax / 100)) : 0} ={' '}
+                        {(shares * testPrice - commission) * currentExchangeRate - spendUah > 0
+                          ? currency((shares * testPrice - commission) * currentExchangeRate - spendUah - ((shares * testPrice - commission) * currentExchangeRate - spendUah) * (tax / 100))
                           : 0}
                       </code>
                     )}
@@ -553,6 +568,11 @@ const Zero = () => {
                 <td>Кількість куплених акцій</td>
               </tr>
               <tr>
+                <th className="fw-normal">commission</th>
+                <td>{commission}</td>
+                <td>Комісія брокера при купівлі/продажу</td>
+              </tr>
+              <tr>
                 <th className="fw-normal">previousPrice</th>
                 <td>{currency(previousPrice)}</td>
                 <td>
@@ -600,7 +620,7 @@ const Zero = () => {
                   Інвестована сума у долларах
                   <br />
                   <code>
-                    spendUsd = shares * previousPrice = {shares} * {currency(previousPrice)} = {currency(spendUsd)}
+                    spendUsd = shares * previousPrice + commission = {shares} * {currency(previousPrice)} + {currency(commission)} = {currency(spendUsd)}
                   </code>
                 </td>
               </tr>
@@ -622,7 +642,7 @@ const Zero = () => {
                   Поточна вартість активу у долларах
                   <br />
                   <code>
-                    valueUsd = shares * currentPrice = {shares} * {currency(currentPrice)} = {currency(valueUsd)}
+                    valueUsd = shares * currentPrice - commission = {shares} * {currency(currentPrice)} - {currency(commission)} = {currency(valueUsd)}
                   </code>
                 </td>
               </tr>
