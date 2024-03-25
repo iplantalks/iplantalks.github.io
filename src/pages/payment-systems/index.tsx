@@ -145,13 +145,16 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       video: row['video'],
       likes: parseInt(row['likes'] || '0') || 0,
       works: row['works'],
+      megatag: row['megatag'],
       payment: 0,
     }))
     .filter(({ bank, vendor, card, card_currency, service, service_currency, method }) => !!bank || !!vendor || !!card || !!card_currency || !!service || !!service_currency || !!method)
+  const [megatagCheckboxes, setMegatagCheckboxes] = useState<Record<string, boolean>>({})
   const [bankCheckboxes, setBankCheckboxes] = useState<Record<string, boolean>>({})
   const [serviceCheckboxes, setServiceCheckboxes] = useState<Record<string, boolean>>({})
   const [methodCheckboxes, setMethodCheckboxes] = useState<Record<string, boolean>>({})
-  const [currencyCheckboxes, setCurrencyCheckboxes] = useState<Record<string, boolean>>({})
+  const [srcCurrencyCheckboxes, setSrcCurrencyCheckboxes] = useState<Record<string, boolean>>({})
+  const [dstCurrencyCheckboxes, setDstCurrencyCheckboxes] = useState<Record<string, boolean>>({})
   const [sortField, setSortField] = useState<keyof (typeof rows)[0]>('payment')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [hideNotWorking, setHideNotWorking] = useState(true)
@@ -159,17 +162,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
   const bankLinks = useBankLinks()
   const paymentSystemLinks = usePaymentSystemLinks()
   const videoLinks = useVideoLinks()
-
-  const demo = useMemo(() => {
-    const found = rows.find((r) => r.bank === 'Privat' && r.service === 'Wise' && r.method === 'P2P' && r.card_currency === 'USD' && r.service_currency === 'USD')
-    const service_payment = transfer + transfer * ((found?.service_fee || 0) / 100)
-    const bank_payment = service_payment + service_payment * ((found?.bank_fee || 0) / 100)
-    return {
-      ...found,
-      service_payment,
-      bank_payment,
-    }
-  }, [rows, transfer])
 
   return (
     <main>
@@ -187,8 +179,21 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
 
         <table className="my-3">
           <tbody>
+            {transfer === 42 && (
+              <tr>
+                <th className="pe-3">Напрямок:</th>
+                <td>
+                  <Checkboxes
+                    names={getUniqueValues(rows, 'megatag')}
+                    checkboxes={megatagCheckboxes}
+                    onChange={(name: string) => setMegatagCheckboxes({ ...megatagCheckboxes, [name]: !megatagCheckboxes[name] })}
+                  />
+                </td>
+                <td></td>
+              </tr>
+            )}
             <tr>
-              <th className="pe-3">Банк:</th>
+              <th className="pe-3">Платник:</th>
               <td>
                 <Checkboxes names={getUniqueValues(rows, 'bank')} checkboxes={bankCheckboxes} onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })} />
               </td>
@@ -202,7 +207,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               </td>
             </tr>
             <tr>
-              <th className="pe-3">Платіжка:</th>
+              <th className="pe-3">Отримувач:</th>
               <td>
                 <Checkboxes
                   names={getUniqueValues(rows, 'service')}
@@ -224,12 +229,23 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <td></td>
             </tr>
             <tr>
-              <th className="pe-3">Валюта:</th>
+              <th className="pe-3">Відправляємо:</th>
               <td>
                 <Checkboxes
-                  names={Array.from(new Set([...getUniqueValues(rows, 'card_currency'), ...getUniqueValues(rows, 'service_currency')]))}
-                  checkboxes={currencyCheckboxes}
-                  onChange={(name: string) => setCurrencyCheckboxes({ ...currencyCheckboxes, [name]: !currencyCheckboxes[name] })}
+                  names={getUniqueValues(rows, 'card_currency')}
+                  checkboxes={srcCurrencyCheckboxes}
+                  onChange={(name: string) => setSrcCurrencyCheckboxes({ ...srcCurrencyCheckboxes, [name]: !srcCurrencyCheckboxes[name] })}
+                />
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th className="pe-3">Отримуємо:</th>
+              <td>
+                <Checkboxes
+                  names={getUniqueValues(rows, 'service_currency')}
+                  checkboxes={dstCurrencyCheckboxes}
+                  onChange={(name: string) => setDstCurrencyCheckboxes({ ...dstCurrencyCheckboxes, [name]: !dstCurrencyCheckboxes[name] })}
                 />
               </td>
               <td></td>
@@ -268,10 +284,10 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
         <div className="d-none d-md-block">
           <table className="table">
             <thead className="table-header-nowrap">
-              <tr>
+              <tr className="table-secondary" style={{ fontSize: '80%' }}>
                 <th></th>
                 <th onClick={() => (sortField === 'bank' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank'))} className={sortField === 'bank' ? 'table-dark' : ''}>
-                  Банк
+                  Платник
                   {sortField === 'bank' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
                   {sortField === 'bank' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                   {sortField !== 'bank' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
@@ -280,13 +296,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   onClick={() => (sortField === 'vendor' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('vendor'))}
                   className={sortField === 'vendor' ? 'table-dark' : ''}
                 >
-                  Вендор
+                  Тип інструменту
                   {sortField === 'vendor' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
                   {sortField === 'vendor' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                   {sortField !== 'vendor' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
                 <th onClick={() => (sortField === 'card' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card'))} className={sortField === 'card' ? 'table-dark' : ''}>
-                  Карта
+                  Тип рахунку
                   {sortField === 'card' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
                   {sortField === 'card' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                   {sortField !== 'card' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
@@ -314,7 +330,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   onClick={() => (sortField === 'service' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service'))}
                   className={sortField === 'service' ? 'table-dark' : ''}
                 >
-                  Платіжка
+                  Отримувач
                   {sortField === 'service' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
                   {sortField === 'service' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                   {sortField !== 'service' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
@@ -381,10 +397,12 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               )}
               {rows
                 .filter((r) => r.works === 'TRUE' || !hideNotWorking)
+                .filter((r) => !megatagCheckboxes[r.megatag])
                 .filter((r) => !bankCheckboxes[r.bank])
                 .filter((r) => !serviceCheckboxes[r.service])
                 .filter((r) => !methodCheckboxes[r.method])
-                .filter((r) => !currencyCheckboxes[r.card_currency] && !currencyCheckboxes[r.service_currency])
+                .filter((r) => !srcCurrencyCheckboxes[r.card_currency])
+                .filter((r) => !dstCurrencyCheckboxes[r.service_currency])
                 .map((r) => ({ ...r, bank_links: bankLinks.find((l) => l.name === r.bank) }))
                 .map((r) => ({ ...r, service_links: paymentSystemLinks.find((l) => l.name === r.service) }))
                 .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
@@ -410,19 +428,25 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       {r.bank_links && r.bank_links.remote === 'TRUE' && <i className="text-primary fa-brands fa-bluetooth" title="Можливе віддаленне відкриття" />}
                     </th>
                     <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
-                      {r.bank}
+                      {r.bank_links && r.bank_links.website ? (
+                        <a className="text-decoration-none" href={r.bank_links.website} target="_blank">
+                          {r.bank}
+                        </a>
+                      ) : (
+                        <span>{r.bank}</span>
+                      )}
                       {r.bank_links && r.bank_links.comment && (
                         <small title={r.bank_links.comment} className="ms-2">
                           <i className="fa-regular fa-circle-question" />
                         </small>
                       )}
-                      {r.bank_links && r.bank_links.website && (
+                      {/* {r.bank_links && r.bank_links.website && (
                         <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
                           <small>
                             <i className="fa-solid fa-link" />
                           </small>
                         </a>
-                      )}
+                      )} */}
                     </td>
                     <td className={sortField === 'vendor' ? 'table-secondary fw-bold' : ''}>
                       <VendorLogo vendor={r.vendor} />
@@ -440,19 +464,25 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       )} */}
                     </td>
                     <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
-                      {r.service}
+                      {r.service_links && r.service_links.website ? (
+                        <a className="text-decoration-none" href={r.service_links.website} target="_blank">
+                          {r.service}
+                        </a>
+                      ) : (
+                        <span>{r.service}</span>
+                      )}
                       {r.service_links && r.service_links.comment && (
                         <small title={r.service_links.comment} className="ms-2">
                           <i className="fa-regular fa-circle-question" />
                         </small>
                       )}
-                      {r.service_links && r.service_links.website && (
+                      {/* {r.service_links && r.service_links.website && (
                         <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
                           <small>
                             <i className="fa-solid fa-link" />
                           </small>
                         </a>
-                      )}
+                      )} */}
                     </td>
                     <td className={sortField === 'service_currency' ? 'table-secondary fw-bold' : ''}>{r.service_currency}</td>
                     <td className={sortField === 'method' ? 'table-secondary fw-bold' : ''}>{r.method}</td>
@@ -519,7 +549,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 .filter((r) => !bankCheckboxes[r.bank])
                 .filter((r) => !serviceCheckboxes[r.service])
                 .filter((r) => !methodCheckboxes[r.method])
-                .filter((r) => !currencyCheckboxes[r.card_currency] && !currencyCheckboxes[r.service_currency])
+                .filter((r) => !srcCurrencyCheckboxes[r.card_currency])
+                .filter((r) => !dstCurrencyCheckboxes[r.service_currency])
                 .map((r) => ({ ...r, bank_links: bankLinks.find((l) => l.name === r.bank) }))
                 .map((r) => ({ ...r, service_links: paymentSystemLinks.find((l) => l.name === r.service) }))
                 .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
