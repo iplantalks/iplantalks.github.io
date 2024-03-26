@@ -4,7 +4,6 @@ import { HeadFC, PageProps } from 'gatsby'
 import '../../styles/common.css'
 import './styles.css'
 import { currency } from '../../utils/formatters'
-import ibkr from '../../images/interactive-brokers.svg'
 import { VendorLogo } from './components/_banks'
 import Join from '../../components/join'
 import Hero from '../../components/hero'
@@ -14,112 +13,13 @@ import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
 import { Feedback } from './components/_feedback'
 import { Shop } from '../../components/shop'
 import Hotjar from '@hotjar/browser'
+import { Method } from './components/_method'
+import { Like } from './components/_like'
+import { Checkboxes } from './components/_checkboxes'
+import { ago } from '../../utils/ago'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
-}
-
-function ago(date: Date): string {
-  let difference = (new Date().getTime() - date.getTime()) / 1000
-
-  const periods = [
-    ['секунду', 'секурнди', 'секунд'],
-    ['хвилину', 'хвилини', 'хвилин'],
-    ['годину', 'години', 'годин'],
-    ['день', 'дня', 'днів'],
-    ['тиждень', 'тижні', 'тижнів'],
-    ['місяць', 'місяця', 'місяців'],
-    ['рік', 'роки', 'років'],
-  ]
-
-  const lengths = [60, 60, 24, 7, 4.35, 12, 10]
-
-  for (var i = 0; difference >= lengths[i]; i++) {
-    difference = difference / lengths[i]
-  }
-
-  difference = Math.round(difference)
-
-  const cases = [2, 0, 1, 1, 1, 2]
-  const text = periods[i][difference % 100 > 4 && difference % 100 < 20 ? 2 : cases[Math.min(difference % 10, 5)]]
-  return difference + ' ' + text + ' тому'
-}
-
-const Checkboxes = ({ names, checkboxes, onChange }: { names: string[]; checkboxes: Record<string, boolean>; onChange: (name: string) => void }) => (
-  <div>
-    {names.map((name) => (
-      <div className="form-check form-check-inline" key={`bank-checkbox-${name}`}>
-        <input className="form-check-input" type="checkbox" id={`bank-checkbox-${name}`} checked={!checkboxes[name]} onChange={() => onChange(name)} />
-        <label className="form-check-label" htmlFor={`bank-checkbox-${name}`}>
-          {name}
-        </label>
-      </div>
-    ))}
-  </div>
-)
-
-const Like = ({
-  bank,
-  vendor,
-  card,
-  card_currency,
-  service,
-  service_currency,
-  method,
-  likes,
-}: {
-  bank: string
-  vendor: string
-  card: string
-  card_currency: string
-  service: string
-  service_currency: string
-  method: string
-  likes: number
-}) => {
-  const [loading, setLoading] = useState(false)
-
-  const handleLike = async () => {
-    try {
-      setLoading(true)
-      const url = new URL('https://europe-west3-iplantalks.cloudfunctions.net/payment_systems_like')
-      url.searchParams.set('bank', bank)
-      url.searchParams.set('vendor', vendor)
-      url.searchParams.set('card', card)
-      url.searchParams.set('card_currency', card_currency)
-      url.searchParams.set('service', service)
-      url.searchParams.set('service_currency', service_currency)
-      url.searchParams.set('method', method)
-      const res = await fetch(url)
-      if (res.ok) {
-        alert('Дякуємо за відмітку!\n\nВаш голос враховано та буде відображено через декілька хвилин після того як обновиться кеш.')
-        console.log(await res.json())
-      } else {
-        alert('Нажаль сталася помилка, спробуйте пізніше')
-        console.warn(res.status, res.statusText, await res.json())
-      }
-    } catch (error) {
-      console.warn(error)
-      alert('Нажаль сталася помилка, спробуйте пізніше')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  if (loading) {
-    return (
-      <small>
-        {likes}
-        <i className="fa-solid fa-spinner ms-1" />
-      </small>
-    )
-  }
-  return (
-    <small style={{ whiteSpace: 'nowrap', opacity: likes > 0 ? 1 : 0.5 }} onClick={handleLike}>
-      {likes}
-      <i className={likes > 0 ? 'fa-solid fa-heart text-danger ms-1' : 'fa-solid fa-heart text-secondary ms-1'} />
-    </small>
-  )
 }
 
 const PaymentSystemsPage: React.FC<PageProps> = () => {
@@ -149,6 +49,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       payment: 0,
     }))
     .filter(({ bank, vendor, card, card_currency, service, service_currency, method }) => !!bank || !!vendor || !!card || !!card_currency || !!service || !!service_currency || !!method)
+
   const [megatagCheckboxes, setMegatagCheckboxes] = useState<Record<string, boolean>>({})
   const [bankCheckboxes, setBankCheckboxes] = useState<Record<string, boolean>>({})
   const [serviceCheckboxes, setServiceCheckboxes] = useState<Record<string, boolean>>({})
@@ -163,15 +64,15 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
   const paymentSystemLinks = usePaymentSystemLinks()
   const videoLinks = useVideoLinks()
 
+  const rowsFilteredByMegatag = useMemo(() => rows.filter((r) => !megatagCheckboxes[r.megatag]), [rows, megatagCheckboxes])
+
   return (
     <main>
       <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=23_e_wUAnPA" />
 
       <div className="container py-5">
         <div className="d-flex align-items-center mb-3">
-          <div>
-            Отже ми хочемо завести в <img src={ibkr} width="140" alt="Interactive Brokers" style={{ marginTop: '-10px' }} />
-          </div>
+          <div>Отже ми хочемо перевести</div>
           <div className="ms-3" style={{ width: '10em' }}>
             <input type="number" className="form-control" value={transfer} onChange={(e) => setTransfer(parseFloat(e.target.value))} />
           </div>
@@ -179,28 +80,30 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
 
         <table className="my-3">
           <tbody>
-            {transfer === 42 && (
-              <tr>
-                <th className="pe-3">Напрямок:</th>
-                <td>
-                  <Checkboxes
-                    names={getUniqueValues(rows, 'megatag')}
-                    checkboxes={megatagCheckboxes}
-                    onChange={(name: string) => setMegatagCheckboxes({ ...megatagCheckboxes, [name]: !megatagCheckboxes[name] })}
-                  />
-                </td>
-                <td></td>
-              </tr>
-            )}
+            <tr>
+              <th className="pe-3">Напрямок:</th>
+              <td>
+                <Checkboxes
+                  names={getUniqueValues(rows, 'megatag')}
+                  checkboxes={megatagCheckboxes}
+                  onChange={(name: string) => setMegatagCheckboxes({ ...megatagCheckboxes, [name]: !megatagCheckboxes[name] })}
+                />
+              </td>
+              <td></td>
+            </tr>
             <tr>
               <th className="pe-3">Платник:</th>
               <td>
-                <Checkboxes names={getUniqueValues(rows, 'bank')} checkboxes={bankCheckboxes} onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })} />
+                <Checkboxes
+                  names={getUniqueValues(rowsFilteredByMegatag, 'bank')}
+                  checkboxes={bankCheckboxes}
+                  onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })}
+                />
               </td>
               <td>
                 <button
                   className="btn btn-primary btn-sm"
-                  onClick={() => setBankCheckboxes(getUniqueValues(rows, 'bank').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(bankCheckboxes).shift() }), {}))}
+                  onClick={() => setBankCheckboxes(getUniqueValues(rowsFilteredByMegatag, 'bank').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(bankCheckboxes).shift() }), {}))}
                 >
                   усі
                 </button>
@@ -210,7 +113,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <th className="pe-3">Отримувач:</th>
               <td>
                 <Checkboxes
-                  names={getUniqueValues(rows, 'service')}
+                  names={getUniqueValues(rowsFilteredByMegatag, 'service')}
                   checkboxes={serviceCheckboxes}
                   onChange={(name: string) => setServiceCheckboxes({ ...serviceCheckboxes, [name]: !serviceCheckboxes[name] })}
                 />
@@ -221,7 +124,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <th className="pe-3">Метод:</th>
               <td>
                 <Checkboxes
-                  names={getUniqueValues(rows, 'method')}
+                  names={getUniqueValues(rowsFilteredByMegatag, 'method')}
                   checkboxes={methodCheckboxes}
                   onChange={(name: string) => setMethodCheckboxes({ ...methodCheckboxes, [name]: !methodCheckboxes[name] })}
                 />
@@ -232,7 +135,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <th className="pe-3">Відправляємо:</th>
               <td>
                 <Checkboxes
-                  names={getUniqueValues(rows, 'card_currency')}
+                  names={getUniqueValues(rowsFilteredByMegatag, 'card_currency')}
                   checkboxes={srcCurrencyCheckboxes}
                   onChange={(name: string) => setSrcCurrencyCheckboxes({ ...srcCurrencyCheckboxes, [name]: !srcCurrencyCheckboxes[name] })}
                 />
@@ -243,7 +146,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               <th className="pe-3">Отримуємо:</th>
               <td>
                 <Checkboxes
-                  names={getUniqueValues(rows, 'service_currency')}
+                  names={getUniqueValues(rowsFilteredByMegatag, 'service_currency')}
                   checkboxes={dstCurrencyCheckboxes}
                   onChange={(name: string) => setDstCurrencyCheckboxes({ ...dstCurrencyCheckboxes, [name]: !dstCurrencyCheckboxes[name] })}
                 />
@@ -262,22 +165,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               </td>
               <td></td>
             </tr>
-            {/* <tr>
-            <th className="pe-3">Сортувати&nbsp;за:</th>
-            <td>
-              <div className="row row-cols-lg-auto">
-                <div className="col-12">
-                  <select className="form-select" value={sortField} onChange={(e) => setSortField(e.target.value as unknown as keyof (typeof rows)[0])}>
-                    <option value="payment">сумою до сплати</option>
-                    <option value="bank_fee">комісією банку</option>
-                    <option value="service_fee">комісією платіжки</option>
-                    <option value="date">датою перевірки</option>
-                  </select>
-                </div>
-              </div>
-            </td>
-            <td></td>
-          </tr> */}
           </tbody>
         </table>
 
@@ -293,16 +180,21 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   {sortField !== 'bank' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
                 <th
+                  title="Тип інструменту"
                   onClick={() => (sortField === 'vendor' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('vendor'))}
                   className={sortField === 'vendor' ? 'table-dark' : ''}
                 >
-                  Тип інструменту
+                  Інструмент
                   {sortField === 'vendor' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
                   {sortField === 'vendor' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                   {sortField !== 'vendor' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
-                <th onClick={() => (sortField === 'card' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card'))} className={sortField === 'card' ? 'table-dark' : ''}>
-                  Тип рахунку
+                <th
+                  title="Тип рахунку"
+                  onClick={() => (sortField === 'card' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card'))}
+                  className={sortField === 'card' ? 'table-dark' : ''}
+                >
+                  Рахунок
                   {sortField === 'card' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
                   {sortField === 'card' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                   {sortField !== 'card' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
@@ -317,7 +209,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   {sortField !== 'card_currency' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
                 <th
-                  title="Комісія банку"
+                  title="Комісія відправника"
                   onClick={() => (sortField === 'bank_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank_fee'))}
                   className={sortField === 'bank_fee' ? 'table-dark' : ''}
                 >
@@ -354,7 +246,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                   {sortField !== 'method' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                 </th>
                 <th
-                  title="Комісія платіжки"
+                  title="Комісія отримувача"
                   onClick={() => (sortField === 'service_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_fee'))}
                   className={sortField === 'service_fee' ? 'table-dark' : ''}
                 >
@@ -440,29 +332,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <i className="fa-regular fa-circle-question" />
                         </small>
                       )}
-                      {/* {r.bank_links && r.bank_links.website && (
-                        <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
-                          <small>
-                            <i className="fa-solid fa-link" />
-                          </small>
-                        </a>
-                      )} */}
                     </td>
                     <td className={sortField === 'vendor' ? 'table-secondary fw-bold' : ''}>
                       <VendorLogo vendor={r.vendor} />
                     </td>
                     <td className={sortField === 'card' ? 'table-secondary fw-bold' : ''}>{r.card}</td>
                     <td className={sortField === 'card_currency' ? 'table-secondary fw-bold' : ''}>{r.card_currency}</td>
-                    <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold' : ''}>
-                      {currency(r.bank_fee)}
-                      {/* {r.bank_links && (
-                        <a className="text-decoration-none ms-2" href={r.bank_links.fees} target="_blank">
-                          <small>
-                            <i className="fa-solid fa-link" />
-                          </small>
-                        </a>
-                      )} */}
-                    </td>
+                    <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold' : ''}>{currency(r.bank_fee)}</td>
                     <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
                       {r.service_links && r.service_links.website ? (
                         <a className="text-decoration-none" href={r.service_links.website} target="_blank">
@@ -476,26 +352,12 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <i className="fa-regular fa-circle-question" />
                         </small>
                       )}
-                      {/* {r.service_links && r.service_links.website && (
-                        <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
-                          <small>
-                            <i className="fa-solid fa-link" />
-                          </small>
-                        </a>
-                      )} */}
                     </td>
                     <td className={sortField === 'service_currency' ? 'table-secondary fw-bold' : ''}>{r.service_currency}</td>
-                    <td className={sortField === 'method' ? 'table-secondary fw-bold' : ''}>{r.method}</td>
-                    <td className={sortField === 'service_fee' ? 'table-secondary fw-bold' : ''}>
-                      {currency(r.service_fee)}
-                      {/* {r.service_links && (
-                        <a className="text-decoration-none ms-2" href={r.service_links.fees} target="_blank">
-                          <small>
-                            <i className="fa-solid fa-link" />
-                          </small>
-                        </a>
-                      )} */}
+                    <td className={sortField === 'method' ? 'table-secondary fw-bold' : ''}>
+                      <Method method={r.method} />
                     </td>
+                    <td className={sortField === 'service_fee' ? 'table-secondary fw-bold' : ''}>{currency(r.service_fee)}</td>
                     <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
                       {r.works === 'TRUE' ? (
                         <span>{currency(r.payment)}</span>
