@@ -24,7 +24,7 @@ jobs:
         with:
           cache: npm
 
-      - uses: actions/configure-pages@v4
+      - uses: actions/configure-pages@v5
         with:
           static_site_generator: gatsby
 
