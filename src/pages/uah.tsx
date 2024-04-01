@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { HeadFC, PageProps } from 'gatsby'
 import '../styles/common.css'
 import Hero from '../components/hero'
@@ -56,12 +56,41 @@ const Uah: React.FC<PageProps> = () => {
 
   const [years, setYears] = useState(-1)
 
+  const deposits1 = useGoogleSheet("'Держ банки'!A4:S")
+    .filter((row) => row.length > 10 && row[0] !== '')
+    .map((row) => ['Державний банк', ...row])
+  const deposits2 = useGoogleSheet("'Українські ФПГ'!A4:S")
+    .filter((row) => row.length > 10 && row[0] !== '')
+    .map((row) => ['Фінансово промислова група', ...row])
+  const deposits3 = useGoogleSheet("'Іноземні'!A4:S")
+    .filter((row) => row.length > 10 && row[0] !== '')
+    .map((row) => ['Іноземний банк', ...row])
+
+  const deposits = useMemo(() => {
+    console.log(deposits1)
+    return [...deposits1, ...deposits2, ...deposits3].map((row) => ({
+      kind: row[0],
+      name: row[1],
+      month1usd: extractNumber(row[5] || '0') || 0,
+      month1eur: extractNumber(row[6] || '0') || 0,
+      month1uah: extractNumber(row[7] || '0') || 0,
+      month3usd: extractNumber(row[8] || '0') || 0,
+      month3eur: extractNumber(row[9] || '0') || 0,
+      month3uah: extractNumber(row[10] || '0') || 0,
+      month6usd: extractNumber(row[11] || '0') || 0,
+      month6eur: extractNumber(row[12] || '0') || 0,
+      month6uah: extractNumber(row[13] || '0') || 0,
+      month12usd: extractNumber(row[17] || '0') || 0,
+      month12eur: extractNumber(row[18] || '0') || 0,
+      month12uah: extractNumber(row[19] || '0') || 0,
+    }))
+  }, [deposits1, deposits2, deposits3])
+
   return (
     <main>
       <Hero title="Інвестуємо в Україні" subtitle="ОВДП та депозити" />
       <div className="container py-5">
         <h2>ОВДП в гривні</h2>
-
         <table className="table">
           <thead className="table-secondary">
             <tr>
@@ -105,6 +134,31 @@ const Uah: React.FC<PageProps> = () => {
                   <td>{row.bondua ? <span>{row.bondua}</span> : <span className="text-secondary">&mdash;</span>}</td>
                 </tr>
               ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="container py-5">
+        <h2>Депозити</h2>
+        <table className="table">
+          <thead className="table-secondary">
+            <tr>
+              <th>банк</th>
+              <th>1 місяць</th>
+              <th>3 місяці</th>
+              <th>6 місяців</th>
+              <th>12 місяців</th>
+            </tr>
+          </thead>
+          <tbody>
+            {deposits.map((row, index) => (
+              <tr key={index}>
+                <td>{row.name}</td>
+                <td>{row.month1uah ? <span>{row.month1uah}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                <td>{row.month3uah ? <span>{row.month3uah}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                <td>{row.month6uah ? <span>{row.month6uah}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                <td>{row.month12uah ? <span>{row.month12uah}</span> : <span className="text-secondary">&mdash;</span>}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
