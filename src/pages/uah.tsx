@@ -53,16 +53,28 @@ const Uah: React.FC<PageProps> = () => {
       bondua: extractNumber(row[7] || '0'),
     }))
     .filter((row) => new Date(row.maturity).getTime() > Date.now())
+
+  const [years, setYears] = useState(-1)
+
   return (
     <main>
       <Hero title="Інвестуємо в Україні" subtitle="ОВДП та депозити" />
       <div className="container py-5">
         <h2>ОВДП в гривні</h2>
+
         <table className="table">
-          <thead>
+          <thead className="table-secondary">
             <tr>
               <th>isin</th>
-              <th>maturity</th>
+              <th>
+                <select value={years} onChange={(e) => setYears(parseInt(e.target.value))}>
+                  <option value={-1}>maturity</option>
+                  <option value={0}>до року</option>
+                  <option value={1}>один рік</option>
+                  <option value={2}>два роки</option>
+                  <option value={3}>три+ роки</option>
+                </select>
+              </th>
               <th>minfin</th>
               <th>icu</th>
               <th>privat</th>
@@ -72,22 +84,40 @@ const Uah: React.FC<PageProps> = () => {
             </tr>
           </thead>
           <tbody>
-            {values.map((row, index) => (
-              <tr key={index}>
-                <td>{row.isin}</td>
-                <td title={row.maturity}>{maturity(new Date(row.maturity))}</td>
-                <td className="text-secondary">{row.minfin ? <span>{row.minfin}</span> : <span className="text-secondary">&mdash;</span>}</td>
-                <td>{row.icu ? <span>{row.icu}</span> : <span className="text-secondary">&mdash;</span>}</td>
-                <td>{row.privat ? <span>{row.privat}</span> : <span className="text-secondary">&mdash;</span>}</td>
-                <td>{row.mono ? <span>{row.mono}</span> : <span className="text-secondary">&mdash;</span>}</td>
-                <td>{row.univer ? <span>{row.univer}</span> : <span className="text-secondary">&mdash;</span>}</td>
-                <td>{row.bondua ? <span>{row.bondua}</span> : <span className="text-secondary">&mdash;</span>}</td>
-              </tr>
-            ))}
+            {values
+              .filter(
+                (row) =>
+                  years === -1 ||
+                  (years === 1 && maturity(new Date(row.maturity)) === '1 рік') ||
+                  (years === 2 && maturity(new Date(row.maturity)) === '2 роки') ||
+                  (years === 3 && maturity(new Date(row.maturity)).includes('рок') && !['1 рік', '2 роки'].includes(maturity(new Date(row.maturity)))) ||
+                  (years === 0 && !maturity(new Date(row.maturity)).includes('рок') && !maturity(new Date(row.maturity)).includes('рік'))
+              )
+              .map((row, index) => (
+                <tr key={index}>
+                  <td>{row.isin}</td>
+                  <td title={row.maturity}>{maturity(new Date(row.maturity))}</td>
+                  <td className="text-secondary">{row.minfin ? <span>{row.minfin}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                  <td>{row.icu ? <span>{row.icu}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                  <td>{row.privat ? <span>{row.privat}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                  <td>{row.mono ? <span>{row.mono}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                  <td>{row.univer ? <span>{row.univer}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                  <td>{row.bondua ? <span>{row.bondua}</span> : <span className="text-secondary">&mdash;</span>}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
-      <Subscribe />
+      <div className="bg-body-secondary">
+        <div className="container py-5">
+          <h2>Як це працює?</h2>
+          <p>ОВДП це як депозит, але з трохи більшою дохідністью</p>
+          <p>
+            Колонка minfin показує з якою дохіднісью ОВДП продавалися на аукціоні. Тобто це максимальна дохідність яку можна було б очікувати, а також за цією колонкою можна оцінити скільки відсодків
+            утримують провайдери.
+          </p>
+        </div>
+      </div>
       <Shop />
       <Join />
     </main>
