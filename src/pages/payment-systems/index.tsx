@@ -17,6 +17,7 @@ import { Method } from './components/_method'
 import { Like } from './components/_like'
 import { Checkboxes } from './components/_checkboxes'
 import { ago } from '../../utils/ago'
+import { PaymentsFaq } from './components/_payments-faq'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -480,20 +481,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           </table>
         </div>
 
-        <h2 className="mt-5 mb-3">Як це працює?</h2>
-        <p>
-          Розглянемо на прикладі Wise. Для того, щоб на рахунок в Interactive Brokers потрапила сума в {currency(transfer)} доларів, необхідно спочатку переказати цю суму на Wise, враховуючи комісію
-          сервісу.
-        </p>
-        <p>
-          Щоб перевести {currency(transfer)} доларів з валютної картки ПриватБанку в Wise, потрібно врахувати комісію банку за переказ/конвертацію валюти. Таким чином, ви переказуєте суму в{' '}
-          {currency(transfer)} доларів, враховуючи відсотки, які утримає банк.
-        </p>
-        <p>Колонка "До сплати" в таблиці показує загальну суму коштів, які будуть витрачені для поповнення рахунку в Interactive Brokers на вказану суму.</p>
-        <p>
-          Примітка: дані в таблиці відсортовані за колонкою "До сплати", починаючи з найвигідніших варіантів. Для більшої зручності можна використовувати фільтри, щоб відображати лише ті маршрути, які
-          вас цікавлять.
-        </p>
+        <PaymentsFaq />
       </div>
 
       <div className="bg-body-secondary">
