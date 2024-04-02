@@ -11,7 +11,7 @@ const Join = () => (
           <h1 className="display-1 fw-bold mt-2">iPlan Talks</h1>
           <p className="fs-3">Отримуй цінний досвід планерів iPlan.ua</p>
           <p>
-            <a className="btn btn-outline-light btn-lg" href="https://italks.com.ua/#reasons">
+            <a className="btn btn-outline-light btn-lg" href="https://t.me/iPlanTalksBot?start=ZGw6MjAxODc3" target="_blank">
               Дізнатись більше
             </a>
           </p>
