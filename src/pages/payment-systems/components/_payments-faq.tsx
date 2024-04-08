@@ -15,7 +15,7 @@ export const PaymentsFaq = () => {
       {items.map((item, index) => (
         <details key={index}>
           <summary>{item.question}</summary>
-          <p style={{ whiteSpace: 'pre-line' }}>{item.answer}</p>
+          <p style={{ whiteSpace: 'pre-line' }} dangerouslySetInnerHTML={{ __html: item.answer }} />
         </details>
       ))}
     </div>
