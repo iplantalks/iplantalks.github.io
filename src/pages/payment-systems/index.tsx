@@ -409,6 +409,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               )}
               {rows
                 .filter((r) => r.works === 'TRUE' || !hideNotWorking)
+                .filter((r) => !megatagCheckboxes[r.megatag])
                 .filter((r) => !bankCheckboxes[r.bank])
                 .filter((r) => !serviceCheckboxes[r.service])
                 .filter((r) => !methodCheckboxes[r.method])
@@ -428,39 +429,37 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     return b[sortField].toString().localeCompare(a[sortField].toString())
                   }
                 })
-                .map((r, i) => (
+                .map((r, i) => [
                   <tr key={i}>
                     <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
-                      {r.bank}
-                      {r.bank_links && (
-                        <a className="text-decoration-none ms-2" href={r.bank_links.website} target="_blank">
-                          <small>
-                            <i className="fa-solid fa-link" />
-                          </small>
+                      {r.bank_links ? (
+                        <a className="text-decoration-none" href={r.bank_links.website} target="_blank">
+                          {r.bank}
                         </a>
+                      ) : (
+                        r.bank
                       )}
                       <br />
                       <VendorLogo vendor={r.vendor} />
                       <br />
-                      {r.card}
-                      <br />
                       {r.card_currency}
                       <br />
                       Комісія: {currency(r.bank_fee)}%
+                      <br />
+                      {r.card}
                     </td>
                     <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
-                      {r.service}
-                      {r.service_links && (
-                        <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
-                          <small>
-                            <i className="fa-solid fa-link" />
-                          </small>
+                      {r.service_links ? (
+                        <a className="text-decoration-none" href={r.service_links.website} target="_blank">
+                          {r.service}
                         </a>
+                      ) : (
+                        r.service
                       )}
                       <br />
-                      {r.service_currency}
+                      <Method method={r.method} />
                       <br />
-                      {r.method}
+                      {r.service_currency}
                       <br />
                       Комісія: {currency(r.service_fee)}%
                       <br />
@@ -475,8 +474,15 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                         </span>
                       )}
                     </td>
-                  </tr>
-                ))}
+                  </tr>,
+                  r.comment && (
+                    <tr>
+                      <td className="text-secondary small" colSpan={3}>
+                        {r.comment}
+                      </td>
+                    </tr>
+                  ),
+                ])}
             </tbody>
           </table>
         </div>
