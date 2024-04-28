@@ -122,42 +122,54 @@ const Ovdp: React.FC<PageProps> = () => {
                 <tr key={item.isin} className={idx > 1 && item.year !== arr[idx - 1].year ? 'table-group-divider' : ''}>
                   <td>{item.maturity ? item.maturity : ''}</td>
                   <td>{item.isin}</td>
-                  <td
-                    title={item.history ? 'Середня історична дохідність ОВДП зі схожим сроком складала ' + (item.history || '') + '%' : ''}
-                    className={item.mof && item.history ? (item.mof < item.history ? 'text-danger' : 'text-success') : ''}
-                    style={{ borderRightWidth: '1px' }}
-                  >
-                    {percentMaybe(item.mof)}
+                  <td className={'' /*item.mof && item.history ? (item.mof < item.history ? 'text-danger' : 'text-success') : ''*/} style={{ borderRightWidth: '1px' }}>
+                    <span style={{ width: '5em', display: 'inline-block', position: 'relative' }}>
+                      {percentMaybe(item.mof)}
+                      {item.mof && item.history && item.mof < item.history ? (
+                        <i
+                          title={'Середня історична дохідність ОВДП зі схожим сроком складала ' + (item.history || '') + '%'}
+                          className="fa-solid fa-arrow-down text-danger"
+                          style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}
+                        />
+                      ) : null}
+                      {item.mof && item.history && item.mof > item.history ? (
+                        <i
+                          title={'Середня історична дохідність ОВДП зі схожим сроком складала ' + (item.history || '') + '%'}
+                          className="fa-solid fa-arrow-up text-success"
+                          style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}
+                        />
+                      ) : null}
+                    </span>
                   </td>
                   <td
                     title={item.dnepr === item.max ? 'Найкраща пропозиція' : item.dnepr === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.dnepr === best_over_year[item.year] ? 'table-success' : ''}
+                    className={item.year && item.dnepr === best_over_year[item.year] ? 'fw-bold' : ''}
                   >
-                    <span className={item.dnepr === item.max ? 'text-success' : item.dnepr === item.min ? 'text-danger' : ''}>{percentMaybe(item.dnepr)}</span>
+                    <span className={item.dnepr === item.max ? 'text-success' : ''}>{percentMaybe(item.dnepr)}</span>
                   </td>
                   <td
                     title={item.exim === item.max ? 'Найкраща пропозиція' : item.exim === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.exim === best_over_year[item.year] ? 'table-success' : ''}
+                    className={item.year && item.exim === best_over_year[item.year] ? 'fw-bold' : ''}
                   >
-                    <span className={item.exim === item.max ? 'text-success' : item.exim === item.min ? 'text-danger' : ''}>{percentMaybe(item.exim)}</span>
+                    <span className={item.exim === item.max ? 'text-success' : ''}>{percentMaybe(item.exim)}</span>
                   </td>
                   <td
                     title={item.privat === item.max ? 'Найкраща пропозиція' : item.privat === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.privat === best_over_year[item.year] ? 'table-success' : ''}
+                    className={item.year && item.privat === best_over_year[item.year] ? 'fw-bold' : ''}
                   >
-                    <span className={item.privat === item.max ? 'text-success' : item.privat === item.min ? 'text-danger' : ''}>{percentMaybe(item.privat)}</span>
+                    <span className={item.privat === item.max ? 'text-success' : ''}>{percentMaybe(item.privat)}</span>
                   </td>
                   <td
                     title={item.univer === item.max ? 'Найкраща пропозиція' : item.univer === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.univer === best_over_year[item.year] ? 'table-success' : ''}
+                    className={item.year && item.univer === best_over_year[item.year] ? 'fw-bold' : ''}
                   >
-                    <span className={item.univer === item.max ? 'text-success' : item.univer === item.min ? 'text-danger' : ''}>{percentMaybe(item.univer)}</span>
+                    <span className={item.univer === item.max ? 'text-success' : ''}>{percentMaybe(item.univer)}</span>
                   </td>
                   <td
                     title={item.mono === item.max ? 'Найкраща пропозиція' : item.mono === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.mono === best_over_year[item.year] ? 'table-success' : ''}
+                    className={item.year && item.mono === best_over_year[item.year] ? 'fw-bold' : ''}
                   >
-                    <span className={item.mono === item.max ? 'text-success' : item.mono === item.min ? 'text-danger' : ''}>{percentMaybe(item.mono)}</span>
+                    <span className={item.mono === item.max ? 'text-success' : ''}>{percentMaybe(item.mono)}</span>
                   </td>
                 </tr>
               ))}
