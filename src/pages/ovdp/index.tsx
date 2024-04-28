@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { HeadFC, PageProps } from 'gatsby'
 import '../../styles/common.css'
 import Hero from '../../components/hero'
+import Chart from 'chart.js/auto'
 import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
@@ -38,6 +39,9 @@ function historical(data: Array<PartialMof>, current: PartialMof) {
 const percentMaybe = (value: number | null | undefined) => (value ? value + '%' : '')
 
 const Ovdp: React.FC<PageProps> = () => {
+  const chartRef = useRef<HTMLCanvasElement>(null)
+  const [chart, setChart] = useState<Chart>()
+
   const mof = useMof()
   const dnepr = useDnepr()
   const exim = useExim()
@@ -76,10 +80,10 @@ const Ovdp: React.FC<PageProps> = () => {
     }
     return items.map((item) => ({
       ...item,
-      max: Math.max(item.dnepr || 0, item.exim || 0, item.privat || 0, item.univer || 0, item.mono || 0),
-      min: Math.min(item.dnepr || 999, item.exim || 999, item.privat || 999, item.univer || 999, item.mono || 999),
+      max: Math.max(item.aval || 0, item.dnepr || 0, item.exim || 0, item.privat || 0, item.univer || 0, item.mono || 0),
+      min: Math.min(item.aval || 999, item.dnepr || 999, item.exim || 999, item.privat || 999, item.univer || 999, item.mono || 999),
     }))
-  }, [mof, dnepr, exim, privat, univer, mono])
+  }, [mof, aval, dnepr, exim, privat, univer, mono])
 
   const best_over_year = useMemo(() => {
     const best: Record<number, number> = {}
@@ -95,7 +99,76 @@ const Ovdp: React.FC<PageProps> = () => {
     return best
   }, [data])
 
-  const [years, setYears] = useState(-1)
+  useEffect(() => {
+    if (!chartRef.current) {
+      return
+    }
+
+    const chart = new Chart(chartRef.current, {
+      type: 'line',
+      data: {
+        labels: new Array(5).fill(0).map((_, i) => i + 1),
+        datasets: [
+          {
+            label: 'ОВДП',
+            data: new Array(5).fill(0),
+            borderColor: 'rgba(0, 0, 255, 0.8)',
+            fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
+          },
+          {
+            label: 'Середня історична дохідність',
+            data: new Array(5).fill(0),
+            borderColor: 'rgba(0, 0, 0, 0.2)',
+            fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        animation: false,
+        plugins: {
+          title: {
+            display: false,
+            text: '% доходу за період',
+          },
+        },
+        interaction: {
+          intersect: false,
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+            },
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: 'ROI %',
+            },
+          },
+        },
+      },
+    })
+
+    setChart(chart)
+  }, [])
+
+  useEffect(() => {
+    if (!chart) {
+      return
+    }
+    chart.data.datasets[0].data = data.map((x) => x.max)
+    chart.data.datasets[1].data = data.map((x) => x.history)
+    chart.data.labels = data.map((x) => x.maturity + ' (' + maturity(new Date(x.maturity || new Date())) + ')')
+    chart.update()
+  }, [chart, data])
 
   return (
     <main>
@@ -185,15 +258,16 @@ const Ovdp: React.FC<PageProps> = () => {
               ))}
           </tbody>
         </table>
+        <canvas ref={chartRef} />
       </div>
       <div className="bg-body-secondary">
         <div className="container py-5">
           <h2>Як це працює?</h2>
-          <p>ОВДП це як депозит, але з трохи більшою дохідністью</p>
-          <p>
-            Колонка minfin показує з якою дохіднісью ОВДП продавалися на аукціоні. Тобто це максимальна дохідність яку можна було б очікувати, а також за цією колонкою можна оцінити скільки відсодків
-            утримують провайдери.
-          </p>
+          <p>ОВДП це як депозит, але з трохи більшою дохідністью.</p>
+          <p>ОВДП випускає та продає Міністерство Фінансів України.</p>
+          <p>Пересічний громадянин не може купити ОВДП у мінфін, вони продаються на так званих аукціьонах великими партіями.</p>
+          <p>Покупцями за звичай є банки та фонди.</p>
+          <p>Вони в свою чергу потім, перепродають їх нам, зі своєю націнкою, хтось трохи дорожче, хтось трохи дешевше.</p>
         </div>
       </div>
       <Shop />
