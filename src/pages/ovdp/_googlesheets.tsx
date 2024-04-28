@@ -124,3 +124,14 @@ export function useMono() {
     price: parseFloat(price),
   }))
 }
+
+export function useAval() {
+  return rollup(useGoogleSheet('aval!A:F')).map(({ isin, maturity, buy_pct, buy_shares, sell_pct, sell_shares }) => ({
+    isin: isin,
+    maturity: fixDate(maturity),
+    buy_pct: parseFloat(buy_pct),
+    buy_shares: parseInt(buy_shares),
+    sell_pct: parseFloat(sell_pct),
+    sell_shares: parseInt(sell_shares),
+  }))
+}

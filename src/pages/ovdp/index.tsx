@@ -7,7 +7,7 @@ import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
 import { maturity } from '../../utils/maturity'
-import { useMof, useDnepr, useExim, usePrivat, useUniver, useMono } from './_googlesheets'
+import { useMof, useDnepr, useExim, usePrivat, useUniver, useMono, useAval } from './_googlesheets'
 
 interface PartialMof {
   isin: string
@@ -44,9 +44,10 @@ const Ovdp: React.FC<PageProps> = () => {
   const privat = usePrivat()
   const univer = useUniver()
   const mono = useMono()
+  const aval = useAval()
 
   const data = useMemo(() => {
-    const isins = Array.from(new Set([...dnepr, ...exim, ...privat, ...univer, ...mono].map(({ isin }) => isin)))
+    const isins = Array.from(new Set([...aval, ...dnepr, ...exim, ...privat, ...univer, ...mono].map(({ isin }) => isin)))
     const items = []
     for (const isin of isins) {
       const m = mof.find((x) => x.isin === isin)
@@ -56,7 +57,8 @@ const Ovdp: React.FC<PageProps> = () => {
         exim.find((x) => x.isin === isin)?.maturity ||
         privat.find((x) => x.isin === isin)?.dend ||
         univer.find((x) => x.isin === isin)?.maturity ||
-        mono.find((x) => x.isin === isin)?.maturity
+        mono.find((x) => x.isin === isin)?.maturity ||
+        aval.find((x) => x.isin === isin)?.maturity
 
       items.push({
         history: m ? historical(mof, m) : null,
@@ -64,6 +66,7 @@ const Ovdp: React.FC<PageProps> = () => {
         maturity: expiration,
         isin: isin,
         mof: m?.ror,
+        aval: aval.find((x) => x.isin === isin)?.buy_pct,
         dnepr: dnepr.find((x) => x.isin === isin)?.buypct,
         exim: exim.find((x) => x.isin === isin)?.bid,
         privat: privat.find((x) => x.isin === isin)?.yield,
@@ -105,6 +108,7 @@ const Ovdp: React.FC<PageProps> = () => {
               <th>Погашення</th>
               <th>ISIN</th>
               <th>Мінфін</th>
+              <th>Аваль</th>
               <th>Дніпро</th>
               <th>Ексім</th>
               <th>Приват</th>
@@ -140,6 +144,12 @@ const Ovdp: React.FC<PageProps> = () => {
                         />
                       ) : null}
                     </span>
+                  </td>
+                  <td
+                    title={item.aval === item.max ? 'Найкраща пропозиція' : item.aval === item.min ? 'Найгірша пропозиція' : ''}
+                    className={item.year && item.aval === best_over_year[item.year] ? 'fw-bold' : ''}
+                  >
+                    <span className={item.aval === item.max ? 'text-success' : ''}>{percentMaybe(item.aval)}</span>
                   </td>
                   <td
                     title={item.dnepr === item.max ? 'Найкраща пропозиція' : item.dnepr === item.min ? 'Найгірша пропозиція' : ''}
