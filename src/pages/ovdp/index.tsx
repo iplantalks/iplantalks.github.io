@@ -125,7 +125,7 @@ const Ovdp: React.FC<PageProps> = () => {
     chart.update()
   }, [chart, best_over_months, avg_over_months])
 
-  // TEMPORARY CHART 2 for USD, EUR
+  // TEMPORARY CHART 2 for USD
   useEffect(() => {
     if (!chart2Ref.current) {
       return
@@ -137,14 +137,14 @@ const Ovdp: React.FC<PageProps> = () => {
         labels: new Array(5).fill(0).map((_, i) => i + 1),
         datasets: [
           {
-            label: 'MAX дохідність ОВДП (USD) за період (місяці)',
+            label: 'MAX(USD)',
             data: new Array(5).fill(0),
             fill: false,
             cubicInterpolationMode: 'monotone',
             tension: 0.4,
           },
           {
-            label: 'MAX дохідність ОВДП (EUR) за період (місяці)',
+            label: 'AVG(USD)',
             data: new Array(5).fill(0),
             fill: false,
             cubicInterpolationMode: 'monotone',
@@ -192,7 +192,7 @@ const Ovdp: React.FC<PageProps> = () => {
     }
 
     const items = ovdp
-      .filter((item) => ['USD', 'EUR'].includes(item.currency) && item.months && item.yield)
+      .filter((item) => item.currency === 'USD' && item.months && item.yield)
       .map((item) => ({
         currency: item.currency,
         months: item.months as number,
@@ -200,36 +200,43 @@ const Ovdp: React.FC<PageProps> = () => {
       }))
 
     const months = new Set(items.map((item) => item.months))
-    const usd: Record<number, number> = {}
-    const eur: Record<number, number> = {}
+    const max: Record<number, number> = {}
+    const avg: Record<number, number> = {}
     for (const month of months) {
-      usd[month] = Math.max(...items.filter((item) => item.currency === 'USD' && item.months === month).map((item) => item.yield))
-      eur[month] = Math.max(...items.filter((item) => item.currency === 'EUR' && item.months === month).map((item) => item.yield))
+      const rates = items.filter((item) => item.currency === 'USD' && item.months === month).map((item) => item.yield)
+      max[month] = Math.max(...rates)
+      avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
     }
     chart2.data.labels = Array.from(months)
-    chart2.data.datasets[0].data = Object.values(usd)
-    chart2.data.datasets[1].data = Object.values(eur)
+    chart2.data.datasets[0].data = Object.values(max)
+    chart2.data.datasets[1].data = Object.values(avg)
     chart2.update()
   }, [chart2, ovdp])
 
-  // TEMPORARY chart3
+  // TEMPORARY CHART 3 for USD
   useEffect(() => {
     if (!chart3Ref.current) {
       return
     }
 
     const chart3 = new Chart(chart3Ref.current, {
-      type: 'bar',
+      type: 'line',
       data: {
-        labels: [],
+        labels: new Array(5).fill(0).map((_, i) => i + 1),
         datasets: [
           {
-            label: 'MAX дохідність ОВДП (USD) за період (місяці)',
-            data: [],
+            label: 'MAX(EUR)',
+            data: new Array(5).fill(0),
+            fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
           },
           {
-            label: 'MAX дохідність ОВДП (EUR) за період (місяці)',
-            data: [],
+            label: 'AVG(EUR)',
+            data: new Array(5).fill(0),
+            fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4,
           },
         ],
       },
@@ -242,6 +249,9 @@ const Ovdp: React.FC<PageProps> = () => {
             text: '% доходу за період',
           },
         },
+        interaction: {
+          intersect: false,
+        },
         scales: {
           x: {
             display: true,
@@ -252,7 +262,6 @@ const Ovdp: React.FC<PageProps> = () => {
           },
           y: {
             display: true,
-            beginAtZero: true,
             title: {
               display: true,
               text: 'Дохідність %',
@@ -271,7 +280,7 @@ const Ovdp: React.FC<PageProps> = () => {
     }
 
     const items = ovdp
-      .filter((item) => ['USD', 'EUR'].includes(item.currency) && item.months && item.yield)
+      .filter((item) => item.currency === 'EUR' && item.months && item.yield)
       .map((item) => ({
         currency: item.currency,
         months: item.months as number,
@@ -279,15 +288,16 @@ const Ovdp: React.FC<PageProps> = () => {
       }))
 
     const months = new Set(items.map((item) => item.months))
-    const usd: Record<number, number> = {}
-    const eur: Record<number, number> = {}
+    const max: Record<number, number> = {}
+    const avg: Record<number, number> = {}
     for (const month of months) {
-      usd[month] = Math.max(...items.filter((item) => item.currency === 'USD' && item.months === month).map((item) => item.yield))
-      eur[month] = Math.max(...items.filter((item) => item.currency === 'EUR' && item.months === month).map((item) => item.yield))
+      const rates = items.filter((item) => item.currency === 'EUR' && item.months === month).map((item) => item.yield)
+      max[month] = Math.max(...rates)
+      avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
     }
     chart3.data.labels = Array.from(months)
-    chart3.data.datasets[0].data = Object.values(usd)
-    chart3.data.datasets[1].data = Object.values(eur)
+    chart3.data.datasets[0].data = Object.values(max)
+    chart3.data.datasets[1].data = Object.values(avg)
     chart3.update()
   }, [chart3, ovdp])
 
@@ -346,8 +356,14 @@ const Ovdp: React.FC<PageProps> = () => {
       </div>
       <div className="container py-5">
         <canvas ref={chartRef} />
-        <canvas ref={chart2Ref} />
-        <canvas ref={chart3Ref} />
+        <div className="row">
+          <div className="col-6">
+            <canvas ref={chart2Ref} />
+          </div>
+          <div className="col-6">
+            <canvas ref={chart3Ref} />
+          </div>
+        </div>
       </div>
       <div className="bg-body-secondary">
         <div className="container py-5">
