@@ -45,6 +45,18 @@ const Ovdp: React.FC<PageProps> = () => {
     return best
   }, [ovdp])
 
+  const avg_over_months = useMemo(() => {
+    const avg: Record<number, number> = {}
+    for (const months of new Set(ovdp.filter((item) => item.currency === 'UAH').map((item) => item.months))) {
+      if (!months) {
+        continue
+      }
+      const sum = ovdp.filter((item) => item.months === months).reduce((acc, item) => acc + (item.yield || 0), 0)
+      avg[months] = sum / ovdp.filter((item) => item.months === months).length
+    }
+    return avg
+  }, [ovdp])
+
   useEffect(() => {
     if (!chartRef.current) {
       return
@@ -102,16 +114,15 @@ const Ovdp: React.FC<PageProps> = () => {
     if (!chart) {
       return
     }
-    chart.data.datasets[0].data = Object.values(best_over_months)
-    // chart.data.datasets[1].data = data.map((x) => x.history)
-    chart.data.labels = Object.keys(best_over_months) // data.map((x) => x.maturity + ' (' + maturity(new Date(x.maturity || new Date())) + ')')
+    chart.data.datasets[0].data = Object.values(avg_over_months)
+    chart.data.labels = Object.keys(avg_over_months)
     chart.update()
-  }, [chart, best_over_months])
+  }, [chart, avg_over_months])
 
   return (
     <main>
       <Hero title="Інвестуємо в Україні" subtitle="ОВДП" />
-      <div className="container py-5">
+      <div className="container-fluid py-5">
         <table className="table table-hover text-center">
           <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
             <tr>
@@ -121,6 +132,9 @@ const Ovdp: React.FC<PageProps> = () => {
               <th>Тип інструменту</th>
               <th>ISIN</th>
               <th>Валюта</th>
+              <th>
+                Погашення <span className="text-secondary">рік</span>
+              </th>
               <th>
                 Погашення <span className="text-secondary">дата</span>
               </th>
@@ -137,7 +151,7 @@ const Ovdp: React.FC<PageProps> = () => {
             {ovdp
               .sort((a, b) => new Date(a.maturity ? a.maturity : new Date()).getTime() - new Date(b.maturity ? b.maturity : new Date()).getTime())
               .map((item, idx, arr) => (
-                <tr key={idx} className={[idx > 1 && item.year !== arr[idx - 1].year ? 'table-group-divider' : '', item.months && item.months % 2 === 0 ? 'table-secondary' : ''].join(' ')}>
+                <tr key={idx} className={idx > 1 && item.months !== arr[idx - 1].months ? 'table-group-divider' : ''}>
                   <td>
                     <small className="text-secondary">{item.input_date ? ago(new Date(item.input_date)) : ''} тому</small>
                   </td>
@@ -146,16 +160,19 @@ const Ovdp: React.FC<PageProps> = () => {
                   <td>{item.instrument_type}</td>
                   <td>{item.isin}</td>
                   <td>{item.currency}</td>
+                  <td>{item.year}</td>
                   <td>{item.maturity ? item.maturity : ''}</td>
                   <td>{item.months ? item.months : ''}</td>
                   <td className={[item.months && item.yield === best_over_months[item.months] ? 'text-success' : '', item.year && item.yield === best_over_year[item.year] ? 'fw-bold' : ''].join(' ')}>
-                    {currency(item.yield)}%
+                    {currency(item.yield)}%{item.yield === best_over_year[item.year] ? <span title={`Найкраща пропозиція ${item.year}`}>🥇</span> : ''}
                   </td>
                   <td title={item.comments}>{item.comments ? <i className="fa-regular fa-comment" /> : ''}</td>
                 </tr>
               ))}
           </tbody>
         </table>
+      </div>
+      <div className="container py-5">
         <canvas ref={chartRef} />
       </div>
       <div className="bg-body-secondary">
