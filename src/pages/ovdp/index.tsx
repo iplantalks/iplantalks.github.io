@@ -4,11 +4,11 @@ import { HeadFC, PageProps } from 'gatsby'
 import '../../styles/common.css'
 import Hero from '../../components/hero'
 import Chart from 'chart.js/auto'
-import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
-import { maturity } from '../../utils/maturity'
-import { useMof, useDnepr, useExim, usePrivat, useUniver, useMono, useAval } from './_googlesheets'
+import { useOvdp } from './_googlesheets'
+import { ago } from '../../utils/ago'
+import { currency } from '../../utils/formatters'
 
 interface PartialMof {
   isin: string
@@ -18,86 +18,32 @@ interface PartialMof {
   ror: number
 }
 
-function historical(data: Array<PartialMof>, current: PartialMof) {
-  const rors: number[] = []
-  for (const item of data) {
-    if (item.currency !== current.currency) {
-      continue
-    }
-    if (!item.days || !current.days || Math.abs(item.days - current.days) >= 100) {
-      continue
-    }
-    if (!item.placement || !current.placement || new Date(item.placement).getTime() >= new Date(current.placement).getTime()) {
-      continue
-    }
-    rors.push(item.ror)
-  }
-  const avg = Math.round((rors.reduce((a, b) => a + b, 0) / rors.length) * 100) / 100
-  return avg
-}
-
-const percentMaybe = (value: number | null | undefined) => (value ? value + '%' : '')
-
 const Ovdp: React.FC<PageProps> = () => {
   const chartRef = useRef<HTMLCanvasElement>(null)
   const [chart, setChart] = useState<Chart>()
 
-  const mof = useMof()
-  const dnepr = useDnepr()
-  const exim = useExim()
-  const privat = usePrivat()
-  const univer = useUniver()
-  const mono = useMono()
-  const aval = useAval()
-
-  const data = useMemo(() => {
-    const isins = Array.from(new Set([...aval, ...dnepr, ...exim, ...privat, ...univer, ...mono].map(({ isin }) => isin)))
-    const items = []
-    for (const isin of isins) {
-      const m = mof.find((x) => x.isin === isin)
-      const expiration =
-        m?.expiration ||
-        dnepr.find((x) => x.isin === isin)?.maturity ||
-        exim.find((x) => x.isin === isin)?.maturity ||
-        privat.find((x) => x.isin === isin)?.dend ||
-        univer.find((x) => x.isin === isin)?.maturity ||
-        mono.find((x) => x.isin === isin)?.maturity ||
-        aval.find((x) => x.isin === isin)?.maturity
-
-      items.push({
-        history: m ? historical(mof, m) : null,
-        year: expiration ? new Date(expiration).getFullYear() : null,
-        maturity: expiration,
-        isin: isin,
-        mof: m?.ror,
-        aval: aval.find((x) => x.isin === isin)?.buy_pct,
-        dnepr: dnepr.find((x) => x.isin === isin)?.buypct,
-        exim: exim.find((x) => x.isin === isin)?.bid,
-        privat: privat.find((x) => x.isin === isin)?.yield,
-        univer: univer.find((x) => x.isin === isin)?.yield,
-        mono: mono.find((x) => x.isin === isin)?.yield,
-      })
-    }
-    return items.map((item) => ({
-      ...item,
-      max: Math.max(item.aval || 0, item.dnepr || 0, item.exim || 0, item.privat || 0, item.univer || 0, item.mono || 0),
-      min: Math.min(item.aval || 999, item.dnepr || 999, item.exim || 999, item.privat || 999, item.univer || 999, item.mono || 999),
-    }))
-  }, [mof, aval, dnepr, exim, privat, univer, mono])
+  const ovdp = useOvdp()
 
   const best_over_year = useMemo(() => {
     const best: Record<number, number> = {}
-    for (const item of data) {
-      if (!item.year) {
-        continue
-      }
-      const max = Math.max(item.dnepr || 0, item.exim || 0, item.privat || 0, item.univer || 0, item.mono || 0)
-      if (!best[item.year] || max > best[item.year]) {
-        best[item.year] = max
-      }
+    for (const year of new Set(ovdp.filter((item) => item.currency === 'UAH').map((item) => item.year))) {
+      const max = Math.max(...ovdp.filter((item) => item.year === year).map((item) => item.yield || 0))
+      best[year] = max
     }
     return best
-  }, [data])
+  }, [ovdp])
+
+  const best_over_months = useMemo(() => {
+    const best: Record<number, number> = {}
+    for (const months of new Set(ovdp.filter((item) => item.currency === 'UAH').map((item) => item.months))) {
+      if (!months) {
+        continue
+      }
+      const max = Math.max(...ovdp.filter((item) => item.months === months).map((item) => item.yield || 0))
+      best[months] = max
+    }
+    return best
+  }, [ovdp])
 
   useEffect(() => {
     if (!chartRef.current) {
@@ -110,17 +56,8 @@ const Ovdp: React.FC<PageProps> = () => {
         labels: new Array(5).fill(0).map((_, i) => i + 1),
         datasets: [
           {
-            label: 'ОВДП',
+            label: 'Дохідність ОВДП за період (місяці)',
             data: new Array(5).fill(0),
-            borderColor: 'rgba(0, 0, 255, 0.8)',
-            fill: false,
-            cubicInterpolationMode: 'monotone',
-            tension: 0.4,
-          },
-          {
-            label: 'Середня історична дохідність',
-            data: new Array(5).fill(0),
-            borderColor: 'rgba(0, 0, 0, 0.2)',
             fill: false,
             cubicInterpolationMode: 'monotone',
             tension: 0.4,
@@ -144,13 +81,14 @@ const Ovdp: React.FC<PageProps> = () => {
             display: true,
             title: {
               display: true,
+              text: 'Погашення через N місяців',
             },
           },
           y: {
             display: true,
             title: {
               display: true,
-              text: 'ROI %',
+              text: 'Дохідність %',
             },
           },
         },
@@ -164,96 +102,56 @@ const Ovdp: React.FC<PageProps> = () => {
     if (!chart) {
       return
     }
-    chart.data.datasets[0].data = data.map((x) => x.max)
-    chart.data.datasets[1].data = data.map((x) => x.history)
-    chart.data.labels = data.map((x) => x.maturity + ' (' + maturity(new Date(x.maturity || new Date())) + ')')
+    chart.data.datasets[0].data = Object.values(best_over_months)
+    // chart.data.datasets[1].data = data.map((x) => x.history)
+    chart.data.labels = Object.keys(best_over_months) // data.map((x) => x.maturity + ' (' + maturity(new Date(x.maturity || new Date())) + ')')
     chart.update()
-  }, [chart, data])
+  }, [chart, best_over_months])
 
   return (
     <main>
       <Hero title="Інвестуємо в Україні" subtitle="ОВДП" />
       <div className="container py-5">
-        <h2>ОВДП</h2>
         <table className="table table-hover text-center">
           <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
             <tr>
-              <th>Погашення</th>
+              <th>Оновлено</th>
+              <th>Постачальник</th>
+              <th>Тип постачальника</th>
+              <th>Тип інструменту</th>
               <th>ISIN</th>
-              <th>Мінфін</th>
-              <th>Аваль</th>
-              <th>Дніпро</th>
-              <th>Ексім</th>
-              <th>Приват</th>
-              <th>Універ</th>
+              <th>Валюта</th>
               <th>
-                Моно
-                <small title="Данні введені вручну" className="ms-2 fa-solid fa-thumbtack" />
+                Погашення <span className="text-secondary">дата</span>
               </th>
+              <th>
+                Погашення <span className="text-secondary">місяців</span>
+              </th>
+              <th>
+                Дохідність <span className="text-secondary">%</span>
+              </th>
+              <th></th>
             </tr>
           </thead>
           <tbody className="table-group-divider">
-            {data
+            {ovdp
               .sort((a, b) => new Date(a.maturity ? a.maturity : new Date()).getTime() - new Date(b.maturity ? b.maturity : new Date()).getTime())
               .map((item, idx, arr) => (
-                <tr key={item.isin} className={idx > 1 && item.year !== arr[idx - 1].year ? 'table-group-divider' : ''}>
-                  <td>{item.maturity ? item.maturity : ''}</td>
+                <tr key={idx} className={[idx > 1 && item.year !== arr[idx - 1].year ? 'table-group-divider' : '', item.months && item.months % 2 === 0 ? 'table-secondary' : ''].join(' ')}>
+                  <td>
+                    <small className="text-secondary">{item.input_date ? ago(new Date(item.input_date)) : ''} тому</small>
+                  </td>
+                  <td>{item.provider_name}</td>
+                  <td>{item.provider_type}</td>
+                  <td>{item.instrument_type}</td>
                   <td>{item.isin}</td>
-                  <td className={'' /*item.mof && item.history ? (item.mof < item.history ? 'text-danger' : 'text-success') : ''*/} style={{ borderRightWidth: '1px' }}>
-                    <span style={{ width: '5em', display: 'inline-block', position: 'relative' }}>
-                      {percentMaybe(item.mof)}
-                      {item.mof && item.history && item.mof < item.history ? (
-                        <i
-                          title={'Середня історична дохідність ОВДП зі схожим сроком складала ' + (item.history || '') + '%'}
-                          className="fa-solid fa-arrow-down text-danger"
-                          style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}
-                        />
-                      ) : null}
-                      {item.mof && item.history && item.mof > item.history ? (
-                        <i
-                          title={'Середня історична дохідність ОВДП зі схожим сроком складала ' + (item.history || '') + '%'}
-                          className="fa-solid fa-arrow-up text-success"
-                          style={{ position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)' }}
-                        />
-                      ) : null}
-                    </span>
+                  <td>{item.currency}</td>
+                  <td>{item.maturity ? item.maturity : ''}</td>
+                  <td>{item.months ? item.months : ''}</td>
+                  <td className={[item.months && item.yield === best_over_months[item.months] ? 'text-success' : '', item.year && item.yield === best_over_year[item.year] ? 'fw-bold' : ''].join(' ')}>
+                    {currency(item.yield)}%
                   </td>
-                  <td
-                    title={item.aval === item.max ? 'Найкраща пропозиція' : item.aval === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.aval === best_over_year[item.year] ? 'fw-bold' : ''}
-                  >
-                    <span className={item.aval === item.max ? 'text-success' : ''}>{percentMaybe(item.aval)}</span>
-                  </td>
-                  <td
-                    title={item.dnepr === item.max ? 'Найкраща пропозиція' : item.dnepr === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.dnepr === best_over_year[item.year] ? 'fw-bold' : ''}
-                  >
-                    <span className={item.dnepr === item.max ? 'text-success' : ''}>{percentMaybe(item.dnepr)}</span>
-                  </td>
-                  <td
-                    title={item.exim === item.max ? 'Найкраща пропозиція' : item.exim === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.exim === best_over_year[item.year] ? 'fw-bold' : ''}
-                  >
-                    <span className={item.exim === item.max ? 'text-success' : ''}>{percentMaybe(item.exim)}</span>
-                  </td>
-                  <td
-                    title={item.privat === item.max ? 'Найкраща пропозиція' : item.privat === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.privat === best_over_year[item.year] ? 'fw-bold' : ''}
-                  >
-                    <span className={item.privat === item.max ? 'text-success' : ''}>{percentMaybe(item.privat)}</span>
-                  </td>
-                  <td
-                    title={item.univer === item.max ? 'Найкраща пропозиція' : item.univer === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.univer === best_over_year[item.year] ? 'fw-bold' : ''}
-                  >
-                    <span className={item.univer === item.max ? 'text-success' : ''}>{percentMaybe(item.univer)}</span>
-                  </td>
-                  <td
-                    title={item.mono === item.max ? 'Найкраща пропозиція' : item.mono === item.min ? 'Найгірша пропозиція' : ''}
-                    className={item.year && item.mono === best_over_year[item.year] ? 'fw-bold' : ''}
-                  >
-                    <span className={item.mono === item.max ? 'text-success' : ''}>{percentMaybe(item.mono)}</span>
-                  </td>
+                  <td title={item.comments}>{item.comments ? <i className="fa-regular fa-comment" /> : ''}</td>
                 </tr>
               ))}
           </tbody>

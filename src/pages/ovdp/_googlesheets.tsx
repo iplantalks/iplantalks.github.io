@@ -36,7 +36,11 @@ const rollup = (values: string[][]) => {
     const row = values[i]
     const item: Record<string, string> = {}
     for (let j = 0; j < headers.length; j++) {
-      item[headers[j]] = row[j]
+      const key = headers[j]
+        .toLocaleLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/(^_+|_+$)/g, '')
+      item[key] = row[j]
     }
     items.push(item)
   }
@@ -58,80 +62,19 @@ const fixDate = (value: string): string | null => {
   return value
 }
 
-export function useMof() {
-  return rollup(useGoogleSheet('mof!A:H')).map(({ isin, days, currency, placement, expiration, ror, payment, shares }) => ({
-    isin: isin,
-    days: days ? parseInt(days) : null,
-    currency: currency,
-    placement: fixDate(placement),
-    expiration: fixDate(expiration),
-    ror: extractNumber(ror),
-    payment: extractNumber(payment),
-    shares: extractNumber(shares),
-  }))
-}
-
-export function useDnepr() {
-  return rollup(useGoogleSheet('creditdnepr!A:F')).map(({ isin, maturity, buypct, sellpct, type, qty }) => ({
-    isin: isin,
-    maturity: fixDate(maturity),
-    buypct: extractNumber(buypct),
-    sellpct: extractNumber(sellpct),
-    type: type,
-    qty: parseInt(qty),
-  }))
-}
-
-export function useExim() {
-  return rollup(useGoogleSheet('eximb!A:E')).map(({ isin, currency, maturity, bid, ask }) => ({
+export function useOvdp() {
+  return rollup(useGoogleSheet('OVDP!A:Z')).map(({ input_date, provider_name, provider_type, instrument_type, isin, currency, maturity, yield: yld, maturity_months, comments }) => ({
+    input_date: fixDate(input_date),
+    provider_name: provider_name,
+    provider_type: provider_type,
+    instrument_type: instrument_type,
     isin: isin,
     currency: currency,
-    maturity: fixDate(maturity),
-    bid: extractNumber(bid),
-    ask: extractNumber(ask),
-  }))
-}
-
-export function usePrivat() {
-  return rollup(useGoogleSheet('privat!A:H')).map(({ date, isin, dend, askPrice, ccy, pricePerc, yield: yld, type }) => ({
-    date: fixDate(date),
-    isin: isin,
-    dend: fixDate(dend),
-    askPrice: parseFloat(askPrice),
-    ccy: ccy,
-    pricePerc: parseFloat(pricePerc),
-    yield: parseFloat(yld),
-    type: type,
-  }))
-}
-
-export function useUniver() {
-  return rollup(useGoogleSheet('univer!A:E')).map(({ isin, maturity, yield: yld, price, currency }) => ({
-    isin: isin,
     maturity: fixDate(maturity),
     yield: parseFloat(yld),
-    price: parseFloat(price),
-    currency: currency,
-  }))
-}
-
-export function useMono() {
-  return rollup(useGoogleSheet('univer!A:E')).map(({ isin, maturity, yield: yld, currency, price }) => ({
-    isin: isin,
-    maturity: fixDate(maturity),
-    yield: parseFloat(yld),
-    currency: currency,
-    price: parseFloat(price),
-  }))
-}
-
-export function useAval() {
-  return rollup(useGoogleSheet('aval!A:F')).map(({ isin, maturity, buy_pct, buy_shares, sell_pct, sell_shares }) => ({
-    isin: isin,
-    maturity: fixDate(maturity),
-    buy_pct: parseFloat(buy_pct),
-    buy_shares: parseInt(buy_shares),
-    sell_pct: parseFloat(sell_pct),
-    sell_shares: parseInt(sell_shares),
+    // months: parseInt(maturity_months),
+    comments: comments,
+    year: new Date(maturity).getFullYear(),
+    months: maturity ? Math.round((new Date(maturity).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24 * 30)) : null,
   }))
 }
