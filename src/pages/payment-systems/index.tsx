@@ -71,6 +71,333 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
     <main>
       <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=23_e_wUAnPA" />
 
+      {transfer === 42 && (
+        <>
+          <div className="bg-body-secondary">
+            <div className="container py-5">
+              <h2>Платіжні системи</h2>
+              <p>Поповнюємо Interactive Brokers ефективно</p>
+              <div className="text-bg-light rounded-3 my-2 py-2 px-3">
+                Як переказати валюту з України за кордон
+                <a className="d-inline-block text-bg-dark rounded-2 ms-2 py-1 px-2 text-decoration-none" href="https://www.youtube.com/watch?v=23_e_wUAnPA" target="_blank">
+                  <i className="fa-brands fa-youtube me-2" />
+                  Video tutorial
+                </a>
+              </div>
+              <div className="row">
+                <div className="col-3">
+                  <div className="text-bg-light rounded-3 my-2 py-2 px-3">
+                    {/* TRANSFER */}
+                    <div>
+                      <small className="border border-dark rounded-circle me-2 px-1">1</small>
+                      <b>Отже ми хочемо перевести</b>
+                    </div>
+                    <div>
+                      <small className="text-secondary">Сума переводу</small>
+                    </div>
+                    <div>
+                      <input type="number" className="form-control" value={transfer} onChange={(e) => setTransfer(parseFloat(e.target.value))} />
+                    </div>
+
+                    {/* CURRENCY */}
+                    <div className="mt-3">
+                      <small className="border border-dark rounded-circle me-2 px-1">2</small>
+                      <b>В якій валюті</b>
+                    </div>
+                    <div className="mt-2">
+                      <Checkboxes
+                        names={getUniqueValues(rowsFilteredByMegatag, 'card_currency')}
+                        checkboxes={srcCurrencyCheckboxes}
+                        onChange={(name: string) => setSrcCurrencyCheckboxes({ ...srcCurrencyCheckboxes, [name]: !srcCurrencyCheckboxes[name] })}
+                      />
+                    </div>
+
+                    {/* MEGATAG */}
+                    <div className="mt-3">
+                      <small className="border border-dark rounded-circle me-2 px-1">3</small>
+                      <b>За напрямком</b>
+                    </div>
+                    <div className="mt-2">
+                      <Checkboxes
+                        names={getUniqueValues(rows, 'megatag')}
+                        checkboxes={megatagCheckboxes}
+                        onChange={(name: string) => setMegatagCheckboxes({ ...megatagCheckboxes, [name]: !megatagCheckboxes[name] })}
+                      />
+                    </div>
+
+                    {/* BANK */}
+                    <div className="mt-3">
+                      <small className="border border-dark rounded-circle me-2 px-1">4</small>
+                      <b>Платник</b>
+                    </div>
+                    <div className="mt-2">
+                      <div>
+                        <small className="text-secondary">Банк</small>
+                      </div>
+                      <Checkboxes
+                        names={getUniqueValues(rowsFilteredByMegatag, 'bank')}
+                        checkboxes={bankCheckboxes}
+                        onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })}
+                      />
+                    </div>
+
+                    {/* SERVICE */}
+                    <div className="mt-3">
+                      <small className="border border-dark rounded-circle me-2 px-1">5</small>
+                      <b>Отримувач</b>
+                    </div>
+                    <div className="mt-2">
+                      <div>
+                        <small className="text-secondary">Закордонний банк</small>
+                      </div>
+                      <Checkboxes
+                        names={getUniqueValues(rowsFilteredByMegatag, 'service')}
+                        checkboxes={serviceCheckboxes}
+                        onChange={(name: string) => setServiceCheckboxes({ ...serviceCheckboxes, [name]: !serviceCheckboxes[name] })}
+                      />
+                    </div>
+
+                    {/* EOF FILTERS */}
+                  </div>
+                </div>
+                <div className="col-9">
+                  <div className="text-bg-light rounded-3 my-2 py-2 px-3">
+                    <table className="table">
+                      <thead className="table-header-nowrap">
+                        <tr className="table-secondary" style={{ fontSize: '80%' }}>
+                          <th></th>
+                          <th
+                            onClick={() => (sortField === 'bank' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank'))}
+                            className={sortField === 'bank' ? 'table-dark' : ''}
+                          >
+                            Платник
+                            {sortField === 'bank' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'bank' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'bank' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            title="Тип інструменту"
+                            onClick={() => (sortField === 'vendor' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('vendor'))}
+                            className={sortField === 'vendor' ? 'table-dark' : ''}
+                          >
+                            Інструмент
+                            {sortField === 'vendor' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'vendor' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'vendor' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            title="Тип рахунку"
+                            onClick={() => (sortField === 'card' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card'))}
+                            className={sortField === 'card' ? 'table-dark' : ''}
+                          >
+                            Рахунок
+                            {sortField === 'card' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'card' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'card' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            onClick={() => (sortField === 'card_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('card_currency'))}
+                            className={sortField === 'card_currency' ? 'table-dark' : ''}
+                          >
+                            Валюта
+                            {sortField === 'card_currency' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'card_currency' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'card_currency' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            title="Комісія відправника"
+                            onClick={() => (sortField === 'bank_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('bank_fee'))}
+                            className={sortField === 'bank_fee' ? 'table-dark' : ''}
+                          >
+                            Комісія <span className="text-secondary">%</span>
+                            {sortField === 'bank_fee' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'bank_fee' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'bank_fee' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            onClick={() => (sortField === 'service' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service'))}
+                            className={sortField === 'service' ? 'table-dark' : ''}
+                          >
+                            Отримувач
+                            {sortField === 'service' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'service' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'service' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            onClick={() => (sortField === 'service_currency' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_currency'))}
+                            className={sortField === 'service_currency' ? 'table-dark' : ''}
+                          >
+                            Валюта
+                            {sortField === 'service_currency' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'service_currency' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'service_currency' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            onClick={() => (sortField === 'method' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('method'))}
+                            className={sortField === 'method' ? 'table-dark' : ''}
+                          >
+                            Метод
+                            {sortField === 'method' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'method' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'method' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            title="Комісія отримувача"
+                            onClick={() => (sortField === 'service_fee' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('service_fee'))}
+                            className={sortField === 'service_fee' ? 'table-dark' : ''}
+                          >
+                            Комісія <span className="text-secondary">%</span>
+                            {sortField === 'service_fee' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'service_fee' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'service_fee' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            onClick={() => (sortField === 'payment' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('payment'))}
+                            className={sortField === 'payment' ? 'table-dark' : ''}
+                          >
+                            До сплати <span className="text-secondary">$</span>
+                            {sortField === 'payment' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'payment' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th
+                            onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))}
+                            className={sortField === 'date' ? 'table-dark' : ''}
+                          >
+                            Перевірено
+                            {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField !== 'date' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                          <th>{/* Коментар */}</th>
+                          <th
+                            onClick={() => (sortField === 'likes' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('likes'))}
+                            className={sortField === 'likes' ? 'table-dark' : ''}
+                          >
+                            Я це <i className="fa-solid fa-heart text-danger ms-1" />
+                            {sortField === 'likes' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'likes' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'likes' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="table-group-divider">
+                        {rows.length === 0 && (
+                          <tr>
+                            <td colSpan={12} className="text-center">
+                              Завантажуемо данні з Google таблички, трохи зачекайте, вона не така швидка&hellip;
+                            </td>
+                          </tr>
+                        )}
+                        {rows
+                          .filter((r) => r.works === 'TRUE' || !hideNotWorking)
+                          .filter((r) => !megatagCheckboxes[r.megatag])
+                          .filter((r) => !bankCheckboxes[r.bank])
+                          .filter((r) => !serviceCheckboxes[r.service])
+                          .filter((r) => !methodCheckboxes[r.method])
+                          .filter((r) => !srcCurrencyCheckboxes[r.card_currency])
+                          .filter((r) => !dstCurrencyCheckboxes[r.service_currency])
+                          .map((r) => ({ ...r, bank_links: bankLinks.find((l) => l.name === r.bank) }))
+                          .map((r) => ({ ...r, service_links: paymentSystemLinks.find((l) => l.name === r.service) }))
+                          .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
+                          .sort((a, b) => {
+                            if (sortDirection === 'asc') {
+                              if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee' || sortField === 'likes') return a[sortField] - b[sortField]
+                              else if (sortField === 'date') return (a[sortField]?.getTime() || 0) - (b[sortField]?.getTime() || 0)
+                              return a[sortField].toString().localeCompare(b[sortField].toString())
+                            } else {
+                              if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee' || sortField === 'likes') return b[sortField] - a[sortField]
+                              else if (sortField === 'date') return (b[sortField]?.getTime() || 0) - (a[sortField]?.getTime() || 0)
+                              return b[sortField].toString().localeCompare(a[sortField].toString())
+                            }
+                          })
+                          .map((r, i) => (
+                            <tr key={i}>
+                              <th>
+                                {r.video && (
+                                  <a className="text-decoration-none link-danger" href={r.video} target="_blank">
+                                    <i className="fa-brands fa-youtube" />
+                                  </a>
+                                )}
+                                {r.bank_links && r.bank_links.remote === 'TRUE' && <i className="text-primary fa-brands fa-bluetooth" title="Можливе віддаленне відкриття" />}
+                              </th>
+                              <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
+                                {r.bank_links && r.bank_links.website ? (
+                                  <a className="text-decoration-none" href={r.bank_links.website} target="_blank">
+                                    {r.bank}
+                                  </a>
+                                ) : (
+                                  <span>{r.bank}</span>
+                                )}
+                                {r.bank_links && r.bank_links.comment && (
+                                  <small title={r.bank_links.comment} className="ms-2">
+                                    <i className="fa-regular fa-circle-question" />
+                                  </small>
+                                )}
+                              </td>
+                              <td className={sortField === 'vendor' ? 'table-secondary fw-bold' : ''}>
+                                <VendorLogo vendor={r.vendor} />
+                              </td>
+                              <td className={sortField === 'card' ? 'table-secondary fw-bold' : ''}>{r.card}</td>
+                              <td className={sortField === 'card_currency' ? 'table-secondary fw-bold' : ''}>{r.card_currency}</td>
+                              <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold' : ''}>{currency(r.bank_fee)}</td>
+                              <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
+                                {r.service_links && r.service_links.website ? (
+                                  <a className="text-decoration-none" href={r.service_links.website} target="_blank">
+                                    {r.service}
+                                  </a>
+                                ) : (
+                                  <span>{r.service}</span>
+                                )}
+                                {r.service_links && r.service_links.comment && (
+                                  <small title={r.service_links.comment} className="ms-2">
+                                    <i className="fa-regular fa-circle-question" />
+                                  </small>
+                                )}
+                              </td>
+                              <td className={sortField === 'service_currency' ? 'table-secondary fw-bold' : ''}>{r.service_currency}</td>
+                              <td className={sortField === 'method' ? 'table-secondary fw-bold' : ''}>
+                                <Method method={r.method} />
+                              </td>
+                              <td className={sortField === 'service_fee' ? 'table-secondary fw-bold' : ''}>{currency(r.service_fee)}</td>
+                              <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
+                                {r.works === 'TRUE' ? (
+                                  <span>{currency(r.payment)}</span>
+                                ) : (
+                                  <span className="text-danger" title="Цей маршрут не працює">
+                                    Не працює
+                                  </span>
+                                )}
+                              </td>
+                              <td className={sortField === 'date' ? 'table-secondary fw-bold' : ''} title={r.date?.toLocaleDateString()}>
+                                {r.date ? ago(r.date) : <span>&mdash;</span>}
+                              </td>
+                              <td>
+                                {r.comment && (
+                                  <small title={r.comment}>
+                                    <i className="fa-regular fa-circle-question" />
+                                  </small>
+                                )}
+                              </td>
+                              <td className="text-end">
+                                <Like {...r} />
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/*
+      ------------------------ EO v2 ------------------------
+      */}
+
       <div className="container py-5">
         <div className="d-flex align-items-center mb-3">
           <div>Отже ми хочемо перевести</div>
