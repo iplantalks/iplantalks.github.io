@@ -74,7 +74,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       {transfer === 42 && (
         <>
           <div className="bg-body-secondary">
-            <div className="container py-5">
+            <div className="container-fluid py-5">
               <h2>Платіжні системи</h2>
               <p>Поповнюємо Interactive Brokers ефективно</p>
               <div className="text-bg-light rounded-3 my-2 py-2 px-3">
