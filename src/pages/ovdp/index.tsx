@@ -11,14 +11,14 @@ import { ago } from '../../utils/ago'
 import { currency } from '../../utils/formatters'
 
 const Ovdp: React.FC<PageProps> = () => {
-  const chartRef = useRef<HTMLCanvasElement>(null)
-  const [chart, setChart] = useState<Chart>()
+  const chartUahRef = useRef<HTMLCanvasElement>(null)
+  const [chartUah, setChartUah] = useState<Chart>()
 
-  const chart2Ref = useRef<HTMLCanvasElement>(null)
-  const [chart2, setChart2] = useState<Chart>()
+  const chartUsdRef = useRef<HTMLCanvasElement>(null)
+  const [chartUsd, setChartUsd] = useState<Chart>()
 
-  const chart3Ref = useRef<HTMLCanvasElement>(null)
-  const [chart3, setChart3] = useState<Chart>()
+  const chartEurRef = useRef<HTMLCanvasElement>(null)
+  const [chartEur, setChartEur] = useState<Chart>()
 
   const ovdp = useOvdp()
 
@@ -43,24 +43,12 @@ const Ovdp: React.FC<PageProps> = () => {
     return best
   }, [ovdp])
 
-  const avg_over_months = useMemo(() => {
-    const avg: Record<number, number> = {}
-    for (const months of new Set(ovdp.filter((item) => item.currency === 'UAH').map((item) => item.months))) {
-      if (!months) {
-        continue
-      }
-      const sum = ovdp.filter((item) => item.months === months).reduce((acc, item) => acc + (item.yield || 0), 0)
-      avg[months] = sum / ovdp.filter((item) => item.months === months).length
-    }
-    return avg
-  }, [ovdp])
-
   useEffect(() => {
-    if (!chartRef.current) {
+    if (!chartUahRef.current) {
       return
     }
 
-    const chart = new Chart(chartRef.current, {
+    const chart = new Chart(chartUahRef.current, {
       type: 'line',
       data: {
         labels: new Array(5).fill(0).map((_, i) => i + 1),
@@ -112,26 +100,41 @@ const Ovdp: React.FC<PageProps> = () => {
       },
     })
 
-    setChart(chart)
+    setChartUah(chart)
   }, [])
 
   useEffect(() => {
-    if (!chart) {
+    if (!chartUah) {
       return
     }
-    chart.data.datasets[0].data = Object.values(best_over_months)
-    chart.data.datasets[1].data = Object.values(avg_over_months)
-    chart.data.labels = Object.keys(best_over_months)
-    chart.update()
-  }, [chart, best_over_months, avg_over_months])
+    const items = ovdp
+      .filter((item) => item.currency === 'UAH' && item.months && item.yield)
+      .map((item) => ({
+        currency: item.currency,
+        months: item.months as number,
+        yield: item.yield as number,
+      }))
 
-  // TEMPORARY CHART 2 for USD
+    const months = new Set(items.map((item) => item.months))
+    const max: Record<number, number> = {}
+    const avg: Record<number, number> = {}
+    for (const month of months) {
+      const rates = items.filter((item) => item.currency === 'UAH' && item.months === month).map((item) => item.yield)
+      max[month] = Math.max(...rates)
+      avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
+    }
+    chartUah.data.labels = Array.from(months)
+    chartUah.data.datasets[0].data = Object.values(max)
+    chartUah.data.datasets[1].data = Object.values(avg)
+    chartUah.update()
+  }, [chartUah, ovdp])
+
   useEffect(() => {
-    if (!chart2Ref.current) {
+    if (!chartUsdRef.current) {
       return
     }
 
-    const chart2 = new Chart(chart2Ref.current, {
+    const chartUsd = new Chart(chartUsdRef.current, {
       type: 'line',
       data: {
         labels: new Array(5).fill(0).map((_, i) => i + 1),
@@ -183,11 +186,11 @@ const Ovdp: React.FC<PageProps> = () => {
       },
     })
 
-    setChart2(chart2)
+    setChartUsd(chartUsd)
   }, [])
 
   useEffect(() => {
-    if (!chart2) {
+    if (!chartUsd) {
       return
     }
 
@@ -207,19 +210,18 @@ const Ovdp: React.FC<PageProps> = () => {
       max[month] = Math.max(...rates)
       avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
     }
-    chart2.data.labels = Array.from(months)
-    chart2.data.datasets[0].data = Object.values(max)
-    chart2.data.datasets[1].data = Object.values(avg)
-    chart2.update()
-  }, [chart2, ovdp])
+    chartUsd.data.labels = Array.from(months)
+    chartUsd.data.datasets[0].data = Object.values(max)
+    chartUsd.data.datasets[1].data = Object.values(avg)
+    chartUsd.update()
+  }, [chartUsd, ovdp])
 
-  // TEMPORARY CHART 3 for USD
   useEffect(() => {
-    if (!chart3Ref.current) {
+    if (!chartEurRef.current) {
       return
     }
 
-    const chart3 = new Chart(chart3Ref.current, {
+    const chartEur = new Chart(chartEurRef.current, {
       type: 'line',
       data: {
         labels: new Array(5).fill(0).map((_, i) => i + 1),
@@ -271,11 +273,11 @@ const Ovdp: React.FC<PageProps> = () => {
       },
     })
 
-    setChart3(chart3)
+    setChartEur(chartEur)
   }, [])
 
   useEffect(() => {
-    if (!chart3) {
+    if (!chartEur) {
       return
     }
 
@@ -295,16 +297,16 @@ const Ovdp: React.FC<PageProps> = () => {
       max[month] = Math.max(...rates)
       avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
     }
-    chart3.data.labels = Array.from(months)
-    chart3.data.datasets[0].data = Object.values(max)
-    chart3.data.datasets[1].data = Object.values(avg)
-    chart3.update()
-  }, [chart3, ovdp])
+    chartEur.data.labels = Array.from(months)
+    chartEur.data.datasets[0].data = Object.values(max)
+    chartEur.data.datasets[1].data = Object.values(avg)
+    chartEur.update()
+  }, [chartEur, ovdp])
 
   return (
     <main>
       <Hero title="Інвестуємо в Україні" subtitle="ОВДП" />
-      <div className="container-fluid py-5">
+      <div className="container py-5">
         <table className="table table-hover text-center">
           <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
             <tr>
@@ -312,11 +314,7 @@ const Ovdp: React.FC<PageProps> = () => {
               <th>Постачальник</th>
               <th>Тип постачальника</th>
               <th>Тип інструменту</th>
-              <th>ISIN</th>
               <th>Валюта</th>
-              <th>
-                Погашення <span className="text-secondary">рік</span>
-              </th>
               <th>
                 Погашення <span className="text-secondary">дата</span>
               </th>
@@ -326,7 +324,6 @@ const Ovdp: React.FC<PageProps> = () => {
               <th>
                 Дохідність <span className="text-secondary">%</span>
               </th>
-              <th></th>
             </tr>
           </thead>
           <tbody className="table-group-divider">
@@ -337,31 +334,31 @@ const Ovdp: React.FC<PageProps> = () => {
                   <td>
                     <small className="text-secondary">{item.input_date ? ago(new Date(item.input_date)) : ''} тому</small>
                   </td>
-                  <td>{item.provider_name}</td>
+                  <td>
+                    {item.provider_name}
+                    {item.comments ? <i className="fa-regular fa-comment ms-2" title={item.comments} /> : ''}
+                  </td>
                   <td>{item.provider_type}</td>
-                  <td>{item.instrument_type}</td>
-                  <td>{item.isin}</td>
+                  <td title={item.instrument_type === 'OVDP' ? item.isin : ''}>{item.instrument_type}</td>
                   <td>{item.currency}</td>
-                  <td>{item.year}</td>
                   <td>{item.maturity ? item.maturity : ''}</td>
                   <td>{item.months ? item.months : ''}</td>
                   <td className={[item.months && item.yield === best_over_months[item.months] ? 'text-success' : '', item.year && item.yield === best_over_year[item.year] ? 'fw-bold' : ''].join(' ')}>
                     {currency(item.yield)}%{item.yield === best_over_year[item.year] ? <span title={`Найкраща пропозиція ${item.year}`}>🥇</span> : ''}
                   </td>
-                  <td title={item.comments}>{item.comments ? <i className="fa-regular fa-comment" /> : ''}</td>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
       <div className="container py-5">
-        <canvas ref={chartRef} />
+        <canvas ref={chartUahRef} />
         <div className="row">
           <div className="col-6">
-            <canvas ref={chart2Ref} />
+            <canvas ref={chartUsdRef} />
           </div>
           <div className="col-6">
-            <canvas ref={chart3Ref} />
+            <canvas ref={chartEurRef} />
           </div>
         </div>
       </div>
