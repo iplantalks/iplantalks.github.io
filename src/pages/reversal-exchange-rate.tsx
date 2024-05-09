@@ -268,7 +268,7 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
 
         <div className="alert alert-secondary my-4">
           <p>
-            Отже ми бачимо - що курс розвороту через {years} років становитиме &mdash; <span className="text-success">{currency(last.forecast)} грн</span>. Це курс, при якому ефективність доларового і
+            Отже ми бачимо - що курс розвороту через {years} років становитиме &mdash; <span className="text-success">{currency(last.reverse)} грн</span>. Це курс, при якому ефективність доларового і
             гривневого вкладення будуть однакові.
           </p>
           <p>
