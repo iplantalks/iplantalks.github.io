@@ -234,6 +234,22 @@ const Orders = () => {
                 </tr>
               ))}
             </tbody>
+            <tfoot className="table-group-divider table-secondary">
+              <tr>
+                <td>Разом</td>
+                <td></td>
+                <td></td>
+                <td>{currency(filtered.map((f) => f.price).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.currentPrice).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.commision).reduce((a, b) => a + b, 0))}</td>
+                <td></td>
+                <td>{currency(filtered.map((f) => f.spendUah).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.valueUah).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.incomeUah).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
+              </tr>
+            </tfoot>
           </table>
         )}
         {negative && (
