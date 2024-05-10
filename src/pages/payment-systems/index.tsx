@@ -61,6 +61,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [hideNotWorking, setHideNotWorking] = useState(true)
   const [bankDropdown, setBankDropdown] = useState<string>('')
+  const [bankCollapsed, setBankCollapsed] = useState(true)
 
   const bankLinks = useBankLinks()
   const paymentSystemLinks = usePaymentSystemLinks()
@@ -124,7 +125,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                     </div>
 
                     {/* BANK */}
-                    <div className="mt-3">
+                    {/* <div className="mt-3">
                       <b>Платник</b>
                     </div>
                     <div className="mt-2">
@@ -137,12 +138,30 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <option value={name}>{name}</option>
                         ))}
                       </select>
-                      {/* <Checkboxes2
-                        names={getUniqueValues(rowsFilteredByMegatag, 'bank')}
-                        checkboxes={bankCheckboxes}
-                        onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })}
-                      /> */}
+                    </div> */}
+                    {/* BANK */}
+                    <div className="mt-3">
+                      <div onClick={(e) => setBankCollapsed(!bankCollapsed)} className="d-flex">
+                        <div className="flex-grow-1">
+                          <b>Платник</b>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <i className={bankCollapsed ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down'} />
+                        </div>
+                      </div>
                     </div>
+                    {!bankCollapsed && (
+                      <div className="mt-2">
+                        <div>
+                          <small className="text-secondary">Банк</small>
+                        </div>
+                        <Checkboxes2
+                          names={getUniqueValues(rowsFilteredByMegatag, 'bank')}
+                          checkboxes={bankCheckboxes}
+                          onChange={(name: string) => setBankCheckboxes({ ...bankCheckboxes, [name]: !bankCheckboxes[name] })}
+                        />
+                      </div>
+                    )}
 
                     {/* SERVICE */}
                     <div className="mt-3">
