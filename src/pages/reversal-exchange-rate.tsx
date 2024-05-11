@@ -12,6 +12,7 @@ import Subscribe from '../components/subscribe'
 import Join from '../components/join'
 import Hero from '../components/hero'
 import { Shop } from '../components/shop'
+import { Header } from '../components/header'
 
 interface Row {
   year: number
@@ -179,7 +180,8 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
 
   return (
     <main>
-      <Hero title="Курсові різниці" subtitle="Курс розвороту" />
+      <Header />
+      {/* <Hero title="Курсові різниці" subtitle="Курс розвороту" /> */}
 
       <div className="container py-5">
         <p>Даний калькулятор дозволяє порівняти ефективність інвестування в гривневі та валютні інструменти - шляхом визначення паритетного майбутнього курсу долара до гривні.</p>

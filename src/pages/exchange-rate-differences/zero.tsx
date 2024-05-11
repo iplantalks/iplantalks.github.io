@@ -10,6 +10,8 @@ import Hero from '../../components/hero'
 import ExchangeRateDifferencesLinks from '../../components/exchange-rate-differences-links'
 import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
+import logo from '../../images/logo.svg'
+import { Header } from '../../components/header'
 
 /**
  * Guard against unexpected NaN values
@@ -113,7 +115,8 @@ const Zero = () => {
 
   return (
     <main>
-      <Hero title="Курсові різниці" subtitle="Розрахунок граничних цін та курсу інвестицій з урахуванням податку на курсові різниці" />
+      {/* <Hero title="Курсові різниці" subtitle="Розрахунок граничних цін та курсу інвестицій з урахуванням податку на курсові різниці" /> */}
+      <Header />
 
       <div className="container py-5">
         <div className="row">

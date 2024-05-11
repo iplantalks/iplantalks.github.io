@@ -2,6 +2,7 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css);
 @import url(variables.css);
 @import url(rainbow.css);
+@import url(header.css);
 
 .links a:hover {
   color: var(--bs-emphasis-color) !important;

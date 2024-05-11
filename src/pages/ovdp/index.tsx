@@ -9,6 +9,7 @@ import Join from '../../components/join'
 import { useOvdp } from './_googlesheets'
 import { ago } from '../../utils/ago'
 import { currency } from '../../utils/formatters'
+import { Header } from '../../components/header'
 
 const Ovdp: React.FC<PageProps> = () => {
   const chartUahRef = useRef<HTMLCanvasElement>(null)
@@ -305,7 +306,8 @@ const Ovdp: React.FC<PageProps> = () => {
 
   return (
     <main>
-      <Hero title="Інвестуємо в Україні" subtitle="ОВДП" />
+      {/* <Hero title="Інвестуємо в Україні" subtitle="ОВДП" /> */}
+      <Header />
       <div className="container py-5">
         <table className="table table-hover text-center">
           <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>

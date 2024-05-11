@@ -18,6 +18,7 @@ import { Like } from './components/_like'
 import { Checkboxes, Checkboxes2 } from './components/_checkboxes'
 import { ago } from '../../utils/ago'
 import { PaymentsFaq } from './components/_payments-faq'
+import { Header } from '../../components/header'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -71,7 +72,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
 
   return (
     <main>
-      <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=23_e_wUAnPA" />
+      {/* <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=23_e_wUAnPA" /> */}
+      <Header />
 
       {transfer === 42 && (
         <>

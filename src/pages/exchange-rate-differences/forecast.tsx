@@ -10,6 +10,7 @@ import Hero from '../../components/hero'
 import ExchangeRateDifferencesLinks from '../../components/exchange-rate-differences-links'
 import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
+import { Header } from '../../components/header'
 
 interface Row {
   year: number
@@ -187,7 +188,8 @@ const Forecast = () => {
 
   return (
     <main>
-      <Hero title="Курсові різниці" subtitle="Модель впливу податку на інвестиційний прибуток на результат інвестицій при змінних темпах девальвації та % прибутковості" />
+      {/* <Hero title="Курсові різниці" subtitle="Модель впливу податку на інвестиційний прибуток на результат інвестицій при змінних темпах девальвації та % прибутковості" /> */}
+      <Header />
 
       <div className="container py-5">
         <div className="row">
