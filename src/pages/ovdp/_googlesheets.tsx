@@ -62,6 +62,23 @@ const fixDate = (value: string): string | null => {
   return value
 }
 
+export function useDeposits() {
+  return rollup(useGoogleSheet('DEPOSIT!A:Z')).map(({ input_date, provider_name, provider_type, instrument_type, currency, maturity, yield: yld, comments }) => ({
+    input_date: fixDate(input_date),
+    provider_name: provider_name,
+    provider_type: provider_type,
+    instrument_type,
+    isin: '',
+    currency: currency,
+    maturity: new Date(new Date().setMonth(new Date().getMonth() + parseInt(maturity))).toISOString().split('T').shift(),
+    yield: parseFloat(yld),
+    // months: parseInt(maturity_months),
+    comments: comments,
+    year: new Date(maturity).getFullYear(),
+    months: maturity,
+  }))
+}
+
 export function useOvdp() {
   return rollup(useGoogleSheet('OVDP!A:Z')).map(({ input_date, provider_name, provider_type, instrument_type, isin, currency, maturity, yield: yld, maturity_months, comments }) => ({
     input_date: fixDate(input_date),

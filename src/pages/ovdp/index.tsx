@@ -6,7 +6,7 @@ import Hero from '../../components/hero'
 import Chart from 'chart.js/auto'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
-import { useOvdp } from './_googlesheets'
+import { useDeposits, useOvdp } from './_googlesheets'
 import { ago } from '../../utils/ago'
 import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
@@ -22,6 +22,42 @@ const Ovdp: React.FC<PageProps> = () => {
   const [chartEur, setChartEur] = useState<Chart>()
 
   const ovdp = useOvdp()
+  const deposits = useDeposits()
+
+  const rows = useMemo(() => {
+    const rows = []
+    for (const item of ovdp) {
+      rows.push({
+        input_date: item.input_date,
+        provider_name: item.provider_name,
+        provider_type: item.provider_type,
+        instrument_type: item.instrument_type,
+        isin: item.isin,
+        currency: item.currency,
+        maturity: item.maturity,
+        months: item.months,
+        yield: item.yield,
+        comments: item.comments,
+        year: item.year,
+      })
+    }
+    for (const item of deposits) {
+      rows.push({
+        input_date: item.input_date,
+        provider_name: item.provider_name,
+        provider_type: item.provider_type,
+        instrument_type: item.instrument_type,
+        isin: '',
+        currency: item.currency,
+        maturity: item.maturity,
+        months: isNaN(parseInt(item.months)) ? null : parseInt(item.months),
+        yield: item.yield,
+        comments: item.comments,
+        year: item.year,
+      })
+    }
+    return rows
+  }, [ovdp, deposits])
 
   const best_over_year = useMemo(() => {
     const best: Record<number, number> = {}
@@ -329,7 +365,7 @@ const Ovdp: React.FC<PageProps> = () => {
             </tr>
           </thead>
           <tbody className="table-group-divider">
-            {ovdp
+            {rows
               .sort((a, b) => new Date(a.maturity ? a.maturity : new Date()).getTime() - new Date(b.maturity ? b.maturity : new Date()).getTime())
               .map((item, idx, arr) => (
                 <tr key={idx} className={idx > 1 && item.months !== arr[idx - 1].months ? 'table-group-divider' : ''}>
