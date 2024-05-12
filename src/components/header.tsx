@@ -10,10 +10,10 @@ export const Header = () => (
           iTalks
         </a>
         <nav className="d-flex" style={{ gap: '30px' }}>
-          <a className="header-link" href="https://itals.com.ua/#questions">
+          <a className="header-link" href="https://italks.com.ua/#questions">
             Про нас
           </a>
-          <a className="header-link" href="https://itals.com.ua/#services">
+          <a className="header-link" href="https://italks.com.ua/#services">
             Послуги
           </a>
           <div className="header-submenu">
@@ -33,10 +33,10 @@ export const Header = () => (
           <a className="header-link" href="https://italks.wayforpay.shop/">
             Магазин
           </a>
-          <a className="header-link" href="https://itals.com.ua/Oferta/">
+          <a className="header-link" href="https://italks.com.ua/Oferta/">
             Оферта
           </a>
-          <a className="header-link" href="https://itals.com.ua/#contact">
+          <a className="header-link" href="https://italks.com.ua/#contact">
             Контакти
           </a>
         </nav>
