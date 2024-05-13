@@ -120,13 +120,13 @@ const Ovdp: React.FC<PageProps> = () => {
       data: {
         labels: new Array(5).fill(0).map((_, i) => i + 1),
         datasets: [
-          {
-            label: 'MAX дохідність ОВДП (UAH) за період (місяці)',
-            data: new Array(5).fill(0),
-            fill: false,
-            cubicInterpolationMode: 'monotone',
-            tension: 0.4,
-          },
+          // {
+          //   label: 'MAX дохідність ОВДП (UAH) за період (місяці)',
+          //   data: new Array(5).fill(0),
+          //   fill: false,
+          //   cubicInterpolationMode: 'monotone',
+          //   tension: 0.4,
+          // },
           {
             label: 'AVG дохідність ОВДП (UAH) за період (місяці)',
             data: new Array(5).fill(0),
@@ -175,14 +175,14 @@ const Ovdp: React.FC<PageProps> = () => {
       return
     }
     const items = ovdp
-      .filter((item) => item.currency === 'UAH' && item.months && item.yield)
+      .filter((item) => item.currency === 'UAH' && item.instrument_type === 'OVDP' && item.months && item.yield)
       .map((item) => ({
         currency: item.currency,
         months: item.months as number,
         yield: item.yield as number,
       }))
 
-    const months = new Set(items.map((item) => item.months))
+    const months = Array.from(new Set(items.map((item) => item.months))).sort((a, b) => a - b)
     const max: Record<number, number> = {}
     const avg: Record<number, number> = {}
     for (const month of months) {
@@ -190,9 +190,10 @@ const Ovdp: React.FC<PageProps> = () => {
       max[month] = Math.max(...rates)
       avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
     }
-    chartUah.data.labels = Array.from(months)
-    chartUah.data.datasets[0].data = Object.values(max)
-    chartUah.data.datasets[1].data = Object.values(avg)
+    chartUah.data.labels = months
+    // chartUah.data.datasets[0].data = Object.values(max)
+    // chartUah.data.datasets[1].data = Object.values(avg)
+    chartUah.data.datasets[0].data = Object.values(avg)
     chartUah.update()
   }, [chartUah, ovdp])
 
@@ -206,13 +207,13 @@ const Ovdp: React.FC<PageProps> = () => {
       data: {
         labels: new Array(5).fill(0).map((_, i) => i + 1),
         datasets: [
-          {
-            label: 'MAX(USD)',
-            data: new Array(5).fill(0),
-            fill: false,
-            cubicInterpolationMode: 'monotone',
-            tension: 0.4,
-          },
+          // {
+          //   label: 'MAX(USD)',
+          //   data: new Array(5).fill(0),
+          //   fill: false,
+          //   cubicInterpolationMode: 'monotone',
+          //   tension: 0.4,
+          // },
           {
             label: 'AVG(USD)',
             data: new Array(5).fill(0),
@@ -262,14 +263,14 @@ const Ovdp: React.FC<PageProps> = () => {
     }
 
     const items = ovdp
-      .filter((item) => item.currency === 'USD' && item.months && item.yield)
+      .filter((item) => item.currency === 'USD' && item.instrument_type === 'OVDP' && item.months && item.yield)
       .map((item) => ({
         currency: item.currency,
         months: item.months as number,
         yield: item.yield as number,
       }))
 
-    const months = new Set(items.map((item) => item.months))
+    const months = Array.from(new Set(items.map((item) => item.months))).sort((a, b) => a - b)
     const max: Record<number, number> = {}
     const avg: Record<number, number> = {}
     for (const month of months) {
@@ -277,9 +278,10 @@ const Ovdp: React.FC<PageProps> = () => {
       max[month] = Math.max(...rates)
       avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
     }
-    chartUsd.data.labels = Array.from(months)
-    chartUsd.data.datasets[0].data = Object.values(max)
-    chartUsd.data.datasets[1].data = Object.values(avg)
+    chartUsd.data.labels = months
+    // chartUsd.data.datasets[0].data = Object.values(max)
+    // chartUsd.data.datasets[1].data = Object.values(avg)
+    chartUsd.data.datasets[0].data = Object.values(avg)
     chartUsd.update()
   }, [chartUsd, ovdp])
 
@@ -293,13 +295,13 @@ const Ovdp: React.FC<PageProps> = () => {
       data: {
         labels: new Array(5).fill(0).map((_, i) => i + 1),
         datasets: [
-          {
-            label: 'MAX(EUR)',
-            data: new Array(5).fill(0),
-            fill: false,
-            cubicInterpolationMode: 'monotone',
-            tension: 0.4,
-          },
+          // {
+          //   label: 'MAX(EUR)',
+          //   data: new Array(5).fill(0),
+          //   fill: false,
+          //   cubicInterpolationMode: 'monotone',
+          //   tension: 0.4,
+          // },
           {
             label: 'AVG(EUR)',
             data: new Array(5).fill(0),
@@ -349,14 +351,14 @@ const Ovdp: React.FC<PageProps> = () => {
     }
 
     const items = ovdp
-      .filter((item) => item.currency === 'EUR' && item.months && item.yield)
+      .filter((item) => item.currency === 'EUR' && item.instrument_type === 'OVDP' && item.months && item.yield)
       .map((item) => ({
         currency: item.currency,
         months: item.months as number,
         yield: item.yield as number,
       }))
 
-    const months = new Set(items.map((item) => item.months))
+    const months = Array.from(new Set(items.map((item) => item.months))).sort((a, b) => a - b)
     const max: Record<number, number> = {}
     const avg: Record<number, number> = {}
     for (const month of months) {
@@ -364,9 +366,10 @@ const Ovdp: React.FC<PageProps> = () => {
       max[month] = Math.max(...rates)
       avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
     }
-    chartEur.data.labels = Array.from(months)
-    chartEur.data.datasets[0].data = Object.values(max)
-    chartEur.data.datasets[1].data = Object.values(avg)
+    chartEur.data.labels = months
+    // chartEur.data.datasets[0].data = Object.values(max)
+    // chartEur.data.datasets[1].data = Object.values(avg)
+    chartEur.data.datasets[0].data = Object.values(avg)
     chartEur.update()
   }, [chartEur, ovdp])
 
