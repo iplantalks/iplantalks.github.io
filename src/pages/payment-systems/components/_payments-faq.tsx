@@ -11,7 +11,7 @@ export const PaymentsFaq = () => {
 
   return (
     <div>
-      <h2 className="mt-5 mb-3">Питання та відповіді</h2>
+      <h2 className="mt-0 mb-3">Питання та відповіді</h2>
       {items.map((item, index) => (
         <details key={index}>
           <summary>{item.question}</summary>
