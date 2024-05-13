@@ -152,6 +152,6 @@ export default IndexPage
 export const Head: HeadFC = () => (
   <>
     <title>Home Page</title>
-    <meta http-equiv="refresh" content="0; url=https://italks.com.ua/" />
+    {/* <meta http-equiv="refresh" content="0; url=https://italks.com.ua/" /> */}
   </>
 )
