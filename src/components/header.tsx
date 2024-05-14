@@ -9,7 +9,7 @@ export const Header = () => (
           <img className="me-3" height="40" src={logo} style={{ margin: '-10px 0' }} />
           iTalks
         </a>
-        <nav className="d-flex" style={{ gap: '30px' }}>
+        <nav className="d-none d-md-flex" style={{ gap: '30px' }}>
           <a className="header-link" href="https://italks.com.ua/#questions">
             Про нас
           </a>
