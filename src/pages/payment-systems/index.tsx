@@ -283,7 +283,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       <th className="d-none d-md-table-cell">{/* Коментар */}</th>
                       <th
                         onClick={() => (sortField === 'likes' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('likes'))}
-                        className={sortField === 'likes' ? 'table-dark' : ''}
+                        className={sortField === 'likes' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
                       >
                         Я це <i className="fa-solid fa-heart text-danger ms-1" />
                         {sortField === 'likes' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
@@ -398,7 +398,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               </small>
                             )}
                           </td>
-                          <td className="text-end">
+                          <td className="text-end d-none d-md-table-cell">
                             <Like {...r} />
                           </td>
                         </tr>
