@@ -14,6 +14,7 @@ import ExchangeRateDifferencesLinks from '../../../components/exchange-rate-diff
 import Subscribe from '../../../components/subscribe'
 import { Shop } from '../../../components/shop'
 import { OFX, parseMsMoneyOfxReport } from '../../../utils/ibkr/ofx'
+import { Header } from '../../../components/header'
 
 interface Transaction {
   id: string
@@ -31,6 +32,8 @@ interface Transaction {
   netIncomeUah: number
   exchangeRate: number
   currentPrice: number
+
+  sharesOriginal: number
 }
 
 const Orders = () => {
@@ -93,6 +96,8 @@ const Orders = () => {
         netIncomeUah: 0,
         exchangeRate: 0,
         currentPrice: 0,
+
+        sharesOriginal: t.INVBUY.UNITS || 0,
       })) || []
     setTransactions(transactions)
 
@@ -146,7 +151,8 @@ const Orders = () => {
 
   return (
     <main>
-      <Hero title="Курсові різниці" subtitle="Розрахунок фінансових результатів з виписки Interactive Brokers" />
+      <Header />
+      {/* <Hero title="Курсові різниці" subtitle="Розрахунок фінансових результатів з виписки Interactive Brokers" /> */}
 
       <div className="container py-5">
         <p>Мета цього звіту &mdash; подивитися на свої активи в розрізі курсових різниць.</p>
@@ -184,8 +190,8 @@ const Orders = () => {
         </details>
         {transactions.length > 0 && (
           <table className="table table-striped table-sm">
-            <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
-              <tr>
+            <thead style={{ position: 'sticky', top: 0 }}>
+              <tr className="table-dark">
                 <th className="fw-normal">Дата</th>
                 <th className="fw-normal">Тікер</th>
                 <th className="fw-normal">Кількість</th>
@@ -215,13 +221,51 @@ const Orders = () => {
                   Фін. результат нетто <span className="opacity-50">грн</span>
                 </th>
               </tr>
+              <tr className="table-secondary">
+                <td>Разом</td>
+                <td></td>
+                <td></td>
+                <td>{currency(filtered.map((f) => f.price).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.currentPrice).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.commision).reduce((a, b) => a + b, 0))}</td>
+                <td></td>
+                <td>{currency(filtered.map((f) => f.spendUah).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.valueUah).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.incomeUah).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
+              </tr>
             </thead>
             <tbody className="table-group-divider">
               {filtered.map((t) => (
                 <tr key={t.id}>
                   <td>{t.date.toISOString().split('T').shift()}</td>
                   <td>{t.ticker}</td>
-                  <td>{t.shares}</td>
+                  <td>
+                    {/* {t.shares} */}
+                    <input
+                      type="number"
+                      min="0"
+                      max={t.sharesOriginal}
+                      step="1"
+                      value={t.shares}
+                      onChange={(e) =>
+                        setTransactions(
+                          transactions.map((x) =>
+                            x.id === t.id ? { ...x, shares: e.target.valueAsNumber > t.sharesOriginal ? t.sharesOriginal : e.target.valueAsNumber < 0 ? 0 : e.target.valueAsNumber } : x
+                          )
+                        )
+                      }
+                    />
+                    {/* <input
+                      type="range"
+                      min="0"
+                      max={t.shares}
+                      step="1"
+                      value={t.sell}
+                      onChange={(e) => setTransactions(transactions.map((x) => (x.id === t.id ? { ...x, sell: e.target.valueAsNumber } : x)))}
+                    /> */}
+                  </td>
                   <td>{currency(t.price)}</td>
                   <td>{currency(t.currentPrice)}</td>
                   <td>{currency(t.commision)}</td>
