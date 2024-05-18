@@ -98,7 +98,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           <p>Поповнюємо Interactive Brokers ефективно</p>
           <div className="text-bg-light rounded-3 my-2 py-2 px-3">
             Як переказати валюту з України за кордон
-            <a className="d-inline-block text-bg-dark rounded-2 ms-2 py-1 px-2 text-decoration-none" href="https://www.youtube.com/watch?v=23_e_wUAnPA" target="_blank">
+            <a className="d-inline-block text-bg-danger rounded-2 ms-3 py-1 px-2 text-decoration-none" href="https://www.youtube.com/watch?v=23_e_wUAnPA" target="_blank">
               <i className="fa-brands fa-youtube me-2" />
               Video tutorial
             </a>
