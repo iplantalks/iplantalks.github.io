@@ -80,7 +80,7 @@ const Ovdp: React.FC<PageProps> = () => {
         year: item.year,
       })
     }
-    return rows
+    return rows.filter((r) => !!r.months)
   }, [ovdp, deposits])
 
   const [providerCheckboxes, setProviderCheckboxes] = useState<Record<string, boolean>>({})
