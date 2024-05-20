@@ -61,6 +61,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       service_currency: row['service_currency'],
       method: row['method'],
       service_fee: parseSheetsNumber(row['service_fee']) || 0,
+      service_fee_alert: row['service_fee_alert'] || '',
       date: row['date'] ? new Date(row['date'].split('.').reverse().join('-')) : null,
       comment: row['comment'],
       video: row['video'],
@@ -378,7 +379,10 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                             </div>
                           </td>
                           <td className={sortField === 'service_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{r.service_currency}</td>
-                          <td className={sortField === 'service_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{currency(r.service_fee)}</td>
+                          <td className={sortField === 'service_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>
+                            {currency(r.service_fee)}
+                            {r.service_fee_alert && <i className="text-warning ms-2 fa-solid fa-triangle-exclamation" title={r.service_fee_alert} />}
+                          </td>
                           <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
                             {r.works === 'TRUE' ? (
                               <span>{currency(r.payment)}</span>
