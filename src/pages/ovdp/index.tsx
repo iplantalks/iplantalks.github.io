@@ -2,7 +2,6 @@ import * as React from 'react'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { HeadFC, PageProps } from 'gatsby'
 import '../../styles/common.css'
-import Hero from '../../components/hero'
 import Chart from 'chart.js/auto'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
@@ -10,7 +9,7 @@ import { useDeposits, useOvdp } from './_googlesheets'
 import { ago } from '../../utils/ago'
 import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
-import { Checkboxes, Checkboxes2 } from '../payment-systems/components/_checkboxes'
+import { Checkboxes2 } from '../payment-systems/components/_checkboxes'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -35,16 +34,88 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) =>
   )
 }
 
+const LineChart = (props: { currency: string; items: { currency: string; months: number | null; yield: number }[] }) => {
+  const ref = useRef<HTMLCanvasElement>(null)
+  const [chart, setChart] = useState<Chart>()
+
+  const filtered = useMemo(() => {
+    return props.items.filter((r) => r.currency === props.currency).filter((r) => !!r.months) as { months: number; yield: number }[]
+  }, [props.items])
+
+  useEffect(() => {
+    if (!ref.current) {
+      return
+    }
+    setChart(
+      new Chart(ref.current, {
+        type: 'line',
+        data: {
+          labels: new Array(5).fill(0).map((_, i) => i + 1),
+          datasets: [
+            {
+              label: `AVG дохідність (${props.currency}) за період (місяці)`,
+              data: new Array(5).fill(0),
+              fill: false,
+              cubicInterpolationMode: 'monotone',
+              tension: 0.4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          animation: false,
+          plugins: {
+            title: {
+              display: false,
+              text: '% доходу за період',
+            },
+          },
+          interaction: {
+            intersect: false,
+          },
+          scales: {
+            x: {
+              display: true,
+              title: {
+                display: true,
+                text: 'Погашення через N місяців',
+              },
+            },
+            y: {
+              display: true,
+              title: {
+                display: true,
+                text: 'Дохідність %',
+              },
+            },
+          },
+        },
+      })
+    )
+  }, [])
+
+  useEffect(() => {
+    if (!chart) {
+      return
+    }
+
+    const months = Array.from(new Set(filtered.map((item) => item.months))).sort((a, b) => a - b)
+    const max: Record<number, number> = {}
+    const avg: Record<number, number> = {}
+    for (const month of months) {
+      const rates = filtered.filter((item) => item.months === month).map((item) => item.yield)
+      max[month] = Math.max(...rates)
+      avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
+    }
+    chart.data.labels = months
+    chart.data.datasets[0].data = Object.values(avg)
+    chart.update()
+  }, [filtered])
+
+  return <canvas ref={ref} />
+}
+
 const Ovdp: React.FC<PageProps> = () => {
-  const chartUahRef = useRef<HTMLCanvasElement>(null)
-  const [chartUah, setChartUah] = useState<Chart>()
-
-  const chartUsdRef = useRef<HTMLCanvasElement>(null)
-  const [chartUsd, setChartUsd] = useState<Chart>()
-
-  const chartEurRef = useRef<HTMLCanvasElement>(null)
-  const [chartEur, setChartEur] = useState<Chart>()
-
   const ovdp = useOvdp()
   const deposits = useDeposits()
 
@@ -89,289 +160,30 @@ const Ovdp: React.FC<PageProps> = () => {
   const [currencyCheckboxes, setCurrencyCheckboxes] = useState<Record<string, boolean>>({})
   const [monthsCheckboxes, setMonthsCheckboxes] = useState<Record<number, boolean>>({})
 
-  const best_over_year = useMemo(() => {
-    const best: Record<number, number> = {}
-    for (const year of new Set(ovdp.filter((item) => item.currency === 'UAH').map((item) => item.year))) {
-      const max = Math.max(...ovdp.filter((item) => item.year === year).map((item) => item.yield || 0))
-      best[year] = max
-    }
-    return best
-  }, [ovdp])
+  const filtered = useMemo(() => {
+    return rows
+      .filter((r) => !providerCheckboxes[r.provider_name])
+      .filter((r) => !providerTypeCheckboxes[r.provider_type])
+      .filter((r) => !instrumentTypeCheckboxes[r.instrument_type])
+      .filter((r) => !currencyCheckboxes[r.currency])
+      .filter((r) => r.months && !monthsCheckboxes[r.months])
+  }, [rows, providerCheckboxes, providerTypeCheckboxes, instrumentTypeCheckboxes, currencyCheckboxes, monthsCheckboxes])
 
   const best_over_months = useMemo(() => {
     const best: Record<number, number> = {}
-    for (const months of new Set(ovdp.filter((item) => item.currency === 'UAH').map((item) => item.months))) {
+    for (const months of new Set(filtered.map((item) => item.months))) {
       if (!months) {
         continue
       }
-      const max = Math.max(...ovdp.filter((item) => item.months === months).map((item) => item.yield || 0))
+      const max = Math.max(...filtered.filter((item) => item.months === months).map((item) => item.yield || 0))
       best[months] = max
     }
     return best
-  }, [ovdp])
+  }, [filtered])
 
-  useEffect(() => {
-    if (!chartUahRef.current) {
-      return
-    }
-
-    const chart = new Chart(chartUahRef.current, {
-      type: 'line',
-      data: {
-        labels: new Array(5).fill(0).map((_, i) => i + 1),
-        datasets: [
-          // {
-          //   label: 'MAX дохідність ОВДП (UAH) за період (місяці)',
-          //   data: new Array(5).fill(0),
-          //   fill: false,
-          //   cubicInterpolationMode: 'monotone',
-          //   tension: 0.4,
-          // },
-          {
-            label: 'AVG дохідність ОВДП (UAH) за період (місяці)',
-            data: new Array(5).fill(0),
-            fill: false,
-            cubicInterpolationMode: 'monotone',
-            tension: 0.4,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        animation: false,
-        plugins: {
-          title: {
-            display: false,
-            text: '% доходу за період',
-          },
-        },
-        interaction: {
-          intersect: false,
-        },
-        scales: {
-          x: {
-            display: true,
-            title: {
-              display: true,
-              text: 'Погашення через N місяців',
-            },
-          },
-          y: {
-            display: true,
-            title: {
-              display: true,
-              text: 'Дохідність %',
-            },
-          },
-        },
-      },
-    })
-
-    setChartUah(chart)
-  }, [])
-
-  useEffect(() => {
-    if (!chartUah) {
-      return
-    }
-    const items = ovdp
-      .filter((item) => item.currency === 'UAH' && item.instrument_type === 'OVDP' && item.months && item.yield)
-      .map((item) => ({
-        currency: item.currency,
-        months: item.months as number,
-        yield: item.yield as number,
-      }))
-
-    const months = Array.from(new Set(items.map((item) => item.months))).sort((a, b) => a - b)
-    const max: Record<number, number> = {}
-    const avg: Record<number, number> = {}
-    for (const month of months) {
-      const rates = items.filter((item) => item.currency === 'UAH' && item.months === month).map((item) => item.yield)
-      max[month] = Math.max(...rates)
-      avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
-    }
-    chartUah.data.labels = months
-    // chartUah.data.datasets[0].data = Object.values(max)
-    // chartUah.data.datasets[1].data = Object.values(avg)
-    chartUah.data.datasets[0].data = Object.values(avg)
-    chartUah.update()
-  }, [chartUah, ovdp])
-
-  useEffect(() => {
-    if (!chartUsdRef.current) {
-      return
-    }
-
-    const chartUsd = new Chart(chartUsdRef.current, {
-      type: 'line',
-      data: {
-        labels: new Array(5).fill(0).map((_, i) => i + 1),
-        datasets: [
-          // {
-          //   label: 'MAX(USD)',
-          //   data: new Array(5).fill(0),
-          //   fill: false,
-          //   cubicInterpolationMode: 'monotone',
-          //   tension: 0.4,
-          // },
-          {
-            label: 'AVG(USD)',
-            data: new Array(5).fill(0),
-            fill: false,
-            cubicInterpolationMode: 'monotone',
-            tension: 0.4,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        animation: false,
-        plugins: {
-          title: {
-            display: false,
-            text: '% доходу за період',
-          },
-        },
-        interaction: {
-          intersect: false,
-        },
-        scales: {
-          x: {
-            display: true,
-            title: {
-              display: true,
-              text: 'Погашення через N місяців',
-            },
-          },
-          y: {
-            display: true,
-            title: {
-              display: true,
-              text: 'Дохідність %',
-            },
-          },
-        },
-      },
-    })
-
-    setChartUsd(chartUsd)
-  }, [])
-
-  useEffect(() => {
-    if (!chartUsd) {
-      return
-    }
-
-    const items = ovdp
-      .filter((item) => item.currency === 'USD' && item.instrument_type === 'OVDP' && item.months && item.yield)
-      .map((item) => ({
-        currency: item.currency,
-        months: item.months as number,
-        yield: item.yield as number,
-      }))
-
-    const months = Array.from(new Set(items.map((item) => item.months))).sort((a, b) => a - b)
-    const max: Record<number, number> = {}
-    const avg: Record<number, number> = {}
-    for (const month of months) {
-      const rates = items.filter((item) => item.currency === 'USD' && item.months === month).map((item) => item.yield)
-      max[month] = Math.max(...rates)
-      avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
-    }
-    chartUsd.data.labels = months
-    // chartUsd.data.datasets[0].data = Object.values(max)
-    // chartUsd.data.datasets[1].data = Object.values(avg)
-    chartUsd.data.datasets[0].data = Object.values(avg)
-    chartUsd.update()
-  }, [chartUsd, ovdp])
-
-  useEffect(() => {
-    if (!chartEurRef.current) {
-      return
-    }
-
-    const chartEur = new Chart(chartEurRef.current, {
-      type: 'line',
-      data: {
-        labels: new Array(5).fill(0).map((_, i) => i + 1),
-        datasets: [
-          // {
-          //   label: 'MAX(EUR)',
-          //   data: new Array(5).fill(0),
-          //   fill: false,
-          //   cubicInterpolationMode: 'monotone',
-          //   tension: 0.4,
-          // },
-          {
-            label: 'AVG(EUR)',
-            data: new Array(5).fill(0),
-            fill: false,
-            cubicInterpolationMode: 'monotone',
-            tension: 0.4,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        animation: false,
-        plugins: {
-          title: {
-            display: false,
-            text: '% доходу за період',
-          },
-        },
-        interaction: {
-          intersect: false,
-        },
-        scales: {
-          x: {
-            display: true,
-            title: {
-              display: true,
-              text: 'Погашення через N місяців',
-            },
-          },
-          y: {
-            display: true,
-            title: {
-              display: true,
-              text: 'Дохідність %',
-            },
-          },
-        },
-      },
-    })
-
-    setChartEur(chartEur)
-  }, [])
-
-  useEffect(() => {
-    if (!chartEur) {
-      return
-    }
-
-    const items = ovdp
-      .filter((item) => item.currency === 'EUR' && item.instrument_type === 'OVDP' && item.months && item.yield)
-      .map((item) => ({
-        currency: item.currency,
-        months: item.months as number,
-        yield: item.yield as number,
-      }))
-
-    const months = Array.from(new Set(items.map((item) => item.months))).sort((a, b) => a - b)
-    const max: Record<number, number> = {}
-    const avg: Record<number, number> = {}
-    for (const month of months) {
-      const rates = items.filter((item) => item.currency === 'EUR' && item.months === month).map((item) => item.yield)
-      max[month] = Math.max(...rates)
-      avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
-    }
-    chartEur.data.labels = months
-    // chartEur.data.datasets[0].data = Object.values(max)
-    // chartEur.data.datasets[1].data = Object.values(avg)
-    chartEur.data.datasets[0].data = Object.values(avg)
-    chartEur.update()
-  }, [chartEur, ovdp])
+  const best = useMemo(() => {
+    return Math.max(...filtered.map((item) => item.yield || 0))
+  }, [filtered])
 
   return (
     <main>
@@ -386,6 +198,17 @@ const Ovdp: React.FC<PageProps> = () => {
                   <small>Налаштування</small>
                 </div>
                 <CollapsibleFilter title="Постачальник">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <small className="text-secondary d-flex-growth-1">Назва банку або брокеру</small>
+                    <button
+                      className="btn btn-primary btn-sm d-flex-shrink-0"
+                      onClick={() =>
+                        setProviderCheckboxes(getUniqueValues(rows, 'provider_name').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(providerCheckboxes).shift() }), {}))
+                      }
+                    >
+                      усі
+                    </button>
+                  </div>
                   <Checkboxes2
                     names={getUniqueValues(rows, 'provider_name')}
                     checkboxes={providerCheckboxes}
@@ -413,6 +236,33 @@ const Ovdp: React.FC<PageProps> = () => {
                     onChange={(name: string) => setCurrencyCheckboxes({ ...currencyCheckboxes, [name]: !currencyCheckboxes[name] })}
                   />
                 </CollapsibleFilter>
+                <CollapsibleFilter title="Період">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <small className="text-secondary d-flex-growth-1">Кількість місяців</small>
+                    <button
+                      className="btn btn-primary btn-sm d-flex-shrink-0"
+                      onClick={() =>
+                        setMonthsCheckboxes(
+                          getUniqueValues(rows, 'months')
+                            .filter((v) => !!v)
+                            .reduce((acc, name) => Object.assign(acc, { [name!.toString()]: !Object.values(monthsCheckboxes).shift() }), {})
+                        )
+                      }
+                    >
+                      усі
+                    </button>
+                  </div>
+                  <Checkboxes2
+                    names={
+                      getUniqueValues(rows, 'months')
+                        .filter((v) => !!v)
+                        .sort((a, b) => (a || 0) - (b || 0))
+                        .map((v) => v?.toString()) as string[]
+                    }
+                    checkboxes={monthsCheckboxes}
+                    onChange={(name: string) => setMonthsCheckboxes({ ...monthsCheckboxes, [name]: !monthsCheckboxes[parseInt(name)] })}
+                  />
+                </CollapsibleFilter>
               </div>
             </div>
             <div className="col-12 col-md-9">
@@ -437,11 +287,7 @@ const Ovdp: React.FC<PageProps> = () => {
                     </tr>
                   </thead>
                   <tbody className="table-group-divider">
-                    {rows
-                      .filter((r) => !providerCheckboxes[r.provider_name])
-                      .filter((r) => !providerTypeCheckboxes[r.provider_type])
-                      .filter((r) => !instrumentTypeCheckboxes[r.instrument_type])
-                      .filter((r) => !currencyCheckboxes[r.currency])
+                    {filtered
                       .sort((a, b) => new Date(a.maturity ? a.maturity : new Date()).getTime() - new Date(b.maturity ? b.maturity : new Date()).getTime())
                       .map((item, idx, arr) => (
                         <tr key={idx} className={idx > 1 && item.months !== arr[idx - 1].months ? 'table-group-divider' : ''}>
@@ -457,12 +303,8 @@ const Ovdp: React.FC<PageProps> = () => {
                           <td>{item.currency}</td>
                           <td>{item.maturity ? item.maturity : ''}</td>
                           <td>{item.months ? item.months : ''}</td>
-                          <td
-                            className={[item.months && item.yield === best_over_months[item.months] ? 'text-success' : '', item.year && item.yield === best_over_year[item.year] ? 'fw-bold' : ''].join(
-                              ' '
-                            )}
-                          >
-                            {currency(item.yield)}%{item.yield === best_over_year[item.year] ? <span title={`Найкраща пропозиція ${item.year}`}>🥇</span> : ''}
+                          <td className={[item.months && item.yield === best_over_months[item.months] ? 'text-success' : '', item.yield === best ? 'fw-bold' : ''].join(' ')}>
+                            {currency(item.yield)}%{item.yield === best ? <span title={`Найкраща пропозиція`}>🥇</span> : ''}
                           </td>
                         </tr>
                       ))}
@@ -474,14 +316,10 @@ const Ovdp: React.FC<PageProps> = () => {
         </div>
       </div>
       <div className="container py-5">
-        <canvas ref={chartUahRef} />
+        {!currencyCheckboxes['UAH'] && <LineChart items={filtered} currency="UAH" />}
         <div className="row">
-          <div className="col-6">
-            <canvas ref={chartUsdRef} />
-          </div>
-          <div className="col-6">
-            <canvas ref={chartEurRef} />
-          </div>
+          <div className="col-6">{!currencyCheckboxes['USD'] && <LineChart items={filtered} currency="USD" />}</div>
+          <div className="col-6">{!currencyCheckboxes['EUR'] && <LineChart items={filtered} currency="EUR" />}</div>
         </div>
       </div>
       <div className="bg-body-secondary">
