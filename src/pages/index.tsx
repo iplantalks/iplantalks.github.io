@@ -6,6 +6,7 @@ import bot from '../images/bot.png'
 import Join from '../components/join'
 import Hero from '../components/hero'
 import { Link } from 'gatsby'
+import { Header } from '../components/header'
 
 const joinStyles = {
   background: 'linear-gradient(rgba(2, 2, 2, 0.2), rgba(0, 0, 0, 0.7)), url("https://italks.com.ua/users/sergii.mikulov/img/1img-20231124083739964883.jpg") fixed no-repeat center center',
@@ -52,7 +53,8 @@ const TalksVideo = (props: TalksVideoProps) => {
 const IndexPage: React.FC<PageProps> = () => {
   return (
     <main>
-      <Hero title="iTalks Tools" subtitle="Підбірка корисних фінансових тулів та калькуляторів" />
+      {/* <Hero title="iTalks Tools" subtitle="Підбірка корисних фінансових тулів та калькуляторів" /> */}
+      <Header />
 
       <div className="container py-5">
         <h2 className="text-center fs-2 pb-2 border-bottom">Курсові різниці</h2>

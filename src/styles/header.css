@@ -55,8 +55,14 @@
   padding: 10px 20px;
   color: #334242;
   text-decoration: none;
+  width: 400px;
 }
 
-.header-submenu div a:hover {
-  color: #00c1c1;
+.header-submenu div a:hover .text-body-emphasis,
+.header-submenu div a:hover i {
+  color: #189ad8 !important;
+}
+
+.header-submenu div a:hover small {
+  opacity: 0.8;
 }

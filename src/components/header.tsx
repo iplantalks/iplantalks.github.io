@@ -1,5 +1,16 @@
 import * as React from 'react'
 import logo from '../images/logo.svg'
+import { Link } from 'gatsby'
+
+const Card = ({ title, to, icon, description }: { title: string; to: string; icon: string; description: string }) => (
+  <Link to={to} className="d-flex align-items-start">
+    <i className={icon + ' flex-shrink-0 mt-1 me-2 text-secondary'}></i>
+    <span className="d-block">
+      <span className="d-block text-body-emphasis text-wrap">{title}</span>
+      <small className="d-block text-wrap">{description}</small>
+    </span>
+  </Link>
+)
 
 export const Header = () => (
   <header className="header">
@@ -23,10 +34,41 @@ export const Header = () => (
             </a>
             <div>
               <div>
-                <a href="/payment-systems/">Гайд по маршрутам поповнень ІВ</a>
-                <a href="/reversal-exchange-rate/">Калькулятор курсу розвороту</a>
-                <a href="/exchange-rate-differences/forecast/">Калькулятор податку на курсові різниці</a>
-                <a href="/ovdp/">Калькулятор ОВДП</a>
+                <small className="text-secondary d-block fw-bold text-nowrap" style={{ padding: '10px 20px' }}>
+                  Курсові різниці
+                </small>
+                <Card
+                  icon="fa-solid fa-magnet"
+                  title="Граничні ціни"
+                  to="/exchange-rate-differences/zero"
+                  description="Розрахунок граничних цін та курсу інвестицій з урахуванням податку на курсові різниці."
+                />
+                <Card
+                  icon="fa-solid fa-chart-line"
+                  title="Прогнозування"
+                  to="/exchange-rate-differences/forecast"
+                  description="Модель впливу податку на інвестиційний прибуток на результат інвестицій при змінних темпах девальвації та % прибутковості."
+                />
+                <Card
+                  icon="fa-regular fa-money-bill-1"
+                  title="Якщо продам?"
+                  to="/exchange-rate-differences/interactive-brokers/orders"
+                  description="Розрахунок курсових різниць відносно позицій вашого портфелю."
+                />
+                <Card
+                  icon="fa-solid fa-calendar-check"
+                  title="Дивіденди"
+                  to="/exchange-rate-differences/interactive-brokers/dividends"
+                  description="Розрахунок податків що мали б бути сплачені з нарахованих дивідендів з урахуванням курсових різниць."
+                />
+                <small className="text-secondary d-block fw-bold text-nowrap" style={{ padding: '10px 20px' }}>
+                  Курс розвороту
+                </small>
+                <Card icon="fa-solid fa-infinity" title="USD vs UAH" to="/reversal-exchange-rate" description="Порівняння ефективності інвестування в гривневі та валютні інструменти." />
+                <small className="text-secondary d-block fw-bold text-nowrap" style={{ padding: '10px 20px' }}>
+                  Платіжки
+                </small>
+                <Card icon="fa-solid fa-file-arrow-up" title="Поповнення IB" to="/payment-systems" description="Маршрути поповнення Interactive Brokers." />
               </div>
             </div>
           </div>
