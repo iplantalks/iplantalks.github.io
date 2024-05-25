@@ -66,9 +66,10 @@ export const Header = () => (
                 </small>
                 <Card icon="fa-solid fa-infinity" title="USD vs UAH" to="/reversal-exchange-rate" description="Порівняння ефективності інвестування в гривневі та валютні інструменти." />
                 <small className="text-secondary d-block fw-bold text-nowrap" style={{ padding: '10px 20px' }}>
-                  Платіжки
+                  Платіжки, брокери, банки
                 </small>
                 <Card icon="fa-solid fa-file-arrow-up" title="Поповнення IB" to="/payment-systems" description="Маршрути поповнення Interactive Brokers." />
+                <Card icon="fa-solid fa-piggy-bank" title="ОВДП та депозити" to="/ovdp" description="Куди прилаштувати гривню на визначений період." />
               </div>
             </div>
           </div>

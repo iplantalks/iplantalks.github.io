@@ -127,7 +127,7 @@ const IndexPage: React.FC<PageProps> = () => {
 
       <div className="">
         <div className="container py-5">
-          <h2 className="text-center fs-2 pb-2 border-bottom">Платіжки</h2>
+          <h2 className="text-center fs-2 pb-2 border-bottom">Платіжки, банки, брокери</h2>
 
           <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
             <div className="col d-flex align-items-start">
@@ -136,6 +136,16 @@ const IndexPage: React.FC<PageProps> = () => {
                 <h3 className="fs-2 text-body-emphasis">Поповнення IB</h3>
                 <p>Маршрути поповнення Interactive Brokers.</p>
                 <Link to="/payment-systems" className="btn btn-primary">
+                  Відкрити
+                </Link>
+              </div>
+            </div>
+            <div className="col d-flex align-items-start">
+              <i className="fa-solid fa-piggy-bank flex-shrink-0 me-3 fs-1 text-secondary"></i>
+              <div>
+                <h3 className="fs-2 text-body-emphasis">ОВДП та депозити</h3>
+                <p>Куди прилаштувати гривню на визначений період.</p>
+                <Link to="/ovdp" className="btn btn-primary">
                   Відкрити
                 </Link>
               </div>
