@@ -61,6 +61,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       service_currency: row['service_currency'],
       method: row['method'],
       service_fee: parseSheetsNumber(row['service_fee']) || 0,
+      service_fee_static: parseSheetsNumber(row['service_fee_static']) || 0,
       service_fee_alert: row['service_fee_alert'] || '',
       date: row['date'] ? new Date(row['date'].split('.').reverse().join('-')) : null,
       comment: row['comment'],
@@ -311,7 +312,10 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       .filter((r) => !dstCurrencyCheckboxes[r.service_currency])
                       .map((r) => ({ ...r, bank_links: bankLinks.find((l) => l.name === r.bank) }))
                       .map((r) => ({ ...r, service_links: paymentSystemLinks.find((l) => l.name === r.service) }))
-                      .map((r) => ({ ...r, payment: transfer + transfer * (r.service_fee / 100) + (transfer + transfer * (r.service_fee / 100)) * (r.bank_fee / 100) }))
+                      .map((r) => ({
+                        ...r,
+                        payment: transfer + (transfer * (r.service_fee / 100) + r.service_fee_static) + (transfer + (transfer * (r.service_fee / 100) + r.service_fee_static)) * (r.bank_fee / 100),
+                      }))
                       .sort((a, b) => {
                         if (sortDirection === 'asc') {
                           if (sortField === 'payment' || sortField === 'bank_fee' || sortField === 'service_fee' || sortField === 'likes') return a[sortField] - b[sortField]
@@ -355,7 +359,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                             </div>
                           </td>
                           <td className={sortField === 'card_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{r.card_currency}</td>
-                          <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{currency(r.bank_fee)}</td>
+                          <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{currency(r.bank_fee)}%</td>
                           <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
                             {r.service_links && r.service_links.website ? (
                               <a className="text-decoration-none" href={r.service_links.website} target="_blank">
@@ -380,8 +384,12 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           </td>
                           <td className={sortField === 'service_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{r.service_currency}</td>
                           <td className={sortField === 'service_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>
-                            {currency(r.service_fee)}
-                            {r.service_fee_alert && <i className="text-warning ms-2 fa-solid fa-triangle-exclamation" title={r.service_fee_alert} />}
+                            {currency(r.service_fee)}%{r.service_fee_alert && <i className="text-warning ms-2 fa-solid fa-triangle-exclamation" title={r.service_fee_alert} />}
+                            {r.service_fee_static && (
+                              <div>
+                                <small title={'Фіксована комісія'}>{currency(r.service_fee_static)}</small>
+                              </div>
+                            )}
                           </td>
                           <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
                             {r.works === 'TRUE' ? (

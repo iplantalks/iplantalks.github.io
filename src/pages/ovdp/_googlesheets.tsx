@@ -63,35 +63,39 @@ const fixDate = (value: string): string | null => {
 }
 
 export function useDeposits() {
-  return rollup(useGoogleSheet('DEPOSIT!A:Z')).map(({ input_date, provider_name, provider_type, instrument_type, currency, maturity, yield: yld, comments }) => ({
-    input_date: fixDate(input_date),
-    provider_name: provider_name,
-    provider_type: provider_type,
-    instrument_type,
-    isin: '',
-    currency: currency,
-    maturity: new Date(new Date().setMonth(new Date().getMonth() + parseInt(maturity))).toISOString().split('T').shift(),
-    yield: parseFloat(yld),
-    // months: parseInt(maturity_months),
-    comments: comments,
-    year: new Date(maturity).getFullYear(),
-    months: maturity,
-  }))
+  return rollup(useGoogleSheet('minfin!A:Z'))
+    .map(({ updated, bank, currency, maturity, yield: yld }) => ({
+      input_date: fixDate(updated),
+      provider_name: bank,
+      provider_type: 'Bank',
+      instrument_type: 'DEPOSIT',
+      isin: '',
+      currency: currency,
+      maturity: new Date(new Date().setMonth(new Date().getMonth() + parseInt(maturity))).toISOString().split('T').shift(),
+      yield: parseFloat(yld),
+      // months: parseInt(maturity_months),
+      comments: '',
+      year: new Date(maturity).getFullYear(),
+      months: parseInt(maturity) || null,
+    }))
+    .filter(({ months }) => !!months && months > 0)
 }
 
 export function useOvdp() {
-  return rollup(useGoogleSheet('OVDP!A:Z')).map(({ input_date, provider_name, provider_type, instrument_type, isin, currency, maturity, yield: yld, maturity_months, comments }) => ({
-    input_date: fixDate(input_date),
-    provider_name: provider_name,
-    provider_type: provider_type,
-    instrument_type: instrument_type,
-    isin: isin,
-    currency: currency,
-    maturity: fixDate(maturity),
-    yield: parseFloat(yld),
-    // months: parseInt(maturity_months),
-    comments: comments,
-    year: new Date(maturity).getFullYear(),
-    months: maturity ? Math.round((new Date(maturity).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24 * 30)) : null,
-  }))
+  return rollup(useGoogleSheet('site!A:Z'))
+    .map(({ input_date, provider_name, provider_type, instrument_type, isin, currency, maturity, yield: yld }) => ({
+      input_date: fixDate(input_date),
+      provider_name: provider_name,
+      provider_type: provider_type,
+      instrument_type: instrument_type,
+      isin: isin,
+      currency: currency,
+      maturity: fixDate(maturity),
+      yield: parseFloat(yld),
+      // months: parseInt(maturity_months),
+      comments: '',
+      year: new Date(maturity).getFullYear(),
+      months: maturity ? Math.round((new Date(maturity).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24 * 30)) : null,
+    }))
+    .filter(({ months }) => months && months > 0)
 }
