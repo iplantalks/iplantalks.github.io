@@ -24,6 +24,9 @@ export const Header = () => (
           <a className="header-link" href="https://italks.com.ua/#questions">
             Про нас
           </a>
+          <a className="header-link" href="https://italks.com.ua/blog/">
+            Блог
+          </a>
           <a className="header-link" href="https://italks.com.ua/#services">
             Послуги
           </a>
