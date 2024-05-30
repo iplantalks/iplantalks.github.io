@@ -385,7 +385,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <td className={sortField === 'service_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{r.service_currency}</td>
                           <td className={sortField === 'service_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>
                             {currency(r.service_fee)}%{r.service_fee_alert && <i className="text-warning ms-2 fa-solid fa-triangle-exclamation" title={r.service_fee_alert} />}
-                            {r.service_fee_static && (
+                            {r.service_fee_static > 0 && (
                               <div>
                                 <small title={'Фіксована комісія'}>{currency(r.service_fee_static)}</small>
                               </div>
