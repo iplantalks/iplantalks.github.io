@@ -338,7 +338,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               <span>{r.bank}</span>
                             )}
                             {r.bank_links && r.bank_links.comment && (
-                              <small title={r.bank_links.comment} className="ms-2">
+                              <small title={r.bank_links.comment} className="ms-2 d-none d-sm-inline">
                                 <i className="fa-regular fa-circle-question" />
                               </small>
                             )}
@@ -369,7 +369,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               <span>{r.service}</span>
                             )}
                             {r.service_links && r.service_links.comment && (
-                              <small title={r.service_links.comment} className="ms-2">
+                              <small title={r.service_links.comment} className="ms-2 d-none d-sm-inline">
                                 <i className="fa-regular fa-circle-question" />
                               </small>
                             )}
@@ -379,7 +379,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               </small>
                             </div>
                             <div className="d-block d-md-none">
-                              {r.service_currency} {currency(r.service_fee)}%
+                              {r.service_currency} {currency(r.service_fee)}%{r.service_fee_static > 0 && <span> + {currency(r.service_fee_static)}</span>}
                             </div>
                           </td>
                           <td className={sortField === 'service_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{r.service_currency}</td>
