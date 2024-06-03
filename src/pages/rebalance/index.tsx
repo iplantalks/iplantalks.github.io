@@ -136,7 +136,7 @@ const Rebalance = () => {
   const [positions, setPositions] = useState<Position[]>([])
   const [profiles, setProfiles] = useState<Record<string, Profile>>({})
   const [prices, setPrices] = useState<Record<string, number>>({})
-  const [categories, setCategories] = useState<Record<string, string>>(JSON.parse(localStorage.getItem('categories') || '{}'))
+  const [categories, setCategories] = useState<Record<string, string>>(typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('categories') || '{}') : {})
 
   const handle = (texts: string[]) => {
     const positions = []
