@@ -387,7 +387,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                             {currency(r.service_fee)}%{r.service_fee_alert && <i className="text-warning ms-2 fa-solid fa-triangle-exclamation" title={r.service_fee_alert} />}
                             {r.service_fee_static > 0 && (
                               <div>
-                                <small title={'Фіксована комісія'}>{currency(r.service_fee_static)}</small>
+                                <small title={'Фіксована комісія'}>+{currency(r.service_fee_static)}</small>
                               </div>
                             )}
                           </td>
