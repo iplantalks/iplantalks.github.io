@@ -1,6 +1,6 @@
 import { HeadFC } from 'gatsby'
 import * as React from 'react'
-import { useEffect, useState, useRef, useMemo } from 'react'
+import { useEffect, useState, useRef, useMemo, Dispatch, SetStateAction } from 'react'
 import '../../styles/common.css'
 import { OFX, parseMsMoneyOfxReport } from '../../utils/ibkr/ofx'
 import { proxy } from '../../utils/proxy'
@@ -11,7 +11,12 @@ import { currency } from '../../utils/formatters'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-const colors = [
+function shuffle<T>(array: T[]): T[] {
+  const shuffled = array.slice().sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, Math.floor(Math.random() * shuffled.length))
+}
+
+const colors = shuffle([
   '#e2431e',
   '#f1ca3a',
   '#6f9654',
@@ -39,7 +44,7 @@ const colors = [
   '#dc0ab4',
   '#b3d4ff',
   '#00bfa0',
-]
+])
 
 interface Position {
   ticker: string
@@ -54,6 +59,58 @@ interface Profile {
   sector: string
   country: string
   isEtf: boolean
+}
+
+interface Allocatable {
+  id: string
+  value: number
+  locked: boolean
+}
+
+function allocate(state: Allocatable[], next: Allocatable) {
+  if (next.value < 0) {
+    next.value = 0
+  } else if (next.value > 100) {
+    next.value = 100
+  }
+  const result = [...state]
+  const prev = result.find((x) => x.id === next.id)
+  if (!prev) {
+    return result
+  }
+  if (result.length === 1) {
+    return result
+  }
+  result[result.findIndex((x) => x.id === next.id)].locked = next.locked
+
+  const lockedValuesSum = result.reduce((sum, x) => sum + (x.locked ? x.value : 0), 0)
+  const maxValue = 100 - lockedValuesSum
+  if (next.value > maxValue) {
+    next.value = maxValue
+  }
+  let i = Math.abs(next.value - prev.value)
+  while (i > 0) {
+    let changed = false
+    for (let j = 0; j < result.length && i > 0; j++) {
+      if (result[j].id !== next.id && !result[j].locked) {
+        if (next.value > prev.value && result[j].value > 0) {
+          result[j].value--
+          i--
+          changed = true
+        } else if (next.value < prev.value && result[j].value < 100) {
+          result[j].value++
+          i--
+          changed = true
+        }
+      }
+    }
+    if (!changed) {
+      throw new Error('infinite loop')
+    }
+  }
+  result[result.findIndex((x) => x.id === next.id)].value = next.value
+
+  return result
 }
 
 function extractPositionsFrom(ofx: OFX) {
@@ -93,7 +150,7 @@ function extractPositionsFrom(ofx: OFX) {
 
 async function fetchProfile(ticker: string): Promise<Profile> {
   try {
-    const res = await proxy('https://marketplace.financialmodelingprep.com/public/profile/' + ticker).then((r) => r.json())
+    const res = await proxy('https://marketplace.financialmodelingprep.com/public/profile/' + ticker, 60 * 60 * 24 * 30).then((r) => r.json())
     const profile = Array.isArray(res) ? res[0] : res
     const { beta, range, industry, sector, country, isEtf } = profile as { beta: number; range: string; industry: string; sector: string; country: string; isEtf: boolean }
     return { beta, range, industry, sector, country, isEtf }
@@ -132,11 +189,115 @@ const PieChart = ({ data, title }: { data: Record<string, number>; title: string
   />
 )
 
+const useProfiles = (positions: Position[]) => {
+  const [profiles, setProfiles] = useState<Record<string, Profile>>({})
+  useEffect(() => {
+    for (const position of positions) {
+      fetchProfile(position.ticker).then((profile) => {
+        setProfiles((profiles) => ({ ...profiles, [position.ticker]: profile }))
+      })
+    }
+  }, [positions])
+  return profiles
+}
+
+const usePrices = (positions: Position[]) => {
+  const [prices, setPrices] = useState<Record<string, number>>({})
+  useEffect(() => {
+    for (const position of positions) {
+      getPrice(position.ticker).then((price) => {
+        price = price || positions.find((p) => p.ticker === position.ticker)?.price || 0
+        setPrices((prices) => ({ ...prices, [position.ticker]: price }))
+      })
+    }
+  }, [positions])
+  return prices
+}
+
+const useSectors = (positions: Position[], profiles: Record<string, Profile>, prices: Record<string, number>) => {
+  return useMemo(() => {
+    const sectors: Record<string, number> = {}
+    for (const position of positions) {
+      const profile = profiles[position.ticker]
+      if (!profile) {
+        continue
+      }
+      sectors[profile.sector] = (sectors[profile.sector] || 0) + position.units * (prices[position.ticker] || position.price)
+    }
+    return sectors
+  }, [positions, prices, profiles])
+}
+
+const useIndustries = (positions: Position[], profiles: Record<string, Profile>, prices: Record<string, number>) => {
+  return useMemo(() => {
+    const industries: Record<string, number> = {}
+    for (const position of positions) {
+      const profile = profiles[position.ticker]
+      if (!profile) {
+        continue
+      }
+      industries[profile.industry] = (industries[profile.industry] || 0) + position.units * (prices[position.ticker] || position.price)
+    }
+    return industries
+  }, [positions, prices, profiles])
+}
+
+const useCountries = (positions: Position[], profiles: Record<string, Profile>, prices: Record<string, number>) => {
+  return useMemo(() => {
+    const countries: Record<string, number> = {}
+    for (const position of positions) {
+      const profile = profiles[position.ticker]
+      if (!profile) {
+        continue
+      }
+      countries[profile.country] = (countries[profile.country] || 0) + position.units * (prices[position.ticker] || position.price)
+    }
+    return countries
+  }, [positions, prices, profiles])
+}
+
+const useCategories = (positions: Position[], categories: Record<string, string>, prices: Record<string, number>) => {
+  return useMemo(() => {
+    const cats: Record<string, number> = {}
+    for (const position of positions) {
+      cats[categories[position.ticker] || 'other'] = (cats[categories[position.ticker] || 'other'] || 0) + position.units * (prices[position.ticker] || position.price)
+    }
+    return cats
+  }, [positions, prices, categories])
+}
+
+const useCategory = (): [Record<string, string>, Dispatch<SetStateAction<Record<string, string>>>] => {
+  const [category, setCategory] = useState<Record<string, string>>({})
+  useEffect(() => {
+    setCategory(typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('rebalance_category') || '{}') : {})
+  }, [])
+  const setNextCategory: Dispatch<SetStateAction<Record<string, string>>> = (value: SetStateAction<Record<string, string>>) => {
+    const next = typeof value === 'function' ? value(category) : value
+    setCategory(next)
+    localStorage.setItem('rebalance_category', JSON.stringify(next))
+  }
+  return [category, setNextCategory]
+}
+
 const Rebalance = () => {
   const [positions, setPositions] = useState<Position[]>([])
-  const [profiles, setProfiles] = useState<Record<string, Profile>>({})
-  const [prices, setPrices] = useState<Record<string, number>>({})
-  const [categories, setCategories] = useState<Record<string, string>>(typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('categories') || '{}') : {})
+  const [category, setCategory] = useCategory()
+  const profiles = useProfiles(positions)
+  const prices = usePrices(positions)
+  const sectors = useSectors(positions, profiles, prices)
+  const industries = useIndustries(positions, profiles, prices)
+  const countries = useCountries(positions, profiles, prices)
+  const categories = useCategories(positions, category, prices)
+  const [balance, setBalance] = useState(1000)
+  const actualCategoryAllocations = useMemo(() => {
+    const total = Object.values(categories).reduce((acc, val) => acc + val, 0)
+    const allocations: Record<string, number> = {}
+    for (const category of Object.keys(categories)) {
+      allocations[category] = Math.round((categories[category] / total) * 100)
+    }
+    return allocations
+  }, [categories])
+  const [allocations, setAllocations] = useState<Allocatable[]>([])
 
   const handle = (texts: string[]) => {
     const positions = []
@@ -163,84 +324,46 @@ const Rebalance = () => {
       .then((res) => res.text())
       .then((text) => handle([text]))
   }, [])
-  useEffect(() => {
-    for (const position of positions) {
-      fetchProfile(position.ticker).then((profile) => {
-        setProfiles((profiles) => ({ ...profiles, [position.ticker]: profile }))
-      })
-      getPrice(position.ticker).then((price) => {
-        price = price || positions.find((p) => p.ticker === position.ticker)?.price || 0
-        setPrices((prices) => ({ ...prices, [position.ticker]: price }))
-      })
-    }
-  }, [positions])
-
-  const sectors = useMemo(() => {
-    const sectors: Record<string, number> = {}
-    for (const position of positions) {
-      const profile = profiles[position.ticker]
-      if (!profile) {
-        continue
-      }
-      sectors[profile.sector] = (sectors[profile.sector] || 0) + position.units * (prices[position.ticker] || position.price)
-    }
-    return sectors
-  }, [positions, prices, profiles])
-
-  const industries = useMemo(() => {
-    const industries: Record<string, number> = {}
-    for (const position of positions) {
-      const profile = profiles[position.ticker]
-      if (!profile) {
-        continue
-      }
-      industries[profile.industry] = (industries[profile.industry] || 0) + position.units * (prices[position.ticker] || position.price)
-    }
-    return industries
-  }, [positions, prices, profiles])
-
-  const countries = useMemo(() => {
-    const countries: Record<string, number> = {}
-    for (const position of positions) {
-      const profile = profiles[position.ticker]
-      if (!profile) {
-        continue
-      }
-      countries[profile.country] = (countries[profile.country] || 0) + position.units * (prices[position.ticker] || position.price)
-    }
-    return countries
-  }, [positions, prices, profiles])
-
-  const etfs = useMemo(() => {
-    const etfs: Record<string, number> = {
-      ETF: 0,
-      Stock: 0,
-    }
-    for (const position of positions) {
-      const profile = profiles[position.ticker]
-      if (!profile) {
-        continue
-      }
-      if (profile.isEtf) {
-        etfs['ETF'] = position.units * (prices[position.ticker] || position.price)
-      } else {
-        etfs['Stock'] = position.units * (prices[position.ticker] || position.price)
-      }
-    }
-    return etfs
-  }, [positions, prices, profiles])
 
   useEffect(() => {
-    localStorage.setItem('categories', JSON.stringify(categories))
-  }, [categories])
-
-  const cats = useMemo(() => {
-    const cats: Record<string, number> = {}
-    for (const position of positions) {
-      cats[categories[position.ticker] || 'other'] = (cats[categories[position.ticker] || 'other'] || 0) + position.units * (prices[position.ticker] || position.price)
+    const allocations: Allocatable[] = []
+    for (const category of Object.keys(categories)) {
+      allocations.push({ id: category, value: actualCategoryAllocations[category], locked: false })
     }
-    return cats
-  }, [positions, prices, categories])
+    while (allocations.reduce((acc, x) => acc + x.value, 0) > 100) {
+      for (let i = 0; i < allocations.length; i++) {
+        if (allocations[i].value <= 0) {
+          continue
+        }
+        allocations[i].value--
+        break
+      }
+    }
+    setAllocations(allocate(allocations, allocations[0]))
+  }, [actualCategoryAllocations])
+
+  const handleAllocationChange = (id: string, value: number, locked: boolean) => {
+    setAllocations(allocate(allocations, { id, value, locked }))
+  }
+
+  const handleLockedToggle = (id: string) => {
+    const found = allocations.find((x) => x.id === id)
+    if (found) {
+      found.locked = !found.locked
+      setAllocations(allocate(allocations, found))
+    }
+  }
+
+  const handleEqualize = () => {
+    const next = [...allocations]
+    for (let i = 0; i < next.length; i++) {
+      next[i].value = Math.round(100 / allocations.length)
+    }
+    if (allocations.length % 2 !== 0) {
+      next[0].value += 1
+    }
+    setAllocations(next)
+  }
 
   return (
     <main>
@@ -253,7 +376,7 @@ const Rebalance = () => {
               <div className="card-body">
                 <div className="card-title text-center">Categories</div>
                 <div className="card-text">
-                  <PieChart data={cats} title="Categories" />
+                  <PieChart data={categories} title="Categories" />
                 </div>
               </div>
             </div>
@@ -309,12 +432,7 @@ const Rebalance = () => {
               {positions.map((p) => (
                 <tr key={p.ticker}>
                   <td>
-                    <input
-                      type="text"
-                      className="form-control form-control-sm"
-                      value={categories[p.ticker] || 'other'}
-                      onChange={(e) => setCategories({ ...categories, [p.ticker]: e.target.value })}
-                    />
+                    <input type="text" className="form-control form-control-sm" value={category[p.ticker] || 'other'} onChange={(e) => setCategory({ ...category, [p.ticker]: e.target.value })} />
                   </td>
                   <td>{p.ticker}</td>
                   <td>{p.units}</td>
@@ -337,6 +455,96 @@ const Rebalance = () => {
             <li>целевой alloc в разрезе категорий</li>
           </ul>
           <p>Нужно посчитать ордера</p>
+
+          <div className="my-3">
+            <input className="form-control" type="number" value={balance} onChange={(e) => setBalance(e.target.valueAsNumber)} />
+          </div>
+
+          <div className="row">
+            <div className="col-4">
+              <div className="card">
+                <div className="card-body">
+                  <div className="card-title text-center">Actual %</div>
+                  <div className="card-text">
+                    <PieChart data={actualCategoryAllocations} title="Actual" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="card">
+                <div className="card-body">
+                  <div className="card-title text-center">Desired %</div>
+                  <div className="card-text">
+                    <PieChart data={allocations.reduce((acc, x) => Object.assign(acc, { [x.id]: x.value }), {})} title="Desired" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-4">
+              <div className="card">
+                <div className="card-body">
+                  <div className="card-title text-center">Allocate</div>
+                  <div className="card-text">
+                    <table>
+                      <tbody>
+                        {allocations.map(({ id, value, locked }) => (
+                          <tr key={id}>
+                            <td>
+                              <div className="form-check">
+                                <input className="form-check-input" type="checkbox" checked={locked} onChange={() => handleLockedToggle(id)} />
+                              </div>
+                            </td>
+                            <td>
+                              <input
+                                className="form-range"
+                                type="range"
+                                min={0}
+                                max={100}
+                                step={1}
+                                value={value}
+                                onChange={(event) => handleAllocationChange(id, event.target.valueAsNumber, locked)}
+                                disabled={locked}
+                              />
+                            </td>
+                            <td className="px-2">
+                              <input
+                                className="form-control"
+                                type="number"
+                                min={0}
+                                max={100}
+                                step={1}
+                                value={value}
+                                onChange={(event) => handleAllocationChange(id, event.target.valueAsNumber, locked)}
+                                disabled={locked}
+                              />
+                            </td>
+                            <td>{id}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td></td>
+                          <td>
+                            <button className="btn btn-outline-primary btn-sm" onClick={handleEqualize}>
+                              Equalize
+                            </button>
+                          </td>
+                          <td>
+                            <div className="text-center text-secondary">
+                              <small>{allocations.reduce((acc, x) => acc + x.value, 0)}</small>
+                            </div>
+                          </td>
+                          <td></td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
