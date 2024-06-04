@@ -587,13 +587,22 @@ const Rebalance = () => {
                     <p>Ничего не делаем, т.к. {currency(Math.abs(nextMarketValue - currentMarketValue))} меньше стоимости акций в этой категории, а мы не хотим покупать кусочки</p>
                   ) : (
                     <ul>
-                      {positions.map((p) => (
-                        <li>{p.ticker} - TODO: посчитать</li>
-                      ))}
+                      {positions
+                        .map((p) => ({ ...p, price: prices[p.ticker] || p.price }))
+                        .map((p) => (
+                          <li>
+                            {p.ticker} - {currency(p.price)} - {Math.floor(Math.abs(nextMarketValue - currentMarketValue) / positions.length / p.price)} шт.
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </div>
               ))}
+          </div>
+
+          <div>
+            TODO: нужно понять что и как мы хотим посчитать, т.к. одно дело если у нас всего одна акция в категории и совсем другое если много. Так же, могут быть варианты как с QQQ и VT, особо не
+            разгонишься. Плюс туда же - докупать равномерно, или то что дешевле, или по очереди.
           </div>
         </div>
       </div>
