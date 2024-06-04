@@ -326,6 +326,9 @@ const Rebalance = () => {
   }, [])
 
   useEffect(() => {
+    if (Object.keys(actualCategoryAllocations).length === 0) {
+      return
+    }
     const allocations: Allocatable[] = []
     for (const category of Object.keys(categories)) {
       allocations.push({ id: category, value: actualCategoryAllocations[category], locked: false })
