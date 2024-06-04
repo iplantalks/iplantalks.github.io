@@ -491,7 +491,7 @@ const Rebalance = () => {
                   <div className="card-text">
                     <table>
                       <tbody>
-                        {allocations.map(({ id, value, locked }) => (
+                        {allocations.map(({ id, value, locked }, idx) => (
                           <tr key={id}>
                             <td>
                               <div className="form-check">
@@ -523,6 +523,9 @@ const Rebalance = () => {
                               />
                             </td>
                             <td>{id}</td>
+                            <td>
+                              <div style={{ backgroundColor: colors[idx], width: '20px' }}>&nbsp;</div>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -547,6 +550,50 @@ const Rebalance = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="my-5">
+            {allocations
+              .filter(({ id, value }) => value !== actualCategoryAllocations[id])
+              .filter(({ id, value }) => Math.abs(value - actualCategoryAllocations[id]) > 1)
+              .map((a) => ({ ...a, diff: a.value - actualCategoryAllocations[a.id] }))
+              .map((a) => ({ ...a, currentMarketValue: positions.reduce((acc, pos) => ((category[pos.ticker] || 'other') === a.id ? acc + pos.units * (prices[pos.ticker] || pos.price) : acc), 0) }))
+              .map((a) => ({ ...a, nextMarketValue: a.currentMarketValue + (a.currentMarketValue * a.diff) / 100 }))
+              .map((a) => ({
+                ...a,
+                positions: positions.filter((p) => (category[p.ticker] || 'other') === a.id).filter((p) => (prices[p.ticker] || p.price) <= Math.abs(a.nextMarketValue - a.currentMarketValue)),
+              }))
+              .map(({ id, value, diff, currentMarketValue, nextMarketValue, positions }, idx) => (
+                <div>
+                  <h3>
+                    <span className="me-2" style={{ backgroundColor: colors[idx], width: '30px', height: '30px', display: 'inline-block', borderRadius: '50%' }}>
+                      &nbsp;
+                    </span>
+                    {id}
+                    {value > actualCategoryAllocations[id] && <span className="ms-2 text-success">+{diff}% &#x25B2;</span>}
+                    {value < actualCategoryAllocations[id] && <span className="ms-2 text-danger">{diff}% &#x25BC;</span>}
+                  </h3>
+                  <p>
+                    Allocation: {actualCategoryAllocations[id]}% &rarr; {value}%
+                  </p>
+                  <p>
+                    Value: {currency(currentMarketValue)} &rarr; {currency(nextMarketValue)}
+                    <span className="ms-2">
+                      ({currentMarketValue > nextMarketValue && <span className="text-danger">Sell {currency(-1 * (nextMarketValue - currentMarketValue))}</span>}
+                      {currentMarketValue < nextMarketValue && <span className="text-success">Buy {currency(nextMarketValue - currentMarketValue)}</span>})
+                    </span>
+                  </p>
+                  {positions.length === 0 ? (
+                    <p>Ничего не делаем, т.к. {currency(Math.abs(nextMarketValue - currentMarketValue))} меньше стоимости акций в этой категории, а мы не хотим покупать кусочки</p>
+                  ) : (
+                    <ul>
+                      {positions.map((p) => (
+                        <li>{p.ticker} - TODO: посчитать</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
           </div>
         </div>
       </div>
