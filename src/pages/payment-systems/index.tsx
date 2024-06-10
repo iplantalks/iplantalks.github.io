@@ -159,8 +159,16 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
 
                 {/* SERVICE */}
                 <CollapsibleFilter title="Отримувач">
-                  <div>
-                    <small className="text-secondary">Закордонний банк</small>
+                  <div className="d-flex align-items-center justify-content-between">
+                    <small className="text-secondary d-flex-growth-1">Закордонний банк</small>
+                    <button
+                      className="btn btn-primary btn-sm d-flex-shrink-0"
+                      onClick={() =>
+                        setServiceCheckboxes(getUniqueValues(rowsFilteredByMegatag, 'service').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(serviceCheckboxes).shift() }), {}))
+                      }
+                    >
+                      усі
+                    </button>
                   </div>
                   <Checkboxes2
                     names={getUniqueValues(rowsFilteredByMegatag, 'service')}
@@ -171,8 +179,16 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
 
                 {/* Method */}
                 <CollapsibleFilter title="Метод">
-                  <div>
-                    <small className="text-secondary">Система оплати</small>
+                  <div className="d-flex align-items-center justify-content-between">
+                    <small className="text-secondary d-flex-growth-1">Система оплати</small>
+                    <button
+                      className="btn btn-primary btn-sm d-flex-shrink-0"
+                      onClick={() =>
+                        setMethodCheckboxes(getUniqueValues(rowsFilteredByMegatag, 'method').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(methodCheckboxes).shift() }), {}))
+                      }
+                    >
+                      усі
+                    </button>
                   </div>
                   <Checkboxes2
                     names={getUniqueValues(rowsFilteredByMegatag, 'method')}
@@ -282,7 +298,9 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                         {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-sort-up ms-1" />}
                         {sortField !== 'date' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                       </th>
-                      <th className="d-none d-md-table-cell">{/* Коментар */}</th>
+                      <th className="d-none d-md-table-cell">
+                        <i className="text-primary fa-solid fa-circle-info" />
+                      </th>
                       <th
                         onClick={() => (sortField === 'likes' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('likes'))}
                         className={sortField === 'likes' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
@@ -370,7 +388,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                             )}
                             {r.service_links && r.service_links.comment && (
                               <small title={r.service_links.comment} className="ms-2 d-none d-sm-inline">
-                                <i className="fa-regular fa-circle-question" />
+                                <i className="text-primary fa-solid fa-circle-info" />
                               </small>
                             )}
                             <div className="text-secondary">
@@ -406,7 +424,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <td className="d-none d-md-table-cell">
                             {r.comment && (
                               <small title={r.comment}>
-                                <i className="fa-regular fa-circle-question" />
+                                <i className="text-primary fa-solid fa-circle-info" />
                               </small>
                             )}
                           </td>
