@@ -104,6 +104,8 @@ const exchange_rate = [
   { year: 2024, value: 42 },
 ]
 
+const cash_usd = exchange_rate.map((x, idx) => ({ year: x.year, value: idx === 0 ? 0 : ((exchange_rate[idx].value - exchange_rate[idx - 1].value) / exchange_rate[idx - 1].value) * 100 }))
+
 const deposit_uah = [
   { year: 1998, value: 40 },
   { year: 1999, value: 49.2 },
@@ -134,7 +136,7 @@ const deposit_uah = [
   { year: 2024, value: 13.1 },
 ]
 
-const deposit_usd = [
+const deposit_usd_orig = [
   { year: 1998, value: 6.8 },
   { year: 1999, value: 6.8 },
   { year: 2000, value: 6.8 },
@@ -163,6 +165,12 @@ const deposit_usd = [
   { year: 2023, value: 0.8 },
   { year: 2024, value: 3.4 },
 ]
+
+const deposit_usd = deposit_usd_orig.map(({ year, value }) => {
+  const er = cash_usd.find((x) => x.year === year)?.value || 1
+  const val = value + er
+  return { year, value: value }
+})
 
 const ovdp_uah = [
   { year: 2009, value: 12.21 },
@@ -317,13 +325,14 @@ const Market = () => {
   const [showInflation, setShowInflation] = useState(true)
   const [showActives, setShowActives] = useState(true)
 
-  const data = { deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy }
+  const data = { deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, cash_usd }
   const [allocations, setAllocations] = useState<Allocatable[]>([
     { id: 'deposit_uah', value: 20, locked: false },
     { id: 'deposit_usd', value: 20, locked: false },
     { id: 'ovdp_uah', value: 20, locked: false },
     { id: 'ovdp_usd', value: 20, locked: false },
     { id: 'spy', value: 20, locked: false },
+    { id: 'cash_usd', value: 0, locked: true },
   ])
 
   const [minDate, setMinDate] = useState(
@@ -404,6 +413,12 @@ const Market = () => {
 
     chart.applyOptions({ localization: { priceFormatter: Intl.NumberFormat(undefined, { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format } })
 
+    console.log({
+      deposit_usd_orig,
+      deposit_usd,
+      cash_usd,
+    })
+
     const portfolio: Record<number, number[]> = {}
     allocations.forEach(({ id, value }, idx) => {
       // if (!value) {
@@ -411,7 +426,19 @@ const Market = () => {
       // }
 
       const allItems =
-        id === 'deposit_uah' ? data.deposit_uah : id === 'deposit_usd' ? data.deposit_usd : id === 'ovdp_uah' ? data.ovdp_uah : id === 'ovdp_usd' ? data.ovdp_usd : id === 'spy' ? data.spy : null
+        id === 'deposit_uah'
+          ? data.deposit_uah
+          : id === 'deposit_usd'
+          ? data.deposit_usd
+          : id === 'ovdp_uah'
+          ? data.ovdp_uah
+          : id === 'ovdp_usd'
+          ? data.ovdp_usd
+          : id === 'spy'
+          ? data.spy
+          : id === 'cash_usd'
+          ? data.cash_usd
+          : null
       if (!allItems) {
         return
       }
@@ -432,7 +459,7 @@ const Market = () => {
     })
 
     const portfolioCombined = Object.entries(portfolio).map(([year, values]) => ({ year: parseInt(year), value: values.reduce((a, b) => a + b, 0) }))
-    console.log(portfolioCombined)
+
     const portfolioCum: Array<{ time: string; value: number }> = []
     for (let i = 0; i < portfolioCombined.length; i++) {
       const cumulative = i === 0 ? 1 : (1 + portfolioCombined[i].value) * portfolioCum[i - 1].value
@@ -537,7 +564,7 @@ const Market = () => {
                   </tbody>
                 </table>
               </td>
-              <td>
+              <td className="ps-2">
                 <p className="text-center">Date range</p>
                 <table align="center">
                   <tbody>
@@ -580,29 +607,32 @@ const Market = () => {
                     </tr>
                   </tbody>
                 </table>
+
+                <div className="text-center mt-3">
+                  <div className="row gy-2 gx-3 align-items-center">
+                    <div className="col-auto">
+                      <div className="form-check">
+                        <input className="form-check-input" type="checkbox" checked={showInflation} onChange={() => setShowInflation(!showInflation)} id="showInflation" />
+                        <label className="form-check-label" htmlFor="showInflation">
+                          inflation
+                        </label>
+                      </div>
+                    </div>
+                    <div className="col-auto">
+                      <div className="form-check">
+                        <input className="form-check-input" type="checkbox" checked={showActives} onChange={() => setShowActives(!showActives)} id="showActives" />
+                        <label className="form-check-label" htmlFor="showActives">
+                          actives
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
 
-        <div className="row gy-2 gx-3 align-items-center">
-          <div className="col-auto">
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" checked={showInflation} onChange={() => setShowInflation(!showInflation)} id="showInflation" />
-              <label className="form-check-label" htmlFor="showInflation">
-                inflation
-              </label>
-            </div>
-          </div>
-          <div className="col-auto">
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" checked={showActives} onChange={() => setShowActives(!showActives)} id="showActives" />
-              <label className="form-check-label" htmlFor="showActives">
-                actives
-              </label>
-            </div>
-          </div>
-        </div>
         <div ref={chartRef} />
       </div>
     </main>
