@@ -6,10 +6,10 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut, Line } from 'react-chartjs-2'
 import { LineStyle, createChart } from 'lightweight-charts'
 import { data, inflation, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, cash_usd, deposit_usd_orig, colors, useData } from './components/_data'
-import { BarChart } from './components/bar-chart'
-import { PercentageBarChart } from './components/percentage-bar-chart'
-import { CumulativeLineChart } from './components/cumulative_line_chart'
-import { CumulativeLinesChart } from './components/cumulative_lines_chart'
+import { BarChart } from './components/_bar-chart'
+import { PercentageBarChart } from './components/_percentage-bar-chart'
+import { CumulativeLineChart } from './components/_cumulative_line_chart'
+import { CumulativeLinesChart } from './components/_cumulative_lines_chart'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
