@@ -1,10 +1,15 @@
 import * as React from 'react'
-import { useState, useRef, useEffect } from 'react'
-import '../../../styles/common.css'
+import { useState, useRef, useEffect, useMemo } from 'react'
+import '../../styles/common.css'
 import { HeadFC } from 'gatsby'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut, Line } from 'react-chartjs-2'
 import { LineStyle, createChart } from 'lightweight-charts'
+import { data, inflation, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, cash_usd, deposit_usd_orig, colors, useData } from './components/_data'
+import { BarChart } from './components/bar-chart'
+import { PercentageBarChart } from './components/percentage-bar-chart'
+import { CumulativeLineChart } from './components/cumulative_line_chart'
+import { CumulativeLinesChart } from './components/cumulative_lines_chart'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -42,201 +47,6 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 //   '#b3d4ff',
 //   '#00bfa0',
 // ])
-const colors = ['55, 162, 235', '255, 99, 132', '76, 191, 192', '254, 159, 64', '154, 102, 255', '255, 205, 86']
-
-const inflation = [
-  { year: 1998, value: 20 },
-  { year: 1999, value: 19.2 },
-  { year: 2000, value: 25.8 },
-  { year: 2001, value: 6.1 },
-  { year: 2002, value: -0.6 },
-  { year: 2003, value: 8.2 },
-  { year: 2004, value: 12.3 },
-  { year: 2005, value: 10.3 },
-  { year: 2006, value: 11.6 },
-  { year: 2007, value: 16.6 },
-  { year: 2008, value: 22.3 },
-  { year: 2009, value: 12.3 },
-  { year: 2010, value: 9.1 },
-  { year: 2011, value: 4.6 },
-  { year: 2012, value: -0.2 },
-  { year: 2013, value: 0.5 },
-  { year: 2014, value: 24.9 },
-  { year: 2015, value: 43.3 },
-  { year: 2016, value: 12.4 },
-  { year: 2017, value: 13.7 },
-  { year: 2018, value: 9.8 },
-  { year: 2019, value: 4.1 },
-  { year: 2020, value: 5 },
-  { year: 2021, value: 10 },
-  { year: 2022, value: 26.6 },
-  { year: 2023, value: 3.8 },
-  { year: 2024, value: 3.8 },
-]
-
-const exchange_rate = [
-  { year: 1998, value: 2.44 },
-  { year: 1999, value: 4.13 },
-  { year: 2000, value: 5.44 },
-  { year: 2001, value: 5.37 },
-  { year: 2002, value: 5.32 },
-  { year: 2003, value: 5.33 },
-  { year: 2004, value: 5.31 },
-  { year: 2005, value: 5.12 },
-  { year: 2006, value: 5.05 },
-  { year: 2007, value: 5.05 },
-  { year: 2008, value: 5.26 },
-  { year: 2009, value: 7.79 },
-  { year: 2010, value: 7.93 },
-  { year: 2011, value: 7.94 },
-  { year: 2012, value: 7.99 },
-  { year: 2013, value: 7.99 },
-  { year: 2014, value: 10.95 },
-  { year: 2015, value: 23.44 },
-  { year: 2016, value: 26.2 },
-  { year: 2017, value: 26.98 },
-  { year: 2018, value: 26.54 },
-  { year: 2019, value: 27.25 },
-  { year: 2020, value: 28.06 },
-  { year: 2021, value: 27.89 },
-  { year: 2022, value: 29.25 },
-  { year: 2023, value: 36.57 },
-  { year: 2024, value: 42 },
-]
-
-const cash_usd = exchange_rate.map((x, idx) => ({ year: x.year, value: idx === 0 ? 0 : ((exchange_rate[idx].value - exchange_rate[idx - 1].value) / exchange_rate[idx - 1].value) * 100 }))
-
-const deposit_uah = [
-  { year: 1998, value: 40 },
-  { year: 1999, value: 49.2 },
-  { year: 2000, value: 31.8 },
-  { year: 2001, value: 20.3 },
-  { year: 2002, value: 22.5 },
-  { year: 2003, value: 15.5 },
-  { year: 2004, value: 16.4 },
-  { year: 2005, value: 15.5 },
-  { year: 2006, value: 14.7 },
-  { year: 2007, value: 14.5 },
-  { year: 2008, value: 10.7 },
-  { year: 2009, value: 20 },
-  { year: 2010, value: 17 },
-  { year: 2011, value: 14.4 },
-  { year: 2012, value: 16.3 },
-  { year: 2013, value: 17.7 },
-  { year: 2014, value: 19.5 },
-  { year: 2015, value: 21 },
-  { year: 2016, value: 20 },
-  { year: 2017, value: 16.4 },
-  { year: 2018, value: 14.1 },
-  { year: 2019, value: 15.5 },
-  { year: 2020, value: 11.9 },
-  { year: 2021, value: 8.4 },
-  { year: 2022, value: 8.8 },
-  { year: 2023, value: 13.9 },
-  { year: 2024, value: 13.1 },
-]
-
-const deposit_usd_orig = [
-  { year: 1998, value: 6.8 },
-  { year: 1999, value: 6.8 },
-  { year: 2000, value: 6.8 },
-  { year: 2001, value: 6 },
-  { year: 2002, value: 8.4 },
-  { year: 2003, value: 8.4 },
-  { year: 2004, value: 10.5 },
-  { year: 2005, value: 10.6 },
-  { year: 2006, value: 10.1 },
-  { year: 2007, value: 9.8 },
-  { year: 2008, value: 10.1 },
-  { year: 2009, value: 13.3 },
-  { year: 2010, value: 11.6 },
-  { year: 2011, value: 7.8 },
-  { year: 2012, value: 7.5 },
-  { year: 2013, value: 6.8 },
-  { year: 2014, value: 8.3 },
-  { year: 2015, value: 9.1 },
-  { year: 2016, value: 6.8 },
-  { year: 2017, value: 4.8 },
-  { year: 2018, value: 3.3 },
-  { year: 2019, value: 3.4 },
-  { year: 2020, value: 1.2 },
-  { year: 2021, value: 1 },
-  { year: 2022, value: 0.8 },
-  { year: 2023, value: 0.8 },
-  { year: 2024, value: 3.4 },
-]
-
-const deposit_usd = deposit_usd_orig.map(({ year, value }) => {
-  const er = cash_usd.find((x) => x.year === year)?.value || 1
-  const val = value + er
-  return { year, value: value }
-})
-
-const ovdp_uah = [
-  { year: 2009, value: 12.21 },
-  { year: 2010, value: 10.4 },
-  { year: 2011, value: 9.2 },
-  { year: 2012, value: 12.9 },
-  { year: 2013, value: 13.1 },
-  { year: 2014, value: 14 },
-  { year: 2015, value: 13.1 },
-  { year: 2016, value: 9.2 },
-  { year: 2017, value: 10.5 },
-  { year: 2018, value: 17.8 },
-  { year: 2019, value: 16.9 },
-  { year: 2020, value: 10.2 },
-  { year: 2021, value: 11.3 },
-  { year: 2022, value: 18.3 },
-  { year: 2023, value: 19 },
-  { year: 2024, value: 13.1 },
-]
-
-const ovdp_usd = [
-  { year: 2011, value: 8.92 },
-  { year: 2012, value: 8.92 },
-  { year: 2013, value: 7.63 },
-  { year: 2014, value: 5.8 },
-  { year: 2015, value: 8.74 },
-  { year: 2016, value: 7.29 },
-  { year: 2017, value: 4.8 },
-  { year: 2018, value: 5.97 },
-  { year: 2019, value: 5.88 },
-  { year: 2020, value: 3.38 },
-  { year: 2021, value: 3.75 },
-  { year: 2022, value: 3.98 },
-  { year: 2023, value: 4.71 },
-  { year: 2024, value: 4.71 },
-]
-
-const spy = [
-  { year: 1998, value: 28.34 },
-  { year: 1999, value: 20.89 },
-  { year: 2000, value: -9.03 },
-  { year: 2001, value: -11.85 },
-  { year: 2002, value: -21.97 },
-  { year: 2003, value: 28.36 },
-  { year: 2004, value: 10.74 },
-  { year: 2005, value: 4.83 },
-  { year: 2006, value: 15.61 },
-  { year: 2007, value: 5.48 },
-  { year: 2008, value: -36.55 },
-  { year: 2009, value: 25.94 },
-  { year: 2010, value: 14.82 },
-  { year: 2011, value: 2.1 },
-  { year: 2012, value: 15.89 },
-  { year: 2013, value: 32.15 },
-  { year: 2014, value: 13.52 },
-  { year: 2015, value: 1.38 },
-  { year: 2016, value: 11.77 },
-  { year: 2017, value: 21.61 },
-  { year: 2018, value: -4.23 },
-  { year: 2019, value: 31.21 },
-  { year: 2020, value: 18.02 },
-  { year: 2021, value: 28.47 },
-  { year: 2022, value: -18.01 },
-  { year: 2023, value: 24.29 },
-  { year: 2024, value: 12.7 },
-]
 
 const PieChart = ({ data, title }: { data: Record<string, number>; title: string }) => (
   <Doughnut
@@ -325,7 +135,9 @@ const Market = () => {
   const [showInflation, setShowInflation] = useState(true)
   const [showActives, setShowActives] = useState(true)
 
-  const data = { deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, cash_usd }
+  const data = useData()
+
+  const data1 = { deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, cash_usd }
   const [allocations, setAllocations] = useState<Allocatable[]>([
     { id: 'deposit_uah', value: 20, locked: false },
     { id: 'deposit_usd', value: 20, locked: false },
@@ -338,40 +150,40 @@ const Market = () => {
   const [minDate, setMinDate] = useState(
     Math.max(
       ...[
-        Math.min(...data.deposit_uah.map((x) => x.year)),
-        Math.min(...data.deposit_usd.map((x) => x.year)),
-        Math.min(...data.ovdp_uah.map((x) => x.year)),
-        Math.min(...data.ovdp_usd.map((x) => x.year)),
+        Math.min(...data1.deposit_uah.map((x) => x.year)),
+        Math.min(...data1.deposit_usd.map((x) => x.year)),
+        Math.min(...data1.ovdp_uah.map((x) => x.year)),
+        Math.min(...data1.ovdp_usd.map((x) => x.year)),
       ]
     )
   )
   const [maxDate, setMaxDate] = useState(
     Math.min(
       ...[
-        Math.max(...data.deposit_uah.map((x) => x.year)),
-        Math.max(...data.deposit_usd.map((x) => x.year)),
-        Math.max(...data.ovdp_uah.map((x) => x.year)),
-        Math.max(...data.ovdp_usd.map((x) => x.year)),
+        Math.max(...data1.deposit_uah.map((x) => x.year)),
+        Math.max(...data1.deposit_usd.map((x) => x.year)),
+        Math.max(...data1.ovdp_uah.map((x) => x.year)),
+        Math.max(...data1.ovdp_usd.map((x) => x.year)),
       ]
     )
   )
   const [startDate, setStartDate] = useState(
     Math.max(
       ...[
-        Math.min(...data.deposit_uah.map((x) => x.year)),
-        Math.min(...data.deposit_usd.map((x) => x.year)),
-        Math.min(...data.ovdp_uah.map((x) => x.year)),
-        Math.min(...data.ovdp_usd.map((x) => x.year)),
+        Math.min(...data1.deposit_uah.map((x) => x.year)),
+        Math.min(...data1.deposit_usd.map((x) => x.year)),
+        Math.min(...data1.ovdp_uah.map((x) => x.year)),
+        Math.min(...data1.ovdp_usd.map((x) => x.year)),
       ]
     )
   )
   const [endDate, setEndDate] = useState(
     Math.min(
       ...[
-        Math.max(...data.deposit_uah.map((x) => x.year)),
-        Math.max(...data.deposit_usd.map((x) => x.year)),
-        Math.max(...data.ovdp_uah.map((x) => x.year)),
-        Math.max(...data.ovdp_usd.map((x) => x.year)),
+        Math.max(...data1.deposit_uah.map((x) => x.year)),
+        Math.max(...data1.deposit_usd.map((x) => x.year)),
+        Math.max(...data1.ovdp_uah.map((x) => x.year)),
+        Math.max(...data1.ovdp_usd.map((x) => x.year)),
       ]
     )
   )
@@ -427,17 +239,17 @@ const Market = () => {
 
       const allItems =
         id === 'deposit_uah'
-          ? data.deposit_uah
+          ? data1.deposit_uah
           : id === 'deposit_usd'
-          ? data.deposit_usd
+          ? data1.deposit_usd
           : id === 'ovdp_uah'
-          ? data.ovdp_uah
+          ? data1.ovdp_uah
           : id === 'ovdp_usd'
-          ? data.ovdp_usd
+          ? data1.ovdp_usd
           : id === 'spy'
-          ? data.spy
+          ? data1.spy
           : id === 'cash_usd'
-          ? data.cash_usd
+          ? data1.cash_usd
           : null
       if (!allItems) {
         return
@@ -511,6 +323,155 @@ const Market = () => {
     <main>
       <div className="container py-5">
         {/* <h1 className="text-center">🇺🇦 Market</h1> */}
+
+        {/* <BarChart title="Hello World" labels={inflation.map((x) => x.year.toString())} data={{ inflation: inflation.map((x) => x.value / 100), usd: cash_usd.map((x) => x.value / 100) }} /> */}
+        {/* <BarChart title="Hello World" labels={cash_usd.map((x) => x.year.toString())} data={{ usd: cash_usd.map((x) => x.value / 100) }} /> */}
+        <PercentageBarChart title="cash_usd" data={cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} inversed={true} />
+        <PercentageBarChart title="inflation" data={inflation.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} inversed={true} />
+        <PercentageBarChart title="deposit_uah" data={deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
+        <PercentageBarChart title="deposit_usd" data={deposit_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
+        <hr />
+        <CumulativeLineChart title="cash_usd" data={cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
+        <CumulativeLineChart title="deposit_uah" data={deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
+        <hr />
+        <CumulativeLinesChart
+          title="demo"
+          data={{
+            cash_usd: cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+            deposit_uah: deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+          }}
+        />
+        <CumulativeLinesChart
+          title="wtf"
+          data={{
+            cash_usd: cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+            deposit_uah: deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+            deposit_usd: deposit_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+          }}
+        />
+
+        <h2>Крок перший - оберімо активи</h2>
+        <p>
+          Ось перелік інструментів що так чи інакше доступні пересічному громадянину, починаючи від найбільш консервативного варіанту тримати гроші під матрацом і закінчуючи найбіль прибутковим але і
+          ризиковим фондовим ринком.
+        </p>
+        <p>Спробуйте клікнути по будь якому з активів за для того щоб переглянути трохи більше деталей, цікафі факти та додати його до портфелю.</p>
+        <div className="row">
+          <div className="me-3 mb-3 col-auto rounded border p-3 d-flex align-items-center justify-content-between">
+            <div className="me-3">
+              <div className="lead">Готівка</div>
+              <div className="text-secondary">Долар</div>
+            </div>
+            <div>
+              <div className="lead text-success">
+                <i className="fa-solid fa-arrow-up me-2" />
+                4.4%
+              </div>
+              <div className="text-secondary">
+                <small>10Y CAGR</small>
+              </div>
+            </div>
+          </div>
+          <div className="me-3 mb-3 col-auto rounded border p-3 d-flex align-items-center justify-content-between">
+            <div className="me-3">
+              <div className="lead">Депозит</div>
+              <div className="text-secondary">Гривня</div>
+            </div>
+            <div>
+              <div className="lead text-success">
+                <i className="fa-solid fa-arrow-up me-2" />
+                4.4%
+              </div>
+              <div className="text-secondary">
+                <small>10Y CAGR</small>
+              </div>
+            </div>
+          </div>
+          <div className="me-3 mb-3 col-auto rounded border p-3 d-flex align-items-center justify-content-between">
+            <div className="me-3">
+              <div className="lead">Депозит</div>
+              <div className="text-secondary">Долар</div>
+            </div>
+            <div>
+              <div className="lead text-success">
+                <i className="fa-solid fa-arrow-up me-2" />
+                4.4%
+              </div>
+              <div className="text-secondary">
+                <small>10Y CAGR</small>
+              </div>
+            </div>
+          </div>
+          <div className="me-3 mb-3 col-auto rounded border p-3 d-flex align-items-center justify-content-between">
+            <div className="me-3">
+              <div className="lead">ОВДП</div>
+              <div className="text-secondary">Гривня</div>
+            </div>
+            <div>
+              <div className="lead text-success">
+                <i className="fa-solid fa-arrow-up me-2" />
+                4.4%
+              </div>
+              <div className="text-secondary">
+                <small>10Y CAGR</small>
+              </div>
+            </div>
+          </div>
+          <div className="me-3 mb-3 col-auto rounded border p-3 d-flex align-items-center justify-content-between">
+            <div className="me-3">
+              <div className="lead">ОВДП</div>
+              <div className="text-secondary">Долар</div>
+            </div>
+            <div>
+              <div className="lead text-success">
+                <i className="fa-solid fa-arrow-up me-2" />
+                4.4%
+              </div>
+              <div className="text-secondary">
+                <small>10Y CAGR</small>
+              </div>
+            </div>
+          </div>
+          <div className="me-3 mb-3 col-auto rounded border p-3 d-flex align-items-center justify-content-between">
+            <div className="me-3">
+              <div className="lead">Фондовий ринок</div>
+              <div className="text-secondary">Долар</div>
+            </div>
+            <div>
+              <div className="lead text-success">
+                <i className="fa-solid fa-arrow-up me-2" />
+                4.4%
+              </div>
+              <div className="text-secondary">
+                <small>10Y CAGR</small>
+              </div>
+            </div>
+          </div>
+          <div className="text-secondary me-3 mb-3 col-auto rounded border p-3 d-flex align-items-center justify-content-between">
+            <div className="me-3">
+              <div className="lead">Страховка</div>
+              <div className="text-secondary">Гривня</div>
+            </div>
+            <div>
+              <div className="lead text-secondary">Coming soon</div>
+              <div className="text-secondary">
+                <small>10Y CAGR</small>
+              </div>
+            </div>
+          </div>
+          <div className="text-secondary me-3 mb-3 col-auto rounded border p-3 d-flex align-items-center justify-content-between">
+            <div className="me-3">
+              <div className="lead">НПФ</div>
+              <div className="text-secondary">Гривня</div>
+            </div>
+            <div>
+              <div className="lead text-secondary">Coming soon</div>
+              <div className="text-secondary">
+                <small>10Y CAGR</small>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <table align="center">
           <tbody>
