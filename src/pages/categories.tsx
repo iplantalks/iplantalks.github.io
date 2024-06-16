@@ -40,9 +40,9 @@ const Categories = () => {
     <main>
       <div className="container py-5">
         <h1>Categories</h1>
-        <form className="border p-2 my-3" onSubmit={doSearch}>
+        <form className="border p-2 my-3" onSubmit={(e) => doSearch(e as unknown as Event)}>
           <input type="search" placeholder="AAPL" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <input type="button" value="Search" onClick={doSearch} disabled={!search.length} />
+          <input type="button" value="Search" onClick={(e) => doSearch(e as unknown as Event)} disabled={!search.length} />
         </form>
         <table>
           <tr>

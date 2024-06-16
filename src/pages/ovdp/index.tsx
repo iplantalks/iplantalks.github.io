@@ -64,7 +64,7 @@ const Ovdp: React.FC<PageProps> = () => {
         isin: '',
         currency: item.currency,
         maturity: item.maturity,
-        months: isNaN(parseInt(item.months)) ? null : parseInt(item.months),
+        months: item.months, // isNaN(parseInt(item.months)) ? null : parseInt(item.months),
         yield: item.yield,
         comments: item.comments,
         year: item.year,
