@@ -10,6 +10,7 @@ import { ago } from '../../utils/ago'
 import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
 import { Checkboxes2 } from '../payment-systems/components/_checkboxes'
+import { LineChart } from './_line_chart'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -34,7 +35,7 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) =>
   )
 }
 
-const LineChart = (props: { currency: string; items: { currency: string; months: number | null; yield: number }[] }) => {
+const LineChartInner = (props: { currency: string; items: { currency: string; months: number | null; yield: number }[] }) => {
   const ref = useRef<HTMLCanvasElement>(null)
   const [chart, setChart] = useState<Chart>()
 
@@ -263,6 +264,12 @@ const Ovdp: React.FC<PageProps> = () => {
                     onChange={(name: string) => setMonthsCheckboxes({ ...monthsCheckboxes, [name]: !monthsCheckboxes[parseInt(name)] })}
                   />
                 </CollapsibleFilter>
+
+                <div className="mt-3">
+                  {!currencyCheckboxes['UAH'] && <LineChart items={filtered} currency="UAH" />}
+                  {!currencyCheckboxes['USD'] && <LineChart items={filtered} currency="USD" />}
+                  {!currencyCheckboxes['EUR'] && <LineChart items={filtered} currency="EUR" />}
+                </div>
               </div>
             </div>
             <div className="col-12 col-md-9">
