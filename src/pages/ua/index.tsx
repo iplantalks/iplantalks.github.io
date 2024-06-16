@@ -137,6 +137,8 @@ const Market = () => {
 
   const data = useData()
 
+  const [portfolio, setPortfolio] = useState<Array<{ year: number; value: number }>>([])
+
   const data1 = { deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, cash_usd }
   const [allocations, setAllocations] = useState<Allocatable[]>([
     { id: 'deposit_uah', value: 20, locked: false },
@@ -225,12 +227,6 @@ const Market = () => {
 
     chart.applyOptions({ localization: { priceFormatter: Intl.NumberFormat(undefined, { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format } })
 
-    console.log({
-      deposit_usd_orig,
-      deposit_usd,
-      cash_usd,
-    })
-
     const portfolio: Record<number, number[]> = {}
     allocations.forEach(({ id, value }, idx) => {
       // if (!value) {
@@ -271,6 +267,7 @@ const Market = () => {
     })
 
     const portfolioCombined = Object.entries(portfolio).map(([year, values]) => ({ year: parseInt(year), value: values.reduce((a, b) => a + b, 0) }))
+    setPortfolio(portfolioCombined)
 
     const portfolioCum: Array<{ time: string; value: number }> = []
     for (let i = 0; i < portfolioCombined.length; i++) {
@@ -594,7 +591,14 @@ const Market = () => {
           </tbody>
         </table>
 
-        <div ref={chartRef} />
+        <div className="row">
+          <div className="col-6">
+            <PercentageBarChart title="portfolio" data={portfolio.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value }), {})} />
+          </div>
+          <div className="col-6">
+            <div ref={chartRef} />
+          </div>
+        </div>
       </div>
     </main>
   )
