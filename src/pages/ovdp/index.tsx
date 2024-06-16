@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { HeadFC, PageProps } from 'gatsby'
 import '../../styles/common.css'
-import Chart from 'chart.js/auto'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
 import { useDeposits, useOvdp } from './_googlesheets'
@@ -33,87 +32,6 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) =>
       {!collapsed && <div className="mt-2">{props.children}</div>}
     </>
   )
-}
-
-const LineChartInner = (props: { currency: string; items: { currency: string; months: number | null; yield: number }[] }) => {
-  const ref = useRef<HTMLCanvasElement>(null)
-  const [chart, setChart] = useState<Chart>()
-
-  const filtered = useMemo(() => {
-    return props.items.filter((r) => r.currency === props.currency).filter((r) => !!r.months) as { months: number; yield: number }[]
-  }, [props.items])
-
-  useEffect(() => {
-    if (!ref.current) {
-      return
-    }
-    setChart(
-      new Chart(ref.current, {
-        type: 'line',
-        data: {
-          labels: new Array(5).fill(0).map((_, i) => i + 1),
-          datasets: [
-            {
-              label: `AVG дохідність (${props.currency}) за період (місяці)`,
-              data: new Array(5).fill(0),
-              fill: false,
-              cubicInterpolationMode: 'monotone',
-              tension: 0.4,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          animation: false,
-          plugins: {
-            title: {
-              display: false,
-              text: '% доходу за період',
-            },
-          },
-          interaction: {
-            intersect: false,
-          },
-          scales: {
-            x: {
-              display: true,
-              title: {
-                display: true,
-                text: 'Погашення через N місяців',
-              },
-            },
-            y: {
-              display: true,
-              title: {
-                display: true,
-                text: 'Дохідність %',
-              },
-            },
-          },
-        },
-      })
-    )
-  }, [])
-
-  useEffect(() => {
-    if (!chart) {
-      return
-    }
-
-    const months = Array.from(new Set(filtered.map((item) => item.months))).sort((a, b) => a - b)
-    const max: Record<number, number> = {}
-    const avg: Record<number, number> = {}
-    for (const month of months) {
-      const rates = filtered.filter((item) => item.months === month).map((item) => item.yield)
-      max[month] = Math.max(...rates)
-      avg[month] = rates.reduce((acc, rate) => acc + rate, 0) / rates.length
-    }
-    chart.data.labels = months
-    chart.data.datasets[0].data = Object.values(avg)
-    chart.update()
-  }, [filtered])
-
-  return <canvas ref={ref} />
 }
 
 const Ovdp: React.FC<PageProps> = () => {
