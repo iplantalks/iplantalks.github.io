@@ -6,7 +6,12 @@ const config: GatsbyConfig = {
     siteUrl: `https://italks.com.ua`,
   },
   graphqlTypegen: true,
-  plugins: [],
+  plugins: [
+    {
+      resolve: `gatsby-plugin-google-gtag`,
+      options: { trackingIds: ['G-HRXQ4P204N'] },
+    },
+  ],
 }
 
 export default config
