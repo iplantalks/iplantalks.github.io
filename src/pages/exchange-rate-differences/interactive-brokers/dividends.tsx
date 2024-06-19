@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { HeadFC } from 'gatsby'
+import { HeadFC, navigate } from 'gatsby'
 import '../../../styles/common.css'
 import Chart, { CoreChartOptions } from 'chart.js/auto'
 import { currency, round } from '../../../utils/formatters'
@@ -15,6 +15,7 @@ import Subscribe from '../../../components/subscribe'
 import { findSecurityInfo, parseMsMoneyOfxReport, parseOfxDateTime } from '../../../utils/ibkr/ofx'
 import { Shop } from '../../../components/shop'
 import tooltip from '../../../images/tooltip.png'
+import { useAuth } from '../../../context/auth'
 
 interface Row {
   id: string
@@ -76,6 +77,13 @@ const Calendar = ({ rows }: { rows: Row[] }) => {
 }
 
 const Dividends = () => {
+  const { user } = useAuth()
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login?redirect=' + window.location.pathname)
+    }
+  }, [user])
+
   const chartRef = useRef<HTMLCanvasElement>(null)
   const [chart, setChart] = useState<Chart>()
 

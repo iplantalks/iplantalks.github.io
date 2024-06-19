@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo } from 'react'
-import { HeadFC } from 'gatsby'
+import { HeadFC, navigate } from 'gatsby'
 import '../../../styles/common.css'
 import { currency } from '../../../utils/formatters'
 import { getExchangeRate } from '../../../utils/exchange-rate'
@@ -15,6 +15,7 @@ import Subscribe from '../../../components/subscribe'
 import { Shop } from '../../../components/shop'
 import { OFX, parseMsMoneyOfxReport } from '../../../utils/ibkr/ofx'
 import { Header } from '../../../components/header'
+import { useAuth } from '../../../context/auth'
 
 interface Transaction {
   id: string
@@ -37,6 +38,13 @@ interface Transaction {
 }
 
 const Orders = () => {
+  const { user } = useAuth()
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login?redirect=' + window.location.pathname)
+    }
+  }, [user])
+
   const [messages, setMessages] = useState<string[]>([])
   const appendMessage = (message: string) => setMessages((prev) => [...prev, message])
   const [ofx, setOfx] = useState<OFX>()
