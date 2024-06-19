@@ -17,6 +17,7 @@
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.3",
     "fast-xml-parser": "^4.4.0",
+    "firebase": "^10.12.2",
     "gatsby": "^5.13.6",
     "gatsby-plugin-google-gtag": "^5.13.1",
     "lightweight-charts": "^4.1.5",
