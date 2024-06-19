@@ -8,9 +8,9 @@ const CtxPage: React.FC = () => {
     <main>
       <div className="container py-5">
         <h2>Context Demo</h2>
-        {user && user.displayName}
-        {user && <button onClick={logout}>Logout</button>}
-        {!user && <button onClick={login}>Login</button>}
+        {user !== undefined && user && user.displayName}
+        {user !== undefined && user && <button onClick={logout}>Logout</button>}
+        {user !== undefined && !user && <button onClick={login}>Login</button>}
       </div>
     </main>
   )

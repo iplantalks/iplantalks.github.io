@@ -15,16 +15,14 @@ const app =
         appId: '1:1006859178341:web:b5dc86f76f1872fe97518c',
       })
 
-export const AuthContext = React.createContext<{ user: User | null; login: () => void; logout: () => void }>({
-  user: null,
-  login: () => {
-    console.log('login not implemented')
-  },
+export const AuthContext = React.createContext<{ user: User | null | undefined; login: () => void; logout: () => void }>({
+  user: undefined,
+  login: () => {},
   logout: () => {},
 })
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null | undefined>(undefined)
 
   useEffect(() => {
     if (app == null) {
