@@ -128,7 +128,10 @@ const Orders = () => {
     }
 
     for (const ticker of Array.from(new Set(transactions.map((t) => t.ticker)))) {
-      getPrice(ticker)
+      if (ticker.includes(' ')) {
+        appendMessage(`⚠️ Тікер ${ticker} містить пробіл, міняємо на дефіс для Yahoo Finance`)
+      }
+      getPrice(ticker.replace(' ', '-'))
         .then((price) => {
           const next = [...transactions]
           next.forEach((t) => {
