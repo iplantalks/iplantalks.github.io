@@ -277,12 +277,14 @@ const Orders = () => {
                       onChange={(e) => setTransactions(transactions.map((x) => (x.id === t.id ? { ...x, sell: e.target.valueAsNumber } : x)))}
                     /> */}
                   </td>
-                  <td>{currency(t.price)}</td>
-                  <td>{currency(t.currentPrice)}</td>
-                  <td>{currency(t.commision)}</td>
-                  <td>{currency(t.exchangeRate)}</td>
-                  <td>{currency(t.spendUah)}</td>
-                  <td>{currency(t.valueUah)}</td>
+                  <td title={'Ціна покупки $' + currency(t.price)}>{currency(t.price)}</td>
+                  <td title={'Поточна ціна $' + currency(t.currentPrice)}>{currency(t.currentPrice)}</td>
+                  <td title={'Утримано комісії $' + currency(t.commision)}>{currency(t.commision)}</td>
+                  <td title={'Курс долара на дату покупки був ' + currency(t.exchangeRate) + 'грн'}>{currency(t.exchangeRate)}</td>
+                  <td title={'Інвестовано в гривні\nshares * price * exchangeRate = \n' + t.shares + ' * ' + t.price + ' * ' + t.exchangeRate + ' = ' + t.spendUah}>{currency(t.spendUah)}</td>
+                  <td title={'Поточна вартість у гривні\nshares * currentPrice * currentExchangeRate = \n' + t.shares + ' * ' + t.currentPrice + ' * ' + currentExchangeRate + ' = ' + t.valueUah}>
+                    {currency(t.valueUah)}
+                  </td>
                   <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td>
                   <td>{currency(t.taxUah)}</td>
                   <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td>
@@ -298,8 +300,8 @@ const Orders = () => {
                 <td>{/*currency(filtered.map((f) => f.currentPrice).reduce((a, b) => a + b, 0))*/}</td>
                 <td>{/*currency(filtered.map((f) => f.commision).reduce((a, b) => a + b, 0))*/}</td>
                 <td></td>
-                <td>{currency(filtered.map((f) => f.spendUah).reduce((a, b) => a + b, 0))}</td>
-                <td>{currency(filtered.map((f) => f.valueUah).reduce((a, b) => a + b, 0))}</td>
+                <td title="Сума колонки">{currency(filtered.map((f) => f.spendUah).reduce((a, b) => a + b, 0))}</td>
+                <td title="Сума колонки">{currency(filtered.map((f) => f.valueUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.incomeUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
