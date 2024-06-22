@@ -129,6 +129,15 @@ function allocate(state: Allocatable[], next: Allocatable) {
   return result
 }
 
+const CheckboxDemo = ({ id, checked, setChecked }: { id: string; checked: boolean; setChecked: (checked: boolean) => void }) => (
+  <div className="form-check">
+    <input className="form-check-input" type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} id={id} />
+    <label className="form-check-label" htmlFor={id}>
+      {id}
+    </label>
+  </div>
+)
+
 const Market = () => {
   const chartRef = useRef<HTMLDivElement>(null)
 
@@ -316,36 +325,73 @@ const Market = () => {
     }
   }, [chartRef, allocations, startDate, endDate, showInflation, showActives])
 
+  const [show_cash_usd, set_show_cash_usd] = useState(true)
+  const [show_inflation, set_show_inflation] = useState(true)
+  const [show_deposit_uah, set_show_deposit_uah] = useState(false)
+  const [show_deposit_usd, set_show_deposit_usd] = useState(false)
+  const demo_chart_data = useMemo(() => {
+    const result: Record<string, Record<string, number>> = {}
+    if (show_cash_usd) {
+      result['cash_usd'] = cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})
+    }
+    if (show_deposit_uah) {
+      result['deposit_uah'] = deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})
+    }
+    if (show_deposit_usd) {
+      result['deposit_usd'] = deposit_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})
+    }
+    if (show_inflation) {
+      result['inflation'] = inflation.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})
+    }
+    return result
+  }, [show_cash_usd, show_deposit_uah, show_deposit_usd])
+
   return (
     <main>
       <div className="container py-5">
-        {/* <h1 className="text-center">🇺🇦 Market</h1> */}
+        <h1 className="text-center">👇 из-за вот этого смысла нету</h1>
+        <div className="row">
+          <div className="col-8">{Object.keys(data).length && <CumulativeLinesChart title="demo" data={demo_chart_data} />}</div>
+          <div className="col-4">
+            <CheckboxDemo id="show_inflation" checked={show_inflation} setChecked={set_show_inflation} />
+            <CheckboxDemo id="show_cash_usd" checked={show_cash_usd} setChecked={set_show_cash_usd} />
+            <CheckboxDemo id="show_deposit_uah" checked={show_deposit_uah} setChecked={set_show_deposit_uah} />
+            <CheckboxDemo id="show_deposit_usd" checked={show_deposit_usd} setChecked={set_show_deposit_usd} />
+          </div>
+        </div>
 
-        {/* <BarChart title="Hello World" labels={inflation.map((x) => x.year.toString())} data={{ inflation: inflation.map((x) => x.value / 100), usd: cash_usd.map((x) => x.value / 100) }} /> */}
-        {/* <BarChart title="Hello World" labels={cash_usd.map((x) => x.year.toString())} data={{ usd: cash_usd.map((x) => x.value / 100) }} /> */}
-        <PercentageBarChart title="cash_usd" data={cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} inversed={true} />
-        <PercentageBarChart title="inflation" data={inflation.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} inversed={true} />
-        <PercentageBarChart title="deposit_uah" data={deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
-        <PercentageBarChart title="deposit_usd" data={deposit_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
         <hr />
-        <CumulativeLineChart title="cash_usd" data={cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
-        <CumulativeLineChart title="deposit_uah" data={deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
-        <hr />
-        <CumulativeLinesChart
-          title="demo"
-          data={{
-            cash_usd: cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
-            deposit_uah: deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
-          }}
-        />
-        <CumulativeLinesChart
-          title="wtf"
-          data={{
-            cash_usd: cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
-            deposit_uah: deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
-            deposit_usd: deposit_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
-          }}
-        />
+
+        <details>
+          <summary>графики</summary>
+
+          {/* <h1 className="text-center">🇺🇦 Market</h1> */}
+          {/* <BarChart title="Hello World" labels={inflation.map((x) => x.year.toString())} data={{ inflation: inflation.map((x) => x.value / 100), usd: cash_usd.map((x) => x.value / 100) }} /> */}
+          {/* <BarChart title="Hello World" labels={cash_usd.map((x) => x.year.toString())} data={{ usd: cash_usd.map((x) => x.value / 100) }} /> */}
+          <PercentageBarChart title="cash_usd" data={cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} inversed={true} />
+          <PercentageBarChart title="inflation" data={inflation.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} inversed={true} />
+          <PercentageBarChart title="deposit_uah" data={deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
+          <PercentageBarChart title="deposit_usd" data={deposit_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
+          <hr />
+          <CumulativeLineChart title="cash_usd" data={cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
+          <CumulativeLineChart title="deposit_uah" data={deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {})} />
+          <hr />
+          <CumulativeLinesChart
+            title="demo"
+            data={{
+              cash_usd: cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+              deposit_uah: deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+            }}
+          />
+          <CumulativeLinesChart
+            title="wtf"
+            data={{
+              cash_usd: cash_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+              deposit_uah: deposit_uah.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+              deposit_usd: deposit_usd.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value / 100 }), {}),
+            }}
+          />
+        </details>
 
         <h2>Крок перший - оберімо активи</h2>
         <p>
