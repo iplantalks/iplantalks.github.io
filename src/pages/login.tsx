@@ -31,7 +31,8 @@ const LoginPage: React.FC = () => {
                   login()
                 }}
               >
-                Google
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" className="me-2" />
+                Увійти за допомогою Google
               </a>
             </p>
           </div>
