@@ -92,11 +92,6 @@ const InvestingClock = () => {
       <div className="container py-5">
         <h1>Investing Clock</h1>
 
-        {/* VT - stocks
-        GLAG - bonds
-        SHV - cash
-        DBC - commodities */}
-
         <div className="d-flex justify-content-between align-items-center">
           <div className="flex-grow-1 pe-5">
             <Chart
@@ -159,6 +154,18 @@ const InvestingClock = () => {
             <img width="400" alt={'investment clock' + corner} src="https://investorpolis.com/wp-content/uploads/2022/02/The-investment-clock.png" />
           </div>
         </div>
+        <p>TODO:</p>
+        <ul>
+          <li>опис що воно таке та як працює</li>
+          <li>графіки відповідних індексів у вибраний період</li>
+        </ul>
+        <p>Індекси</p>
+        <ul>
+          <li>VT - stocks</li>
+          <li>GLAG - bonds</li>
+          <li>SHV - cash</li>
+          <li>DBC - commodities</li>
+        </ul>
       </div>
       <Join />
     </main>

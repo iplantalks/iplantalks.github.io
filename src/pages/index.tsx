@@ -154,7 +154,7 @@ const IndexPage: React.FC<PageProps> = () => {
         </div>
       </div>
 
-      {/* <div className="bg-body-secondary">
+      <div className="bg-body-secondary">
         <div className="container py-5">
           <h2 className="text-center fs-2 pb-2 border-bottom">
             <span className="text-secondary">Інвест</span> Garage
@@ -180,7 +180,7 @@ const IndexPage: React.FC<PageProps> = () => {
             , та закидуй їх до гілки <b>🎓 Tools</b>
           </p>
         </div>
-      </div> */}
+      </div>
 
       <Join />
     </main>
