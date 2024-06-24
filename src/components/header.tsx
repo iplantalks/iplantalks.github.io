@@ -73,6 +73,10 @@ export const Header = () => (
                 </small>
                 <Card icon="fa-solid fa-file-arrow-up" title="Поповнення IB" to="/payment-systems" description="Маршрути поповнення Interactive Brokers." />
                 <Card icon="fa-solid fa-piggy-bank" title="ОВДП та депозити" to="/ovdp" description="Куди прилаштувати гривню на визначений період." />
+                {/* <small className="text-secondary d-block fw-bold text-nowrap" style={{ padding: '10px 20px' }}>
+                  <span className="text-secondary">Інвест</span> Garage
+                </small>
+                <Card icon="fa-regular fa-clock" title="Investing Clock" to="/garage/investing-clock" description="Фаза ринку у якій ми знаходимося." /> */}
               </div>
             </div>
           </div>

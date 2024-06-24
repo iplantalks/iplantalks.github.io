@@ -1,0 +1,49 @@
+.clock {
+  width: 400px;
+  height: 353px;
+  overflow: hidden;
+  position: relative;
+}
+.clock img {
+  display: block;
+}
+
+.clock.tl::after {
+  content: '';
+  position: absolute;
+  width: 135px;
+  height: 80px;
+  top: 70px;
+  left: 40px;
+  border: 2px dashed red;
+}
+
+.clock.tr::after {
+  content: '';
+  position: absolute;
+  width: 135px;
+  height: 80px;
+  top: 70px;
+  left: 193px;
+  border: 2px dashed red;
+}
+
+.clock.br::after {
+  content: '';
+  position: absolute;
+  width: 135px;
+  height: 80px;
+  top: 175px;
+  left: 193px;
+  border: 2px dashed red;
+}
+
+.clock.bl::after {
+  content: '';
+  position: absolute;
+  width: 135px;
+  height: 80px;
+  top: 175px;
+  left: 40px;
+  border: 2px dashed red;
+}

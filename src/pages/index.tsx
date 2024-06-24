@@ -154,6 +154,34 @@ const IndexPage: React.FC<PageProps> = () => {
         </div>
       </div>
 
+      {/* <div className="bg-body-secondary">
+        <div className="container py-5">
+          <h2 className="text-center fs-2 pb-2 border-bottom">
+            <span className="text-secondary">Інвест</span> Garage
+          </h2>
+          <p className="text-center">підбірка цікавинок та ідей що проходать валідацію часом</p>
+          <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div className="col d-flex align-items-start">
+              <i className="fa-regular fa-clock flex-shrink-0 me-3 fs-1 text-secondary"></i>
+              <div>
+                <h3 className="fs-2 text-body-emphasis">Investing Clock</h3>
+                <p>Фаза ринку у якій ми знаходимося.</p>
+                <Link to="/garage/investing-clock" className="btn btn-primary">
+                  Відкрити
+                </Link>
+              </div>
+            </div>
+          </div>
+          <p>
+            Якщо маєш ідеї чи побажання -{' '}
+            <a href="https://t.me/iPlanTalksBot?start=ZGw6MjAxODc3" target="_blank">
+              долучайся до спільноти
+            </a>
+            , та закидуй їх до гілки <b>🎓 Tools</b>
+          </p>
+        </div>
+      </div> */}
+
       <Join />
     </main>
   )
