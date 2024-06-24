@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useState, useMemo } from 'react'
-import { HeadFC, PageProps } from 'gatsby'
+import { useState, useMemo, useEffect } from 'react'
+import { HeadFC, PageProps, navigate } from 'gatsby'
 import '../../styles/common.css'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
@@ -10,6 +10,7 @@ import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
 import { Checkboxes2 } from '../payment-systems/components/_checkboxes'
 import { LineChart } from './_line_chart'
+import { useAuth } from '../../context/auth'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -35,6 +36,13 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) =>
 }
 
 const Ovdp: React.FC<PageProps> = () => {
+  const { user } = useAuth()
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login?redirect=' + window.location.pathname)
+    }
+  }, [user])
+
   const ovdp = useOvdp()
   const deposits = useDeposits()
 

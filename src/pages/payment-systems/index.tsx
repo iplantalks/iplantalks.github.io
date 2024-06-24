@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useState, useMemo, useEffect } from 'react'
-import { HeadFC, PageProps } from 'gatsby'
+import { HeadFC, PageProps, navigate } from 'gatsby'
 import '../../styles/common.css'
 import './styles.css'
 import { currency } from '../../utils/formatters'
@@ -19,6 +19,7 @@ import { Checkboxes, Checkboxes2 } from './components/_checkboxes'
 import { ago } from '../../utils/ago'
 import { PaymentsFaq } from './components/_payments-faq'
 import { Header } from '../../components/header'
+import { useAuth } from '../../context/auth'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -44,6 +45,13 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) =>
 }
 
 const PaymentSystemsPage: React.FC<PageProps> = () => {
+  const { user } = useAuth()
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login?redirect=' + window.location.pathname)
+    }
+  }, [user])
+
   useEffect(() => {
     if (!window.location.hostname.includes('localhost')) {
       Hotjar.init(3873202, 6)

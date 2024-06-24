@@ -1,4 +1,4 @@
-import { HeadFC } from 'gatsby'
+import { HeadFC, navigate } from 'gatsby'
 import * as React from 'react'
 import { useRef, useState, useEffect } from 'react'
 import '../../../styles/common.css'
@@ -12,6 +12,7 @@ import { getRelativePosition } from 'chart.js/helpers'
 import { BubbleDataPoint, Chart as ChartJs, ChartTypeRegistry, Point } from 'chart.js/auto'
 import { Chart, getElementAtEvent, getElementsAtEvent, getDatasetAtEvent } from 'react-chartjs-2'
 import { ChartData, ChartEvent, ChartOptions } from 'chart.js/auto'
+import { useAuth } from '../../../context/auth'
 
 function color_green(value: number) {
   if (value < 2) {
@@ -81,6 +82,13 @@ const options: ChartOptions<'bar'> = {
 }
 
 const InvestingClock = () => {
+  const { user } = useAuth()
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login?redirect=' + window.location.pathname)
+    }
+  }, [user])
+
   const ref = useRef(null)
   const gdp = useUSRGDPG()
   const ir = useUSIR()

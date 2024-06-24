@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { HeadFC } from 'gatsby'
+import { HeadFC, navigate } from 'gatsby'
 import '../../styles/common.css'
 import { currency, round } from '../../utils/formatters'
 import { getExchangeRate } from '../../utils/exchange-rate'
@@ -11,6 +11,7 @@ import ExchangeRateDifferencesLinks from '../../components/exchange-rate-differe
 import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
 import { Header } from '../../components/header'
+import { useAuth } from '../../context/auth'
 
 interface Row {
   year: number
@@ -25,6 +26,13 @@ interface Row {
 }
 
 const Forecast = () => {
+  const { user } = useAuth()
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login?redirect=' + window.location.pathname)
+    }
+  }, [user])
+
   const chartRef = useRef<HTMLCanvasElement>(null)
   const [chart, setChart] = useState<Chart>()
   const [short, setShort] = useState(true)

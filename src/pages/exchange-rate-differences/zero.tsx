@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo } from 'react'
-import { HeadFC, Link } from 'gatsby'
+import { HeadFC, Link, navigate } from 'gatsby'
 import '../../styles/common.css'
 import { currency, round } from '../../utils/formatters'
 import { getExchangeRate } from '../../utils/exchange-rate'
@@ -12,6 +12,7 @@ import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
 import logo from '../../images/logo.svg'
 import { Header } from '../../components/header'
+import { useAuth } from '../../context/auth'
 
 /**
  * Guard against unexpected NaN values
@@ -23,6 +24,13 @@ function guardNaN(value: number, fallback = 0): number {
 }
 
 const Zero = () => {
+  const { user } = useAuth()
+  useEffect(() => {
+    if (user === null) {
+      navigate('/login?redirect=' + window.location.pathname)
+    }
+  }, [user])
+
   const tax = 19.5
   const [symbol, setSymbol] = useState('AAPL')
   const [date, setDate] = useState(new Date('2020-03-20'))
