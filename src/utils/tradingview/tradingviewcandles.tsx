@@ -17,7 +17,17 @@ export function tradingviewcandles(ticker: string, interval = '1D', limit = 300,
     }
   }
   return new Promise((resolve) => {
-    const socket = new WebSocket('wss://widgetdata.tradingview.com/socket.io/websocket')
+    // wss://widgetdata.tradingview.com/socket.io/websocket?from=embed-widget%2Fsymbol-overview%2F&date=2024_06_27-14_21&page-uri=localhost%3A3000%2Faapl_widget.html&ancestor-origin=localhost%3A3000
+    const url = new URL('wss://widgetdata.tradingview.com/socket.io/websocket')
+    url.searchParams.set('from', 'embed-widget/symbol-overview/')
+    url.searchParams.set('date', new Date().toISOString().split('T').shift()?.replaceAll('-', '_') + '-14_21')
+    new Date().toISOString().split('T').shift()?.replaceAll('-', '_')
+    url.searchParams.set('page-uri', window.location.toString().split('//').pop()!)
+    url.searchParams.set('ancestor-origin', window.location.origin.split('//').pop()!)
+    // 2024_06_27-14_21
+
+    // const socket = new WebSocket('wss://widgetdata.tradingview.com/socket.io/websocket')
+    const socket = new WebSocket(url)
     const send = (str: string) => socket.send('~m~' + str.length + '~m~' + str)
     let connected = false
     socket.onmessage = (event) => {
