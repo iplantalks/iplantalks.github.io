@@ -36,38 +36,13 @@ function color_red(value: number) {
   return '#de425b' // dark red
 }
 
-function ycharts(ticker: string): Promise<Array<{ date: string; value: number }>> {
-  return proxy('https://ycharts.com/charts/fund_data.json?securities=id:I:' + ticker + ',include:true,,', 3600)
-    .then((r) => r.json())
-    .then((data) => data.chart_data[0][0].raw_data.map(([x, y]: Array<number>) => ({ date: new Date(x).toISOString().split('T').shift(), value: y })))
-}
-
-function filter20(data: Array<{ date: string; value: number }>) {
-  return data
-    .filter((x) => x.date.startsWith('202'))
-    .filter((x) => !x.date.startsWith('2020-'))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-}
-
-function useUSRGDPG() {
-  const [data, setData] = useState<Array<{ date: string; value: number }>>([])
-  useEffect(() => {
-    ycharts('USRGDPG').then(filter20).then(setData)
-  }, [])
-  return data
-}
-
-function useUSIR() {
-  const [data, setData] = useState<Array<{ date: string; value: number }>>([])
-  useEffect(() => {
-    ycharts('USIR').then(filter20).then(setData)
-  }, [])
-  return data
-}
-
 const options: ChartOptions<'bar'> = {
   responsive: true,
   animation: false,
+  interaction: {
+    intersect: false,
+    mode: 'index',
+  },
   scales: {
     y: {
       beginAtZero: true,
@@ -79,6 +54,71 @@ const options: ChartOptions<'bar'> = {
     },
     title: {
       display: false,
+    },
+    tooltip: {
+      callbacks: {
+        footer: (items) => {
+          try {
+            const idx = items[0].dataIndex
+            const curr_gdp = items[0].dataset.data[idx]
+            if (curr_gdp === undefined || curr_gdp === null) {
+              return
+            }
+            const curr_inflation = items[1].dataset.data[idx]
+            if (curr_inflation === undefined || curr_inflation === null) {
+              return
+            }
+            const prev_gdp = items[0].dataset.data[idx - 1]
+            if (prev_gdp === undefined || prev_gdp === null) {
+              return
+            }
+            const prev_inflation = items[1].dataset.data[idx - 1]
+            if (prev_inflation === undefined || prev_inflation === null) {
+              return
+            }
+            const grows_recovers = curr_gdp > prev_gdp
+            const inflation_rises = curr_inflation > prev_inflation
+            // console.log({ curr_gdp, curr_inflation, prev_gdp, prev_inflation, grows_recovers, inflation_rises })
+            if (grows_recovers && inflation_rises) {
+              return 'Overheat'
+            } else if (inflation_rises && !grows_recovers) {
+              return 'Stagflation'
+            } else if (!inflation_rises && !grows_recovers) {
+              return 'Reflation'
+            } else {
+              return 'Recovery'
+            }
+          } catch (error) {
+            return
+          }
+        },
+        afterFooter: (items) => {
+          try {
+            const idx = items[0].dataIndex
+            const curr_gdp = items[0].dataset.data[idx]
+            if (curr_gdp === undefined || curr_gdp === null) {
+              return
+            }
+            const curr_inflation = items[1].dataset.data[idx]
+            if (curr_inflation === undefined || curr_inflation === null) {
+              return
+            }
+            const prev_gdp = items[0].dataset.data[idx - 1]
+            if (prev_gdp === undefined || prev_gdp === null) {
+              return
+            }
+            const prev_inflation = items[1].dataset.data[idx - 1]
+            if (prev_inflation === undefined || prev_inflation === null) {
+              return
+            }
+            const gdp_arrow = curr_gdp > prev_gdp ? '⬆️' : '⬇️'
+            const inflation_arrow = curr_inflation > prev_inflation ? '⬆️' : '⬇️'
+            return `${gdp_arrow} ${prev_gdp} - ${curr_gdp} GDP\n${inflation_arrow} ${prev_inflation} - ${curr_inflation} Inflation`
+          } catch (error) {
+            return
+          }
+        },
+      },
     },
   },
 }
@@ -144,6 +184,12 @@ const TableRow = ({ country, gdp, ir }: { country: string; gdp: TradingViewDataI
   )
 }
 
+function addMonths(data: Date, months: number) {
+  const d = new Date(data)
+  d.setMonth(d.getMonth() + months)
+  return d
+}
+
 const InvestingClock = () => {
   // const { user } = useAuth()
   // useEffect(() => {
@@ -166,52 +212,60 @@ const InvestingClock = () => {
   const ua_gdp = useTradingView('ECONOMICS:UAGDPYY', '3M', 10, 600000)
   const ua_ir = useTradingView('ECONOMICS:UAIRYY', '3M', 10, 600000)
 
-  const [xlb, setXlb] = useState<YahooChartRow[]>([])
-  const [xle, setXle] = useState<YahooChartRow[]>([])
-  const [xli, setXli] = useState<YahooChartRow[]>([])
-  const [xlu, setXlu] = useState<YahooChartRow[]>([])
-  const [xlp, setXlp] = useState<YahooChartRow[]>([])
-  const [xlv, setXlv] = useState<YahooChartRow[]>([])
-  const [xlk, setXlk] = useState<YahooChartRow[]>([])
-  const [xlc, setXlc] = useState<YahooChartRow[]>([])
-  const [xlf, setXlf] = useState<YahooChartRow[]>([])
-  const [xly, setXly] = useState<YahooChartRow[]>([])
-  const [tlt, setTlt] = useState<YahooChartRow[]>([])
+  const [ndx, setNdx] = useState<YahooChartRow[]>([])
+  const [spgsci, setSpgsci] = useState<YahooChartRow[]>([])
+  const [irx, setIrx] = useState<YahooChartRow[]>([])
+  const [agg, setAgg] = useState<YahooChartRow[]>([])
+
+  const [q, setQ] = useState('')
 
   useEffect(() => {
     const period2 = new Date()
     const period1 = new Date(period2.getTime() - 5 * 365 * 24 * 60 * 60 * 1000)
-    queryChart('XLB', period1, period2).then(setXlb)
-    queryChart('XLE', period1, period2).then(setXle)
-    queryChart('XLI', period1, period2).then(setXli)
-    queryChart('XLU', period1, period2).then(setXlu)
-    queryChart('XLP', period1, period2).then(setXlp)
-    queryChart('XLV', period1, period2).then(setXlv)
-    queryChart('XLK', period1, period2).then(setXlk)
-    queryChart('XLC', period1, period2).then(setXlc)
-    queryChart('XLF', period1, period2).then(setXlf)
-    queryChart('XLY', period1, period2).then(setXly)
-    queryChart('TLT', period1, period2).then(setTlt)
+    queryChart('^NDX', period1, period2).then(setNdx)
+    queryChart('^SPGSCI', period1, period2).then(setSpgsci)
+    queryChart('^IRX', period1, period2).then(setIrx)
+    queryChart('AGG', period1, period2).then(setAgg)
   }, [])
 
-  useMemo(() => {
-    // overheat - xlb, xle, xli
-    const overheat: Array<{ date: string; value: number }> = []
-    // new Date(Math.max(xlb[0].date.getTime(), xle[0].date.getTime(), xli[0].date.getTime())).toI
-    // const dates = new Set([...xlb.map((x) => x.date), ...xle.map((x) => x.date), ...xli.map((x) => x.date)])
-    const xlb_reversed = xlb.slice().sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    const xle_reversed = xle.slice().sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    const xli_reversed = xli.slice().sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    // console.log(dates.size, xlb.length) //, xle.length, xli.length)
-    // while (true) {}
-    // stagflation - xlu, xlp, xlv
-    // reflation - xlk, xlc, tlt
-    // recovery - xlf, xly, xli
-  }, [xlb, xle, xli, xlu, xlp, xlv, xlk, xlc, xlf, xly, tlt])
-
-  const gdp = useUSRGDPG()
-  const ir = useUSIR()
   const [corner, setCorner] = useState('')
+
+  const demo = useMemo(() => {
+    if (!q && !us_gdp.length) {
+      return
+    }
+    if (!q && us_gdp.length) {
+      setQ(us_gdp[us_gdp.length - 1].date.split('T').shift() || '')
+      return
+    }
+    const start = new Date(q)
+    const end = addMonths(start, 3)
+    const filtered_ndx = ndx.filter((x) => x.date >= start && x.date < end)
+    const filtered_spgsci = spgsci.filter((x) => x.date >= start && x.date < end)
+    const filtered_irx = irx.filter((x) => x.date >= start && x.date < end)
+    const filtered_agg = agg.filter((x) => x.date >= start && x.date < end)
+    return {
+      labels: filtered_ndx.map((x) => x.date.toISOString().split('T').shift()),
+      datasets: [
+        {
+          label: 'cyclical growth (stocks)',
+          data: filtered_ndx.map((x) => (x.close - filtered_ndx[0].close) / filtered_ndx[0].close),
+        },
+        {
+          label: 'cyclical value (commodities)',
+          data: filtered_spgsci.map((x) => (x.close - filtered_spgsci[0].close) / filtered_spgsci[0].close),
+        },
+        {
+          label: 'defensive value (cash)',
+          data: filtered_irx.map((x) => (x.close - filtered_irx[0].close) / filtered_irx[0].close),
+        },
+        {
+          label: 'defensive growth (bonds)',
+          data: filtered_agg.map((x) => (x.close - filtered_agg[0].close) / filtered_agg[0].close),
+        },
+      ],
+    } as ChartData<'line'>
+  }, [q, ndx, spgsci, irx, agg])
 
   return (
     <main>
@@ -295,25 +349,25 @@ const InvestingClock = () => {
                   if (idx === undefined) {
                     return
                   }
+                  setQ(us_gdp[idx].date.split('T').shift() || '')
                   // console.log(x, y, idx)
-                  const currentGDP = us_gdp[idx]?.close
-                  const currentCPI = us_ir[idx]?.close
-                  const previousGDP = us_gdp[idx - 1]?.close
-                  const previousCPI = us_ir[idx - 1]?.close
+                  const curr_gdp = us_gdp[idx]?.close
+                  const curr_inflation = us_ir[idx]?.close
+                  const prev_gdp = us_gdp[idx - 1]?.close
+                  const prev_inflation = us_ir[idx - 1]?.close
                   // console.log(idx, currentGDP, currentCPI, previousGDP, previousCPI)
-                  const isGDPIncreasing = currentGDP > previousGDP
-                  const isCPIIncreasing = currentCPI > previousCPI
+                  const grows_recovers = curr_gdp > prev_gdp
+                  const inflation_rises = curr_inflation > prev_inflation
                   // console.log(x, y, isGDPIncreasing, isCPIIncreasing)
 
-                  if (isGDPIncreasing && isCPIIncreasing) {
+                  if (grows_recovers && inflation_rises) {
                     setCorner('tr')
-                  } else if (isGDPIncreasing && !isCPIIncreasing) {
-                    setCorner('tl')
-                  } else if (!isGDPIncreasing && isCPIIncreasing) {
+                  } else if (inflation_rises && !grows_recovers) {
                     setCorner('br')
-                  } else if (!isGDPIncreasing && !isCPIIncreasing) {
-                  } else {
+                  } else if (!inflation_rises && !grows_recovers) {
                     setCorner('bl')
+                  } else {
+                    setCorner('tl')
                   }
                 },
               }}
@@ -342,11 +396,54 @@ const InvestingClock = () => {
         <details>
           <summary>Примітки</summary>
           <ul>
+            <li>USGDPYY - ВВП</li>
+            <li>USIRYY - інфляція</li>
+            <li>Значення ВВП оновлюється щоквартала</li>
             <li>Графік показує значення ВВП та інфляції</li>
             <li>В залежності від значення міняється насиченість кольору</li>
             <li>Якщо поводити мишкою по графіку - справа підсвічується фаза</li>
+            <li>Дата по осі X - початок періоду, тобто 2024-01-01 - перший квартал</li>
+            <li>Розрахунок робиться відповідно зміни значень щодо попереднього кварталу</li>
           </ul>
         </details>
+
+        <p>TODO: ідея в тому щоб подивитися як у період {q} вели себе різні види активів</p>
+        <div>
+          {demo && (
+            <Chart
+              type="line"
+              options={{
+                responsive: true,
+                animation: false,
+                interaction: {
+                  intersect: false,
+                  mode: 'index',
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      format: {
+                        style: 'percent',
+                      },
+                    },
+                  },
+                },
+              }}
+              data={demo}
+            />
+          )}
+        </div>
+
+        <p>TODO: потрібно розібратися з індексами</p>
+
+        <h2>Індекси</h2>
+        <ul>
+          <li>NDX - recovery</li>
+          <li>SPGSCI - overheat</li>
+          <li>IRX - stagflation</li>
+          <li>AGG - reflation</li>
+        </ul>
 
         <h2>Індекси</h2>
         <p>
@@ -460,7 +557,7 @@ const InvestingClock = () => {
           </li>
         </ul>
 
-        <p className="mt-5">Індекси</p>
+        <h2>Індекси</h2>
         <ul>
           <li>VT - stocks</li>
           <li>GLAG - bonds</li>
