@@ -13,7 +13,7 @@ import { BubbleDataPoint, Chart as ChartJs, ChartTypeRegistry, Point } from 'cha
 import { Chart, getElementAtEvent, getElementsAtEvent, getDatasetAtEvent } from 'react-chartjs-2'
 import { ChartData, ChartEvent, ChartOptions } from 'chart.js/auto'
 import { useAuth } from '../../../context/auth'
-import { useTradingView } from '../../../utils/tradingview/tradingviewcandles'
+import { TradingViewDataItem, useTradingView } from '../../../utils/tradingview/tradingview'
 import { YahooChartRow, queryChart } from '../../../utils/yahoo'
 
 function color_green(value: number) {
@@ -83,17 +83,17 @@ const options: ChartOptions<'bar'> = {
   },
 }
 
-const TableRow = ({ country, gdp, ir }: { country: string; gdp: number[][]; ir: number[][] }) => {
+const TableRow = ({ country, gdp, ir }: { country: string; gdp: TradingViewDataItem[]; ir: TradingViewDataItem[] }) => {
   if (gdp.length < 2 || ir.length < 2) {
     return null
   }
 
-  const gdp_curr = gdp[gdp.length - 1][1]
-  const gdp_prev = gdp[gdp.length - 2][1]
+  const gdp_curr = gdp[gdp.length - 1].close
+  const gdp_prev = gdp[gdp.length - 2].close
   const gdp_color = gdp_curr < 2 ? 'text-danger' : gdp_curr > 4 ? 'text-success' : ''
 
-  const id_curr = ir[ir.length - 1][1]
-  const id_prev = ir[ir.length - 2][1]
+  const id_curr = ir[ir.length - 1].close
+  const id_prev = ir[ir.length - 2].close
   const id_color = id_curr < 2 ? 'text-success' : id_curr > 4 ? 'text-danger' : ''
 
   const inflation_rises = id_curr > id_prev
@@ -154,17 +154,17 @@ const InvestingClock = () => {
 
   const ref = useRef(null)
 
-  const us_gdp = useTradingView('ECONOMICS:USGDPYY', '3M', 10, true)
-  const us_ir = useTradingView('ECONOMICS:USIRYY', '3M', 10, true)
+  const us_gdp = useTradingView('ECONOMICS:USGDPYY', '3M', 10, 600000)
+  const us_ir = useTradingView('ECONOMICS:USIRYY', '3M', 10, 600000)
 
-  const cn_gdp = useTradingView('ECONOMICS:CNGDPYY', '3M', 10, true)
-  const cn_ir = useTradingView('ECONOMICS:CNIRYY', '3M', 10, true)
+  const cn_gdp = useTradingView('ECONOMICS:CNGDPYY', '3M', 10, 600000)
+  const cn_ir = useTradingView('ECONOMICS:CNIRYY', '3M', 10, 600000)
 
-  const eu_gdp = useTradingView('ECONOMICS:EUGDPYY', '3M', 10, true)
-  const eu_ir = useTradingView('ECONOMICS:EUIRYY', '3M', 10, true)
+  const eu_gdp = useTradingView('ECONOMICS:EUGDPYY', '3M', 10, 600000)
+  const eu_ir = useTradingView('ECONOMICS:EUIRYY', '3M', 10, 600000)
 
-  const ua_gdp = useTradingView('ECONOMICS:UAGDPYY', '3M', 10, true)
-  const ua_ir = useTradingView('ECONOMICS:UAIRYY', '3M', 10, true)
+  const ua_gdp = useTradingView('ECONOMICS:UAGDPYY', '3M', 10, 600000)
+  const ua_ir = useTradingView('ECONOMICS:UAIRYY', '3M', 10, 600000)
 
   const [xlb, setXlb] = useState<YahooChartRow[]>([])
   const [xle, setXle] = useState<YahooChartRow[]>([])
@@ -296,10 +296,10 @@ const InvestingClock = () => {
                     return
                   }
                   // console.log(x, y, idx)
-                  const currentGDP = us_gdp[idx]?.[1]
-                  const currentCPI = us_ir[idx]?.[1]
-                  const previousGDP = us_gdp[idx - 1]?.[1]
-                  const previousCPI = us_ir[idx - 1]?.[1]
+                  const currentGDP = us_gdp[idx]?.close
+                  const currentCPI = us_ir[idx]?.close
+                  const previousGDP = us_gdp[idx - 1]?.close
+                  const previousCPI = us_ir[idx - 1]?.close
                   // console.log(idx, currentGDP, currentCPI, previousGDP, previousCPI)
                   const isGDPIncreasing = currentGDP > previousGDP
                   const isCPIIncreasing = currentCPI > previousCPI
@@ -318,17 +318,17 @@ const InvestingClock = () => {
                 },
               }}
               data={{
-                labels: us_gdp.map((x) => new Date(x[0] * 1000).toISOString().split('T').shift()),
+                labels: us_gdp.map((x) => x.date.split('T').shift()),
                 datasets: [
                   {
                     label: 'USGDPYY',
-                    data: us_gdp.map((x) => x[1]),
-                    backgroundColor: us_gdp.map((x) => color_green(x[1])),
+                    data: us_gdp.map((x) => x.close),
+                    backgroundColor: us_gdp.map((x) => color_green(x.close)),
                   },
                   {
                     label: 'USIRYY',
-                    data: us_ir.map((x) => x[1]),
-                    backgroundColor: us_ir.map((x) => color_red(x[1])),
+                    data: us_ir.map((x) => x.close),
+                    backgroundColor: us_ir.map((x) => color_red(x.close)),
                   },
                 ],
               }}
