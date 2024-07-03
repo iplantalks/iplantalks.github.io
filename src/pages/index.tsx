@@ -171,6 +171,26 @@ const IndexPage: React.FC<PageProps> = () => {
                 </Link>
               </div>
             </div>
+            <div className="col d-flex align-items-start">
+              <i className="fa-solid fa-coins flex-shrink-0 me-3 fs-1 text-secondary"></i>
+              <div>
+                <h3 className="fs-2 text-body-emphasis">Flip the Coin</h3>
+                <p>Гра у підкидання монетки.</p>
+                <Link to="/garage/flip-the-coin" className="btn btn-primary">
+                  Відкрити
+                </Link>
+              </div>
+            </div>
+            <div className="col d-flex align-items-start">
+              <i className="fa-regular fa-calendar flex-shrink-0 me-3 fs-1 text-secondary"></i>
+              <div>
+                <h3 className="fs-2 text-body-emphasis">Ten Days</h3>
+                <p>Що буде якщо пропустити 10 найкращих днів.</p>
+                <Link to="/garage/ten-days" className="btn btn-primary">
+                  Відкрити
+                </Link>
+              </div>
+            </div>
           </div>
           <p>
             Якщо маєш ідеї чи побажання -{' '}
