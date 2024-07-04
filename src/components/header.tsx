@@ -79,6 +79,7 @@ export const Header = () => (
                 <Card icon="fa-regular fa-clock" title="Investing Clock" to="/garage/investing-clock" description="Фаза ринку у якій ми знаходимося." />
                 <Card icon="fa-solid fa-coins" title="Flip the Coin" to="/garage/flip-the-coin" description="Гра у підкидання монетки." />
                 <Card icon="fa-regular fa-calendar" title="Ten Days" to="/garage/ten-days" description="Що буде якщо пропустити 10 найкращих днів." />
+                <Card icon="fa-solid fa-chart-pie" title="Allocator" to="/garage/allocator" description="Як саме аллокація впливає на дохідність портфелю." />
               </div>
             </div>
           </div>
