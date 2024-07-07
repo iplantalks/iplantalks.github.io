@@ -31,6 +31,7 @@ export const inflation = [
 ]
 
 export const exchange_rate = [
+  { year: 1997, value: 1.89 },
   { year: 1998, value: 2.44 },
   { year: 1999, value: 4.13 },
   { year: 2000, value: 5.44 },
@@ -60,10 +61,16 @@ export const exchange_rate = [
   { year: 2024, value: 42 },
 ]
 
-export const cash_usd = exchange_rate.map((x, idx) => ({ year: x.year, value: idx === 0 ? 0 : ((exchange_rate[idx].value - exchange_rate[idx - 1].value) / exchange_rate[idx - 1].value) * 100 }))
+export const cash_usd = exchange_rate
+  .map(({ year, value }) => {
+    const prev = exchange_rate.find((x) => x.year === year - 1)?.value || 1
+    const change = ((value - prev) / prev) * 100
+    return { year, value: change }
+  })
+  .slice(1)
 
 export const deposit_uah = [
-  { year: 1998, value: 40 },
+  { year: 1998, value: 40.0 },
   { year: 1999, value: 49.2 },
   { year: 2000, value: 31.8 },
   { year: 2001, value: 20.3 },
@@ -74,29 +81,29 @@ export const deposit_uah = [
   { year: 2006, value: 14.7 },
   { year: 2007, value: 14.5 },
   { year: 2008, value: 10.7 },
-  { year: 2009, value: 20 },
-  { year: 2010, value: 17 },
+  { year: 2009, value: 20.0 },
+  { year: 2010, value: 17.0 },
   { year: 2011, value: 14.4 },
-  { year: 2012, value: 16.3 },
+  { year: 2012, value: 16.25 },
   { year: 2013, value: 17.7 },
-  { year: 2014, value: 19.5 },
-  { year: 2015, value: 21 },
-  { year: 2016, value: 20 },
-  { year: 2017, value: 16.4 },
-  { year: 2018, value: 14.1 },
-  { year: 2019, value: 15.5 },
-  { year: 2020, value: 11.9 },
-  { year: 2021, value: 8.4 },
-  { year: 2022, value: 8.8 },
-  { year: 2023, value: 13.9 },
-  { year: 2024, value: 13.1 },
+  { year: 2014, value: 16.56 },
+  { year: 2015, value: 16.72 },
+  { year: 2016, value: 16.13 },
+  { year: 2017, value: 13.17 },
+  { year: 2018, value: 11.38 },
+  { year: 2019, value: 12.5 },
+  { year: 2020, value: 9.54 },
+  { year: 2021, value: 6.79 },
+  { year: 2022, value: 7.04 },
+  { year: 2023, value: 11.22 },
+  { year: 2024, value: 10.55 },
 ]
 
 export const deposit_usd_orig = [
   { year: 1998, value: 6.8 },
   { year: 1999, value: 6.8 },
   { year: 2000, value: 6.8 },
-  { year: 2001, value: 6 },
+  { year: 2001, value: 6.0 },
   { year: 2002, value: 8.4 },
   { year: 2003, value: 8.4 },
   { year: 2004, value: 10.5 },
@@ -107,24 +114,24 @@ export const deposit_usd_orig = [
   { year: 2009, value: 13.3 },
   { year: 2010, value: 11.6 },
   { year: 2011, value: 7.8 },
-  { year: 2012, value: 7.5 },
-  { year: 2013, value: 6.8 },
-  { year: 2014, value: 8.3 },
-  { year: 2015, value: 9.1 },
-  { year: 2016, value: 6.8 },
-  { year: 2017, value: 4.8 },
-  { year: 2018, value: 3.3 },
-  { year: 2019, value: 3.4 },
-  { year: 2020, value: 1.2 },
-  { year: 2021, value: 1 },
-  { year: 2022, value: 0.8 },
-  { year: 2023, value: 0.8 },
-  { year: 2024, value: 3.4 },
+  { year: 2012, value: 7.48 },
+  { year: 2013, value: 6.76 },
+  { year: 2014, value: 7.08 },
+  { year: 2015, value: 7.24 },
+  { year: 2016, value: 5.46 },
+  { year: 2017, value: 3.9 },
+  { year: 2018, value: 2.69 },
+  { year: 2019, value: 2.74 },
+  { year: 2020, value: 0.96 },
+  { year: 2021, value: 0.81 },
+  { year: 2022, value: 0.64 },
+  { year: 2023, value: 0.67 },
+  { year: 2024, value: 2.74 },
 ]
 
 export const deposit_usd = deposit_usd_orig.map(({ year, value }) => {
-  const er = cash_usd.find((x) => x.year === year)?.value || 1
-  const val = value * er
+  const er = cash_usd.find((x) => x.year === year)?.value || 0
+  const val = ((1 + value / 100) * (1 + er / 100) - 1) * 100 // тут должна быть формула ((1 + deposit_usd) * (1 + cash_usd) - 1)
   return { year, value: val }
 })
 
@@ -147,7 +154,7 @@ export const ovdp_uah = [
   { year: 2024, value: 13.1 },
 ]
 
-export const ovdp_usd = [
+export const ovdp_usd_orig = [
   { year: 2011, value: 8.92 },
   { year: 2012, value: 8.92 },
   { year: 2013, value: 7.63 },
@@ -164,7 +171,13 @@ export const ovdp_usd = [
   { year: 2024, value: 4.71 },
 ]
 
-export const spy = [
+export const ovdp_usd = ovdp_usd_orig.map(({ year, value }) => {
+  const er = cash_usd.find((x) => x.year === year)?.value || 0
+  const val = ((1 + value / 100) * (1 + er / 100) - 1) * 100 // тут должна быть формула ((1 + deposit_usd) * (1 + cash_usd) - 1)
+  return { year, value: val }
+})
+
+export const spy_orig = [
   { year: 1998, value: 28.34 },
   { year: 1999, value: 20.89 },
   { year: 2000, value: -9.03 },
@@ -194,43 +207,12 @@ export const spy = [
   { year: 2024, value: 12.7 },
 ]
 
-// function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
-//   return Array.from(new Set(values.map((v) => v[key])))
-// }
+export const spy = spy_orig.map(({ year, value }) => {
+  const er = cash_usd.find((x) => x.year === year)?.value || 0
+  const val = ((1 + value / 100) * (1 + er / 100) - 1) * 100 // тут должна быть формула ((1 + deposit_usd) * (1 + cash_usd) - 1)
+  return { year, value: val }
+})
 
-// export type DataKey = keyof (typeof data)[0]
-// export type DataKeysExceptYear = Exclude<DataKey, 'year'>
-
-export const data = [
-  { year: 1998, inflation: 0.2, cash_usd: 0.31, deposit_uah: 0.4, deposit_usd: 0.07, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: 0.28 },
-  { year: 1999, inflation: 0.19, cash_usd: 0.69, deposit_uah: 0.49, deposit_usd: 0.07, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: 0.21 },
-  { year: 2000, inflation: 0.26, cash_usd: 0.32, deposit_uah: 0.32, deposit_usd: 0.07, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: -0.09 },
-  { year: 2001, inflation: 0.06, cash_usd: -0.01, deposit_uah: 0.2, deposit_usd: 0.06, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: -0.12 },
-  { year: 2002, inflation: -0.01, cash_usd: -0.01, deposit_uah: 0.23, deposit_usd: 0.08, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: -0.22 },
-  { year: 2003, inflation: 0.08, cash_usd: 0.0, deposit_uah: 0.16, deposit_usd: 0.08, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: 0.28 },
-  { year: 2004, inflation: 0.12, cash_usd: 0.0, deposit_uah: 0.16, deposit_usd: 0.11, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: 0.11 },
-  { year: 2005, inflation: 0.1, cash_usd: -0.04, deposit_uah: 0.16, deposit_usd: 0.11, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: 0.05 },
-  { year: 2006, inflation: 0.12, cash_usd: -0.01, deposit_uah: 0.15, deposit_usd: 0.1, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: 0.16 },
-  { year: 2007, inflation: 0.17, cash_usd: 0.0, deposit_uah: 0.15, deposit_usd: 0.1, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: 0.05 },
-  { year: 2008, inflation: 0.22, cash_usd: 0.04, deposit_uah: 0.11, deposit_usd: 0.1, ovdp_uah: 0.0, ovdp_usd: 0.0, spy: -0.37 },
-  { year: 2009, inflation: 0.12, cash_usd: 0.48, deposit_uah: 0.2, deposit_usd: 0.13, ovdp_uah: 0.12, ovdp_usd: 0.0, spy: 0.26 },
-  { year: 2010, inflation: 0.09, cash_usd: 0.02, deposit_uah: 0.17, deposit_usd: 0.12, ovdp_uah: 0.1, ovdp_usd: 0.0, spy: 0.15 },
-  { year: 2011, inflation: 0.05, cash_usd: 0.0, deposit_uah: 0.14, deposit_usd: 0.08, ovdp_uah: 0.09, ovdp_usd: 0.09, spy: 0.02 },
-  { year: 2012, inflation: 0.0, cash_usd: 0.01, deposit_uah: 0.16, deposit_usd: 0.07, ovdp_uah: 0.13, ovdp_usd: 0.09, spy: 0.16 },
-  { year: 2013, inflation: 0.01, cash_usd: 0.0, deposit_uah: 0.18, deposit_usd: 0.07, ovdp_uah: 0.13, ovdp_usd: 0.08, spy: 0.32 },
-  { year: 2014, inflation: 0.25, cash_usd: 0.37, deposit_uah: 0.19, deposit_usd: 0.08, ovdp_uah: 0.14, ovdp_usd: 0.06, spy: 0.14 },
-  { year: 2015, inflation: 0.43, cash_usd: 1.14, deposit_uah: 0.21, deposit_usd: 0.09, ovdp_uah: 0.13, ovdp_usd: 0.09, spy: 0.01 },
-  { year: 2016, inflation: 0.12, cash_usd: 0.12, deposit_uah: 0.2, deposit_usd: 0.07, ovdp_uah: 0.09, ovdp_usd: 0.07, spy: 0.12 },
-  { year: 2017, inflation: 0.14, cash_usd: 0.03, deposit_uah: 0.16, deposit_usd: 0.05, ovdp_uah: 0.1, ovdp_usd: 0.05, spy: 0.22 },
-  { year: 2018, inflation: 0.1, cash_usd: -0.02, deposit_uah: 0.14, deposit_usd: 0.03, ovdp_uah: 0.18, ovdp_usd: 0.06, spy: -0.04 },
-  { year: 2019, inflation: 0.04, cash_usd: 0.03, deposit_uah: 0.16, deposit_usd: 0.03, ovdp_uah: 0.17, ovdp_usd: 0.06, spy: 0.31 },
-  { year: 2020, inflation: 0.05, cash_usd: 0.03, deposit_uah: 0.12, deposit_usd: 0.01, ovdp_uah: 0.1, ovdp_usd: 0.03, spy: 0.18 },
-  { year: 2021, inflation: 0.1, cash_usd: -0.01, deposit_uah: 0.08, deposit_usd: 0.01, ovdp_uah: 0.11, ovdp_usd: 0.04, spy: 0.28 },
-  { year: 2022, inflation: 0.27, cash_usd: 0.05, deposit_uah: 0.09, deposit_usd: 0.01, ovdp_uah: 0.18, ovdp_usd: 0.04, spy: -0.18 },
-  { year: 2023, inflation: 0.04, cash_usd: 0.25, deposit_uah: 0.14, deposit_usd: 0.01, ovdp_uah: 0.19, ovdp_usd: 0.05, spy: 0.24 },
-  { year: 2024, inflation: 0.04, cash_usd: 0.15, deposit_uah: 0.13, deposit_usd: 0.03, ovdp_uah: 0.13, ovdp_usd: 0.05, spy: 0.12 },
-]
-
-export function useData() {
-  return data
+export const useData = (): Record<string, Array<{ year: number; value: number }>> => {
+  return { cash_usd, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy }
 }
