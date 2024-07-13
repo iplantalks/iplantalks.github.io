@@ -3,11 +3,14 @@ import * as React from 'react'
 import '../../styles/common.css'
 import { Header } from '../../components/header'
 import { useState, useEffect } from 'react'
-import Plot from 'react-plotly.js'
 import { proxy } from '../../utils/proxy'
 import { PlotRelayoutEvent } from 'plotly.js'
 import Join from '../../components/join'
 import { useAuth } from '../../context/auth'
+
+// import Plot from 'react-plotly.js'
+import { lazy } from 'react'
+let Plot = lazy(() => import('react-plotly.js'))
 
 const dimensions = [
   'marketCap',
@@ -95,6 +98,10 @@ async function fetchBubbles(x: string, y: string, tickers: string[]) {
 }
 
 const Chart = ({ x, y, tickers, onRelayout }: { x: string; y: string; tickers: string[]; onRelayout: (tickers: string[]) => void }) => {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
   const [data, setData] = useState<IBubble[]>([])
 
   useEffect(() => {
