@@ -199,6 +199,8 @@ const Orders = () => {
             <img src={popup} style={{ maxWidth: '50vw' }} />
           </p>
         </details>
+      </div>
+      <div className="container-fluid">
         {transactions.length > 0 && (
           <table className="table table-striped table-sm">
             <thead style={{ position: 'sticky', top: 0 }}>
@@ -211,6 +213,12 @@ const Orders = () => {
                 </th>
                 <th className="fw-normal">
                   Поточна ціна <span className="opacity-50">$</span>
+                </th>
+                <th className="fw-normal">
+                  Різниця <span className="opacity-50">$</span>
+                </th>
+                <th className="fw-normal">
+                  Різниця <span className="opacity-50">%</span>
                 </th>
                 <th className="fw-normal">
                   Комісія <span className="opacity-50">$</span>
@@ -227,6 +235,9 @@ const Orders = () => {
                 <th className="fw-normal">
                   Фін. результат брутто <span className="opacity-50">грн</span>
                 </th>
+                <th className="fw-normal">
+                  Різниця <span className="opacity-50">%</span>
+                </th>
                 <th className="fw-normal">Податок</th>
                 <th className="fw-normal">
                   Фін. результат нетто <span className="opacity-50">грн</span>
@@ -238,12 +249,15 @@ const Orders = () => {
                 <td></td>
                 <td>{/*currency(filtered.map((f) => f.price).reduce((a, b) => a + b, 0))*/}</td>
                 <td>{/*currency(filtered.map((f) => f.currentPrice).reduce((a, b) => a + b, 0))*/}</td>
+                <td></td>
+                <td></td>
                 <td>{/*currency(filtered.map((f) => f.commision).reduce((a, b) => a + b, 0))*/}</td>
                 <td></td>
                 <td>{currency(filtered.map((f) => f.spendUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.valueUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.incomeUah).reduce((a, b) => a + b, 0))}</td>
-                <td>{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
+                <td></td>
+                <td className="table-secondary">{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
               </tr>
             </thead>
@@ -279,6 +293,13 @@ const Orders = () => {
                   </td>
                   <td title={'Ціна покупки $' + currency(t.price)}>{currency(t.price)}</td>
                   <td title={'Поточна ціна $' + currency(t.currentPrice)}>{currency(t.currentPrice)}</td>
+                  <td title={'Різниця $' + currency(t.currentPrice - t.price) + ' = ' + currency(t.currentPrice) + ' - ' + currency(t.price)}>{currency(t.currentPrice - t.price)}</td>
+                  <td
+                    className="text-secondary"
+                    title={'Різниця ' + currency(((t.currentPrice - t.price) / t.price) * 100) + '% = (' + currency(t.currentPrice) + ' - ' + currency(t.price) + ') / ' + currency(t.price) + ' * 100'}
+                  >
+                    {currency(((t.currentPrice - t.price) / t.price) * 100)}
+                  </td>
                   <td title={'Утримано комісії $' + currency(t.commision)}>{currency(t.commision)}</td>
                   <td title={'Курс долара на дату покупки був ' + currency(t.exchangeRate) + 'грн'}>{currency(t.exchangeRate)}</td>
                   <td title={'Інвестовано в гривні\nshares * price * exchangeRate = \n' + t.shares + ' * ' + t.price + ' * ' + t.exchangeRate + ' = ' + t.spendUah}>{currency(t.spendUah)}</td>
@@ -286,7 +307,15 @@ const Orders = () => {
                     {currency(t.valueUah)}
                   </td>
                   <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td>
-                  <td>{currency(t.taxUah)}</td>
+                  <td
+                    className="text-secondary"
+                    title={
+                      'Різниця ' + currency(((t.valueUah - t.spendUah) / t.spendUah) * 100) + '% = (' + currency(t.valueUah) + ' - ' + currency(t.spendUah) + ') / ' + currency(t.spendUah) + ' * 100'
+                    }
+                  >
+                    {currency(((t.valueUah - t.spendUah) / t.spendUah) * 100)}
+                  </td>
+                  <td className="table-secondary">{currency(t.taxUah)}</td>
                   <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td>
                 </tr>
               ))}
@@ -298,17 +327,22 @@ const Orders = () => {
                 <td></td>
                 <td>{/*currency(filtered.map((f) => f.price).reduce((a, b) => a + b, 0))*/}</td>
                 <td>{/*currency(filtered.map((f) => f.currentPrice).reduce((a, b) => a + b, 0))*/}</td>
+                <td></td>
+                <td></td>
                 <td>{/*currency(filtered.map((f) => f.commision).reduce((a, b) => a + b, 0))*/}</td>
                 <td></td>
                 <td title="Сума колонки">{currency(filtered.map((f) => f.spendUah).reduce((a, b) => a + b, 0))}</td>
                 <td title="Сума колонки">{currency(filtered.map((f) => f.valueUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.incomeUah).reduce((a, b) => a + b, 0))}</td>
-                <td>{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
+                <td></td>
+                <td className="table-secondary">{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
               </tr>
             </tfoot>
           </table>
         )}
+      </div>
+      <div className="container my-5">
         {negative && (
           <p>
             Так наприклад {negative.ticker} куплений {negative.date.toISOString().split('T').shift()} на разі має негативний результат{' '}
