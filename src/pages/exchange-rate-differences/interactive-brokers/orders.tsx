@@ -6,7 +6,6 @@ import { currency } from '../../../utils/formatters'
 import { getExchangeRate } from '../../../utils/exchange-rate'
 import { getPrice } from '../../../utils/yahoo'
 import statements from '../../../images/exchange-rate-differences/statements.png'
-import msmoney from '../../../images/exchange-rate-differences/msmoney.png'
 import popup from '../../../images/exchange-rate-differences/popup.png'
 import Join from '../../../components/join'
 import Hero from '../../../components/hero'
@@ -80,8 +79,8 @@ const Orders = () => {
 
   const negative = useMemo(() => filtered.find((t) => t.netIncomeUah < 0), [filtered])
 
-  const handle = (text: string) => {
-    const ofx = parseMsMoneyOfxReport(text)
+  const handle = (ofx: OFX /*text: string*/) => {
+    // const ofx = parseMsMoneyOfxReport(text)
     appendMessage(`Звіт зчитано, знайдено ${ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK?.length} покупок`)
     setOfx(ofx)
 
@@ -149,15 +148,57 @@ const Orders = () => {
     }
   }
 
-  const handleFileChoosen = async (file: File) => {
-    const text = await file.text()
-    handle(text)
+  const handleFileChoosen = async (files: FileList | null) => {
+    if (!files) {
+      return
+    }
+    const reports: OFX[] = []
+    for (const file of Array.from(files)) {
+      const text = await file.text()
+      const report = parseMsMoneyOfxReport(text)
+      reports.push(report)
+    }
+
+    const ofx = reports.reduce(
+      (result, ofx) => {
+        if (!result) {
+          return ofx
+        }
+        result.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK?.push(...(ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK || []))
+        for (const stock of ofx.SECLISTMSGSRSV1.SECLIST.STOCKINFO || []) {
+          if (!result.SECLISTMSGSRSV1.SECLIST.STOCKINFO?.find((s) => s.SECINFO.SECID.UNIQUEID === stock.SECINFO.SECID.UNIQUEID && s.SECINFO.SECID.UNIQUEIDTYPE === stock.SECINFO.SECID.UNIQUEIDTYPE)) {
+            result.SECLISTMSGSRSV1.SECLIST.STOCKINFO?.push(stock)
+          }
+        }
+        return result
+      },
+      {
+        INVSTMTMSGSRSV1: {
+          INVSTMTTRNRS: {
+            INVSTMTRS: {
+              INVTRANLIST: {
+                BUYSTOCK: [],
+              },
+            },
+          },
+        },
+        SECLISTMSGSRSV1: {
+          SECLIST: {
+            STOCKINFO: [],
+          },
+        },
+      } as unknown as OFX
+    )
+
+    handle(ofx)
   }
 
   useEffect(() => {
     fetch('/exchange-rate-differences/interactive-brokers/orders/sample.ofx')
       .then((res) => res.text())
+      .then((text) => parseMsMoneyOfxReport(text))
       .then(handle)
+    //.then(handle)
   }, [])
 
   return (
@@ -177,26 +218,31 @@ const Orders = () => {
                 приклад
               </a>
             </label>
-            <input id="ofx" className="form-control" type="file" accept=".ofx" onChange={(e) => handleFileChoosen(e.target.files![0])} />
+            <input id="ofx" className="form-control" type="file" accept=".ofx" multiple={true} onChange={(e) => handleFileChoosen(e.target.files)} />
           </p>
         </div>
+        <p>Примітка: IBKR не дозволяє сформувати звіт за період більший ніж рік - якщо у вас є покупки в різні роки - просто сформуйте декілька звітів та загрузіть їх усі одразу</p>
         <details className="my-3">
           <summary>Покрокова інструкція &mdash; як сформувати звіт</summary>
           <p>
-            Переходимо на сторінку <b>Statements</b> розділу <b>Performance & Reports</b>
+            Переходимо на сторінку <b>Third-Party Reports</b> розділу <b>Performance & Reports</b>
           </p>
           <p>
             <img src={statements} style={{ maxWidth: '50vw' }} />
           </p>
           <p>
-            Зправа, знизу, буде кнопка для формування звіту <b>MS Money</b>
+            Знизу, буде блок <b>Third-Party Downloads</b> для формування звіту
           </p>
           <p>
-            <img src={msmoney} style={{ maxWidth: '50vw' }} />
+            Виберіть <b>Custom Date Range</b> та дати, за якими буде сформовано звіт. Виберіть, приблизні, дати коли ви купляли будь які акції
           </p>
-          <p>Зʼявиться віконце для вибору дат, за якими буде сформовано звіт. Виберіть, приблизні, дати коли ви купляли будь які акції</p>
           <p>
             <img src={popup} style={{ maxWidth: '50vw' }} />
+          </p>
+          <p>
+            <b>Provider - MS Money</b> - MS Money - один з розповсюджених форматів обіну фінансовою інформацією Open Finance Exchange (ofx), є нічим іншим як звичайний XML файлик з транзакціями за
+            період, отже його можна відрити в блокноті та подивитися що там в середині. Ця сторінка просто "візулізує" його. Причина чому вибрали MS Money - за для того щоб не зійти з розуму
+            намагаючись зрозумінти як сформувати кастомний Flex звіт.
           </p>
         </details>
       </div>
