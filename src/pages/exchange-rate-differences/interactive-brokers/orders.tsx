@@ -24,6 +24,7 @@ interface Transaction {
   shares: number
   price: number
   commision: number
+  currency: string
 
   spendUah: number
   valueUah: number
@@ -96,6 +97,8 @@ const Orders = () => {
         price: t.INVBUY.UNITPRICE, // parseFloat(transaction.querySelector('UNITPRICE')?.textContent || ''),
         commision: t.INVBUY.COMMISSION || 0, // parseFloat(transaction.querySelector('COMMISSION')?.textContent || ''),
 
+        currency: t.INVBUY.CURRENCY?.CURSYM || 'USD',
+
         spendUah: 0,
         valueUah: 0,
         incomeUah: 0,
@@ -105,6 +108,9 @@ const Orders = () => {
         currentPrice: 0,
 
         sharesOriginal: t.INVBUY.UNITS || 0,
+
+        incomeUahTitle: '',
+        netIncomeUahTitle: '',
       })) || []
     setTransactions(transactions)
 
@@ -246,65 +252,66 @@ const Orders = () => {
           </p>
         </details>
       </div>
-      <div className="container-fluid">
+      <div className="container">
         {transactions.length > 0 && (
           <table className="table table-striped table-sm">
             <thead style={{ position: 'sticky', top: 0 }}>
-              <tr className="table-dark">
-                <th className="fw-normal">Дата</th>
-                <th className="fw-normal">Тікер</th>
-                <th className="fw-normal">Кількість</th>
+              <tr className="table-dark small">
                 <th className="fw-normal">
-                  Ціна покупки <span className="opacity-50">$</span>
+                  Дата
+                  <br />
+                  <span className="opacity-50">купівлі</span>
                 </th>
                 <th className="fw-normal">
-                  Поточна ціна <span className="opacity-50">$</span>
+                  Тікер
+                  <br />
+                  <span className="opacity-50">&nbsp;</span>
                 </th>
                 <th className="fw-normal">
-                  Різниця <span className="opacity-50">$</span>
+                  Кількість
+                  <br />
+                  <span className="opacity-50">шт</span>
                 </th>
                 <th className="fw-normal">
-                  Різниця <span className="opacity-50">%</span>
+                  Валюта
+                  <br />
+                  <span className="opacity-50">од. валюти</span>
                 </th>
                 <th className="fw-normal">
-                  Комісія <span className="opacity-50">$</span>
+                  Ціна покупки
+                  <br />
+                  <span className="opacity-50">од. валюти</span>
                 </th>
                 <th className="fw-normal">
-                  Курс <span className="opacity-50">грн</span>
+                  Поточна ціна
+                  <br />
+                  <span className="opacity-50">од. валюти</span>
                 </th>
                 <th className="fw-normal">
-                  Інвестовано <span className="opacity-50">грн</span>
+                  Комісія
+                  <br />
+                  <span className="opacity-50">од. валюти</span>
                 </th>
                 <th className="fw-normal">
-                  Поточна вартість <span className="opacity-50">грн</span>
+                  Фін. результат брутто
+                  <br />
+                  <span className="opacity-50">грн</span>
                 </th>
                 <th className="fw-normal">
-                  Фін. результат брутто <span className="opacity-50">грн</span>
+                  Податок
+                  <br />
+                  <span className="opacity-50">грн</span>
                 </th>
                 <th className="fw-normal">
-                  Різниця <span className="opacity-50">%</span>
+                  Фін. результат нетто
+                  <br />
+                  <span className="opacity-50">грн</span>
                 </th>
-                <th className="fw-normal">Податок</th>
                 <th className="fw-normal">
-                  Фін. результат нетто <span className="opacity-50">грн</span>
+                  Фін. результат нетто
+                  <br />
+                  <span className="opacity-50">%</span>
                 </th>
-              </tr>
-              <tr className="table-secondary">
-                <td>Разом</td>
-                <td></td>
-                <td></td>
-                <td>{/*currency(filtered.map((f) => f.price).reduce((a, b) => a + b, 0))*/}</td>
-                <td>{/*currency(filtered.map((f) => f.currentPrice).reduce((a, b) => a + b, 0))*/}</td>
-                <td></td>
-                <td></td>
-                <td>{/*currency(filtered.map((f) => f.commision).reduce((a, b) => a + b, 0))*/}</td>
-                <td></td>
-                <td>{currency(filtered.map((f) => f.spendUah).reduce((a, b) => a + b, 0))}</td>
-                <td>{currency(filtered.map((f) => f.valueUah).reduce((a, b) => a + b, 0))}</td>
-                <td>{currency(filtered.map((f) => f.incomeUah).reduce((a, b) => a + b, 0))}</td>
-                <td></td>
-                <td className="table-secondary">{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
-                <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
               </tr>
             </thead>
             <tbody className="table-group-divider">
@@ -313,7 +320,6 @@ const Orders = () => {
                   <td>{t.date.toISOString().split('T').shift()}</td>
                   <td>{t.ticker}</td>
                   <td>
-                    {/* {t.shares} */}
                     <input
                       type="number"
                       min="0"
@@ -328,61 +334,25 @@ const Orders = () => {
                         )
                       }
                     />
-                    {/* <input
-                      type="range"
-                      min="0"
-                      max={t.shares}
-                      step="1"
-                      value={t.sell}
-                      onChange={(e) => setTransactions(transactions.map((x) => (x.id === t.id ? { ...x, sell: e.target.valueAsNumber } : x)))}
-                    /> */}
                   </td>
-                  <td title={'Ціна покупки $' + currency(t.price)}>{currency(t.price)}</td>
-                  <td title={'Поточна ціна $' + currency(t.currentPrice)}>{currency(t.currentPrice)}</td>
-                  <td title={'Різниця $' + currency(t.currentPrice - t.price) + ' = ' + currency(t.currentPrice) + ' - ' + currency(t.price)}>{currency(t.currentPrice - t.price)}</td>
-                  <td
-                    className="text-secondary"
-                    title={'Різниця ' + currency(((t.currentPrice - t.price) / t.price) * 100) + '% = (' + currency(t.currentPrice) + ' - ' + currency(t.price) + ') / ' + currency(t.price) + ' * 100'}
-                  >
-                    {currency(((t.currentPrice - t.price) / t.price) * 100)}
-                  </td>
-                  <td title={'Утримано комісії $' + currency(t.commision)}>{currency(t.commision)}</td>
-                  <td title={'Курс долара на дату покупки був ' + currency(t.exchangeRate) + 'грн'}>{currency(t.exchangeRate)}</td>
-                  <td title={'Інвестовано в гривні\nshares * price * exchangeRate = \n' + t.shares + ' * ' + t.price + ' * ' + t.exchangeRate + ' = ' + t.spendUah}>{currency(t.spendUah)}</td>
-                  <td title={'Поточна вартість у гривні\nshares * currentPrice * currentExchangeRate = \n' + t.shares + ' * ' + t.currentPrice + ' * ' + currentExchangeRate + ' = ' + t.valueUah}>
-                    {currency(t.valueUah)}
-                  </td>
+                  <td>{t.currency}</td>
+                  <td>{currency(t.price)}</td>
+                  <td>{currency(t.currentPrice)}</td>
+                  <td className="border-end">{currency(t.commision)}</td>
                   <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td>
-                  <td
-                    className="text-secondary"
-                    title={
-                      'Різниця ' + currency(((t.valueUah - t.spendUah) / t.spendUah) * 100) + '% = (' + currency(t.valueUah) + ' - ' + currency(t.spendUah) + ') / ' + currency(t.spendUah) + ' * 100'
-                    }
-                  >
-                    {currency(((t.valueUah - t.spendUah) / t.spendUah) * 100)}
-                  </td>
                   <td className="table-secondary">{currency(t.taxUah)}</td>
                   <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td>
+                  <td className={t.netIncomeUah < 0 ? 'text-danger border-start' : 'border-start'}>{currency((t.netIncomeUah / t.spendUah) * 100)}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="table-group-divider table-secondary">
               <tr>
-                <td>Разом</td>
-                <td></td>
-                <td></td>
-                <td>{/*currency(filtered.map((f) => f.price).reduce((a, b) => a + b, 0))*/}</td>
-                <td>{/*currency(filtered.map((f) => f.currentPrice).reduce((a, b) => a + b, 0))*/}</td>
-                <td></td>
-                <td></td>
-                <td>{/*currency(filtered.map((f) => f.commision).reduce((a, b) => a + b, 0))*/}</td>
-                <td></td>
-                <td title="Сума колонки">{currency(filtered.map((f) => f.spendUah).reduce((a, b) => a + b, 0))}</td>
-                <td title="Сума колонки">{currency(filtered.map((f) => f.valueUah).reduce((a, b) => a + b, 0))}</td>
+                <td colSpan={7}>Разом</td>
                 <td>{currency(filtered.map((f) => f.incomeUah).reduce((a, b) => a + b, 0))}</td>
-                <td></td>
                 <td className="table-secondary">{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
                 <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
+                <td></td>
               </tr>
             </tfoot>
           </table>
