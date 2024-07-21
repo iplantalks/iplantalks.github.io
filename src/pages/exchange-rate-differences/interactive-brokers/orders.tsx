@@ -35,6 +35,8 @@ interface Transaction {
   currentPrice: number
 
   sharesOriginal: number
+
+  reportedPrice: number
 }
 
 const Orders = () => {
@@ -109,8 +111,10 @@ const Orders = () => {
 
         sharesOriginal: t.INVBUY.UNITS || 0,
 
-        incomeUahTitle: '',
-        netIncomeUahTitle: '',
+        reportedPrice:
+          ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVPOSLIST?.POSSTOCK?.find(
+            (r) => r.INVPOS.SECID.UNIQUEID === t.INVBUY.SECID.UNIQUEID && r.INVPOS.SECID.UNIQUEIDTYPE === t.INVBUY.SECID.UNIQUEIDTYPE
+          )?.INVPOS.UNITPRICE || 0,
       })) || []
     setTransactions(transactions)
 
@@ -140,8 +144,8 @@ const Orders = () => {
         .then((price) => {
           const next = [...transactions]
           next.forEach((t) => {
-            if (t.ticker == ticker && price) {
-              t.currentPrice = price
+            if (t.ticker == ticker /* && price */) {
+              t.currentPrice = price ?? t.reportedPrice
             }
             return t
           })
@@ -184,6 +188,12 @@ const Orders = () => {
             INVSTMTRS: {
               INVTRANLIST: {
                 BUYSTOCK: [],
+              },
+              INVPOSLIST: {
+                POSSTOCK: reports
+                  .sort((a, b) => a.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.DTASOF.localeCompare(b.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.DTASOF))
+                  .map((r) => r.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVPOSLIST?.POSSTOCK || [])
+                  .shift(),
               },
             },
           },
