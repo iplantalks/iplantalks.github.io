@@ -71,6 +71,7 @@ const Orders = () => {
           netIncomeUah,
         }
       })
+      .filter((t) => t.currentPrice)
   }, [transactions, currentExchangeRate])
 
   useEffect(() => {
@@ -302,11 +303,11 @@ const Orders = () => {
                   <br />
                   <span className="opacity-50">од. валюти</span>
                 </th>
-                <th className="fw-normal">
+                {/* <th className="fw-normal">
                   Фін. результат брутто
                   <br />
                   <span className="opacity-50">грн</span>
-                </th>
+                </th> */}
                 <th className="fw-normal">
                   Податок
                   <br />
@@ -316,6 +317,11 @@ const Orders = () => {
                   Фін. результат нетто
                   <br />
                   <span className="opacity-50">грн</span>
+                </th>
+                <th className="fw-normal">
+                  Фін. результат нетто
+                  <br />
+                  <span className="opacity-50">од. валюти</span>
                 </th>
                 <th className="fw-normal">
                   Фін. результат нетто
@@ -349,22 +355,23 @@ const Orders = () => {
                   <td>{currency(t.price)}</td>
                   <td>{currency(t.currentPrice)}</td>
                   <td className="border-end">{currency(t.commision)}</td>
-                  <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td>
+                  {/* <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td> */}
                   <td className="table-secondary">{currency(t.taxUah)}</td>
                   <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td>
+                  <td>{currency(t.netIncomeUah / currentExchangeRate)}</td>
                   <td className={t.netIncomeUah < 0 ? 'text-danger border-start' : 'border-start'}>{currency((t.netIncomeUah / t.spendUah) * 100)}</td>
                 </tr>
               ))}
             </tbody>
-            <tfoot className="table-group-divider table-secondary">
+            {/* <tfoot className="table-group-divider table-secondary">
               <tr>
-                <td colSpan={7}>Разом</td>
-                <td>{currency(filtered.map((f) => f.incomeUah).reduce((a, b) => a + b, 0))}</td>
+                <td colSpan={8}>Разом</td>
                 <td className="table-secondary">{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
+                <td></td>
                 <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
                 <td></td>
               </tr>
-            </tfoot>
+            </tfoot> */}
           </table>
         )}
       </div>
