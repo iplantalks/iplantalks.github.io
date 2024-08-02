@@ -137,7 +137,7 @@ const Ovdp: React.FC<PageProps> = () => {
                     </button>
                   </div>
                   <Checkboxes2
-                    names={getUniqueValues(rows, 'provider_name')}
+                    names={getUniqueValues(rows, 'provider_name').sort((a, b) => a.localeCompare(b))}
                     checkboxes={providerCheckboxes}
                     onChange={(name: string) => setProviderCheckboxes({ ...providerCheckboxes, [name]: !providerCheckboxes[name] })}
                   />
