@@ -15,7 +15,7 @@ import { Shop } from '../../components/shop'
 import Hotjar from '@hotjar/browser'
 import { Method } from './components/_method'
 import { Like } from './components/_like'
-import { Checkboxes, Checkboxes2 } from './components/_checkboxes'
+import { Checkboxes, Checkboxes2, CheckboxesBankServicePivot } from './components/_checkboxes'
 import { ago } from '../../utils/ago'
 import { PaymentsFaq } from './components/_payments-faq'
 import { Header } from '../../components/header'
@@ -113,6 +113,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
               Video tutorial
             </a>
           </div>
+          <CheckboxesBankServicePivot
+            combos={rowsFilteredByMegatag}
+            onChange={({ bankCheckboxes, serviceCheckboxes }: { bankCheckboxes: Record<string, boolean>; serviceCheckboxes: Record<string, boolean> }) => {
+              setBankCheckboxes({ ...bankCheckboxes })
+              setServiceCheckboxes({ ...serviceCheckboxes })
+            }}
+          />
           <div className="row">
             <div className="col-12 col-md-3">
               <div className="text-bg-light rounded-3 my-2 py-2 px-3">
