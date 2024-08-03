@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useId, useState } from 'react'
+import { useId, useState, useRef, useEffect } from 'react'
 
 export const Checkboxes = ({ names, checkboxes, onChange }: { names: string[]; checkboxes: Record<string, boolean>; onChange: (name: string) => void }) => {
   const id = useId()
@@ -47,6 +47,14 @@ export const CheckboxesBankServicePivot = ({
   const [collapsed, setCollapsed] = useState(true)
   const banks = getUniqueValues(combos, 'bank').sort((a, b) => a.localeCompare(b))
   const services = getUniqueValues(combos, 'service').sort((a, b) => a.localeCompare(b))
+
+  const collapsibleRef = useRef(null)
+
+  useEffect(() => {
+    if (collapsibleRef.current) {
+      collapsibleRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [collapsed])
 
   const handler = (combos: { bank: string; service: string }[], bank: string, service: string) => {
     const bankCheckboxes: Record<string, boolean> = {}
@@ -100,7 +108,7 @@ export const CheckboxesBankServicePivot = ({
   }
 
   return (
-    <div className="text-bg-light rounded-3 my-2 py-2 px-3">
+    <div className="text-bg-light rounded-3 my-2 py-2 px-3" ref={collapsibleRef}>
       <div>
         <i className="fa-regular fa-square-check me-2" />
         За для зручності вибору, скористайтеся{' '}
