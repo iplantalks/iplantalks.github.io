@@ -65,6 +65,40 @@ export const CheckboxesBankServicePivot = ({
     }
   }
 
+  const handleService = (service: string) => {
+    const bankCheckboxes: Record<string, boolean> = {}
+    const serviceCheckboxes: Record<string, boolean> = {}
+
+    for (const combo of combos) {
+      bankCheckboxes[combo.bank] = !(combo.service === service)
+      serviceCheckboxes[combo.service] = !(combo.service === service)
+    }
+
+    setCollapsed(true)
+
+    return {
+      bankCheckboxes,
+      serviceCheckboxes,
+    }
+  }
+
+  const handleBank = (bank: string) => {
+    const bankCheckboxes: Record<string, boolean> = {}
+    const serviceCheckboxes: Record<string, boolean> = {}
+
+    for (const combo of combos) {
+      bankCheckboxes[combo.bank] = !(combo.bank === bank)
+      serviceCheckboxes[combo.service] = false
+    }
+
+    setCollapsed(true)
+
+    return {
+      bankCheckboxes,
+      serviceCheckboxes,
+    }
+  }
+
   return (
     <div className="text-bg-light rounded-3 my-2 py-2 px-3">
       <div>
@@ -75,35 +109,44 @@ export const CheckboxesBankServicePivot = ({
         </a>
       </div>
       {!collapsed && (
-        <table className="table table-striped table-borderless mb-0">
-          <thead style={{ position: 'sticky', top: 0 }} className="text-bg-light">
-            <tr>
-              <th className="bg-transparent"></th>
-              {services.map((service) => (
-                <th className="bg-transparent" key={service}>
-                  {service}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {banks.map((bank) => (
-              <tr key={bank}>
-                <th className="bg-transparent">{bank}</th>
+        <div>
+          <div className="text-secondary">Примітка: можна клікнути не тільки по галочкам, а і по назвам стовпців та строк</div>
+          <table className="table table-striped table-borderless mb-0">
+            <thead style={{ position: 'sticky', top: 0 }} className="text-bg-light">
+              <tr>
+                <th className="bg-transparent"></th>
                 {services.map((service) => (
-                  <td className="bg-transparent" key={service}>
-                    {combos.find((c) => c.bank === bank && c.service === service) && (
-                      <span className="comboitem">
-                        <i className="fa-regular fa-square-check" onClick={() => onChange(handler(combos, bank, service))} />
-                        <i className="fa-solid fa-square-check" onClick={() => onChange(handler(combos, bank, service))} />
-                      </span>
-                    )}
-                  </td>
+                  <th className="bg-transparent" key={service}>
+                    <a onClick={() => onChange(handleService(service))} className="link-primary">
+                      {service}
+                    </a>
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {banks.map((bank) => (
+                <tr key={bank}>
+                  <th className="bg-transparent">
+                    <a onClick={() => onChange(handleBank(bank))} className="link-primary">
+                      {bank}
+                    </a>
+                  </th>
+                  {services.map((service) => (
+                    <td className="bg-transparent" key={service}>
+                      {combos.find((c) => c.bank === bank && c.service === service) && (
+                        <span className="comboitem">
+                          <i className="fa-regular fa-square-check" onClick={() => onChange(handler(combos, bank, service))} />
+                          <i className="fa-solid fa-square-check" onClick={() => onChange(handler(combos, bank, service))} />
+                        </span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )
