@@ -78,7 +78,7 @@ export const CheckboxesBankServicePivot = ({
     const serviceCheckboxes: Record<string, boolean> = {}
 
     for (const combo of combos) {
-      bankCheckboxes[combo.bank] = !(combo.service === service)
+      bankCheckboxes[combo.bank] = false
       serviceCheckboxes[combo.service] = !(combo.service === service)
     }
 
