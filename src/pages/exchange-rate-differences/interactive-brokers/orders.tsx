@@ -29,8 +29,11 @@ interface Transaction {
   spendUah: number
   valueUah: number
   incomeUah: number
+  incomeUsd: number
   taxUah: number
+  taxUsd: number
   netIncomeUah: number
+  netIncomeUsd: number
   exchangeRate: number
   currentPrice: number
 
@@ -60,15 +63,21 @@ const Orders = () => {
         const spendUah = transaction.shares * transaction.price * transaction.exchangeRate
         const valueUah = transaction.shares * transaction.currentPrice * currentExchangeRate
         const incomeUah = valueUah - spendUah
+        const incomeUsd = incomeUah / currentExchangeRate
         const taxUah = incomeUah > 0 ? incomeUah * 0.195 : 0
+        const taxUsd = taxUah / currentExchangeRate
         const netIncomeUah = incomeUah - taxUah
+        const netIncomeUsd = netIncomeUah / currentExchangeRate
         return {
           ...transaction,
           spendUah,
           valueUah,
           incomeUah,
+          incomeUsd,
           taxUah,
+          taxUsd,
           netIncomeUah,
+          netIncomeUsd,
         }
       })
       .filter((t) => t.currentPrice)
@@ -105,8 +114,11 @@ const Orders = () => {
         spendUah: 0,
         valueUah: 0,
         incomeUah: 0,
+        incomeUsd: 0,
         taxUah: 0,
+        taxUsd: 0,
         netIncomeUah: 0,
+        netIncomeUsd: 0,
         exchangeRate: 0,
         currentPrice: 0,
 
@@ -311,13 +323,13 @@ const Orders = () => {
                 <th className="fw-normal">
                   Податок
                   <br />
-                  <span className="opacity-50">грн</span>
+                  <span className="opacity-50">од. валюти</span>
                 </th>
-                <th className="fw-normal">
+                {/* <th className="fw-normal">
                   Фін. результат нетто
                   <br />
                   <span className="opacity-50">грн</span>
-                </th>
+                </th> */}
                 <th className="fw-normal">
                   Фін. результат нетто
                   <br />
@@ -356,22 +368,21 @@ const Orders = () => {
                   <td>{currency(t.currentPrice)}</td>
                   <td className="border-end">{currency(t.commision)}</td>
                   {/* <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td> */}
-                  <td className="table-secondary">{currency(t.taxUah)}</td>
-                  <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td>
-                  <td>{currency(t.netIncomeUah / currentExchangeRate)}</td>
+                  <td className="table-secondary">{currency(t.taxUsd)}</td>
+                  {/* <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td> */}
+                  <td>{currency(t.netIncomeUsd)}</td>
                   <td className={t.netIncomeUah < 0 ? 'text-danger border-start' : 'border-start'}>{currency((t.netIncomeUah / t.spendUah) * 100)}</td>
                 </tr>
               ))}
             </tbody>
-            {/* <tfoot className="table-group-divider table-secondary">
+            <tfoot className="table-group-divider table-secondary">
               <tr>
-                <td colSpan={8}>Разом</td>
-                <td className="table-secondary">{currency(filtered.map((f) => f.taxUah).reduce((a, b) => a + b, 0))}</td>
-                <td></td>
-                <td>{currency(filtered.map((f) => f.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
+                <td colSpan={7}>Разом</td>
+                <td className="table-secondary">{currency(filtered.map((f) => f.taxUsd).reduce((a, b) => a + b, 0))}</td>
+                <td>{currency(filtered.map((f) => f.netIncomeUsd).reduce((a, b) => a + b, 0))}</td>
                 <td></td>
               </tr>
-            </tfoot> */}
+            </tfoot>
           </table>
         )}
       </div>
@@ -415,8 +426,6 @@ const Orders = () => {
       </div>
 
       <ExchangeRateDifferencesLinks />
-      <Subscribe youtube="https://www.youtube.com/watch?v=Fiylm8c8yAc" />
-      <Shop />
       <Join />
     </main>
   )
