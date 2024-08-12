@@ -29,7 +29,6 @@ interface Transaction {
   spendUah: number
   valueUah: number
   incomeUah: number
-  incomeUsd: number
   taxUah: number
   taxUsd: number
   netIncomeUah: number
@@ -63,17 +62,15 @@ const Orders = () => {
         const spendUah = transaction.shares * transaction.price * transaction.exchangeRate
         const valueUah = transaction.shares * transaction.currentPrice * currentExchangeRate
         const incomeUah = valueUah - spendUah
-        const incomeUsd = incomeUah / currentExchangeRate
         const taxUah = incomeUah > 0 ? incomeUah * 0.195 : 0
         const taxUsd = taxUah / currentExchangeRate
         const netIncomeUah = incomeUah - taxUah
-        const netIncomeUsd = netIncomeUah / currentExchangeRate
+        const netIncomeUsd = transaction.currentPrice * transaction.shares - transaction.price * transaction.shares - taxUsd - transaction.commision * 2 // (текущая_цена_usd*quantity - цена_покупки_usd*quantity) - налог_в_валюте - комисия*2
         return {
           ...transaction,
           spendUah,
           valueUah,
           incomeUah,
-          incomeUsd,
           taxUah,
           taxUsd,
           netIncomeUah,
@@ -370,8 +367,9 @@ const Orders = () => {
                   {/* <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td> */}
                   <td className="table-secondary">{currency(t.taxUsd)}</td>
                   {/* <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td> */}
-                  <td>{currency(t.netIncomeUsd)}</td>
-                  <td className={t.netIncomeUah < 0 ? 'text-danger border-start' : 'border-start'}>{currency((t.netIncomeUah / t.spendUah) * 100)}</td>
+                  <td className={t.netIncomeUsd < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUsd)}</td>
+                  <td className={t.netIncomeUsd < 0 ? 'text-danger border-start' : 'border-start'}>{currency((t.netIncomeUsd / (t.price * t.shares + t.taxUsd + t.commision * 2)) * 100)}</td>{' '}
+                  {/*фин_результат_в_валюте/ (цена_покупки_usd*quantity+ налог_в_валюте + комисия*2)*/}
                 </tr>
               ))}
             </tbody>
