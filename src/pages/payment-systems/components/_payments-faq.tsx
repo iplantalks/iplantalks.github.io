@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useEffect } from 'react'
 import { useGoogleSheet } from './_api'
 
 export const PaymentsFaq = () => {
@@ -8,6 +9,13 @@ export const PaymentsFaq = () => {
       question: item[0],
       answer: item[1],
     }))
+
+  useEffect(() => {
+    if (!items || !items.length || !window.location.hash || window.location.hash !== '#faq') {
+      return
+    }
+    document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })
+  }, [items])
 
   return (
     <div>

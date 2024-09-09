@@ -456,7 +456,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
         </div>
       </div>
 
-      <div className="container py-5">
+      <div id="faq" className="container py-5">
         <PaymentsFaq />
       </div>
 
