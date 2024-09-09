@@ -114,7 +114,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             </a>
           </div>
           <CheckboxesBankServicePivot
-            combos={rowsFilteredByMegatag}
+            combos={rowsFilteredByMegatag.filter((r) => r.works === 'TRUE')}
             onChange={({ bankCheckboxes, serviceCheckboxes }: { bankCheckboxes: Record<string, boolean>; serviceCheckboxes: Record<string, boolean> }) => {
               setBankCheckboxes({ ...bankCheckboxes })
               setServiceCheckboxes({ ...serviceCheckboxes })
