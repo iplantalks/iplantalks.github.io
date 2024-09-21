@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useEffect } from 'react'
 import { useAuth } from '../context/auth'
 
 export const User = () => {
@@ -6,6 +7,13 @@ export const User = () => {
   if (!user) {
     return null
   }
+  useEffect(() => {
+    console.log('useEffect', user)
+    if (!user) {
+      return
+    }
+    user.getIdToken().then((token) => console.log('token', token))
+  }, [user])
   return (
     <div className="bg-secondary-subtle">
       <div className="container py-2">
