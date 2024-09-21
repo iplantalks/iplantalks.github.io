@@ -15,21 +15,40 @@ const app =
         appId: '1:1006859178341:web:b5dc86f76f1872fe97518c',
       })
 
-export const AuthContext = React.createContext<{ user: User | null | undefined; login: () => void; logout: () => void }>({
+export const AuthContext = React.createContext<{ user: User | null | undefined; found: boolean; login: () => void; logout: () => void }>({
   user: undefined,
+  found: false,
   login: () => {},
   logout: () => {},
 })
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const [user, setUser] = useState<User | null | undefined>(undefined)
+  const [found, setFound] = useState<boolean>(false)
 
   useEffect(() => {
     if (app == null) {
       return
     }
 
-    getAuth(app).onAuthStateChanged((user) => setUser(user))
+    getAuth(app).onAuthStateChanged((user) => {
+      setUser(user)
+      if (user) {
+        user
+          .getIdToken()
+          .then((token) => fetch('https://europe-west3-iplantalks.cloudfunctions.net/user_subscription', { headers: { authorization: `Bearer ${token}` } }))
+          .then((r) => r.json())
+          .then((r) => {
+            setFound(r.found ? true : false)
+          })
+          .catch((error) => {
+            console.log('subscription', error.message)
+            setFound(false)
+          })
+      } else {
+        setFound(false)
+      }
+    })
   }, [])
 
   const login = () => {
@@ -48,7 +67,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
     getAuth(app).signOut()
   }
 
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, found, login, logout }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => useContext(AuthContext)

@@ -12,6 +12,7 @@ import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
 import { Header } from '../../components/header'
 import { useAuth } from '../../context/auth'
+import { User } from '../../components/user'
 
 interface Row {
   year: number
@@ -26,7 +27,7 @@ interface Row {
 }
 
 const Forecast = () => {
-  const { user } = useAuth()
+  const { user, found } = useAuth()
   useEffect(() => {
     if (user === null) {
       navigate('/login?redirect=' + window.location.pathname)
@@ -205,19 +206,19 @@ const Forecast = () => {
             <label htmlFor="date" className="form-label">
               Початковий курс валюти
             </label>
-            <input type="number" className="form-control" value={exchangeRate} onChange={(e) => setExchangeRate(e.target.valueAsNumber)} />
+            <input type="number" className="form-control" value={exchangeRate} onChange={(e) => setExchangeRate(e.target.valueAsNumber)} disabled={!found} />
           </p>
           <p className="col-12 col-sm-4">
             <label htmlFor="date" className="form-label">
               Ставка податку на інвест прибуток
             </label>
-            <input type="number" className="form-control" value={tax} onChange={(e) => setTax(e.target.valueAsNumber)} />
+            <input type="number" className="form-control" value={tax} onChange={(e) => setTax(e.target.valueAsNumber)} disabled={!found} />
           </p>
           <p className="col-12 col-sm-4">
             <label htmlFor="date" className="form-label">
               Прогнозована дохідність
             </label>
-            <input type="number" className="form-control" value={expectedReturn} onChange={(e) => setExpectedReturn(e.target.valueAsNumber)} />
+            <input type="number" className="form-control" value={expectedReturn} onChange={(e) => setExpectedReturn(e.target.valueAsNumber)} disabled={!found} />
           </p>
         </div>
         <table className="table">
@@ -285,6 +286,7 @@ const Forecast = () => {
       <Subscribe youtube="https://www.youtube.com/watch?v=Fiylm8c8yAc" />
       <Shop />
       <Join />
+      <User />
     </main>
   )
 }

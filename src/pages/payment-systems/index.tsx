@@ -20,6 +20,7 @@ import { ago } from '../../utils/ago'
 import { PaymentsFaq } from './components/_payments-faq'
 import { Header } from '../../components/header'
 import { useAuth } from '../../context/auth'
+import { User } from '../../components/user'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -45,7 +46,7 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) =>
 }
 
 const PaymentSystemsPage: React.FC<PageProps> = () => {
-  const { user } = useAuth()
+  const { user, found } = useAuth()
   useEffect(() => {
     if (user === null) {
       navigate('/login?redirect=' + window.location.pathname)
@@ -304,27 +305,31 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                         {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                         {sortField !== 'payment' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                       </th>
-                      <th
-                        onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))}
-                        className={sortField === 'date' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
-                      >
-                        Перевірено
-                        {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-sort-down ms-1" />}
-                        {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-sort-up ms-1" />}
-                        {sortField !== 'date' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
-                      </th>
+                      {found && (
+                        <th
+                          onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))}
+                          className={sortField === 'date' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
+                        >
+                          Перевірено
+                          {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-sort-down ms-1" />}
+                          {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-sort-up ms-1" />}
+                          {sortField !== 'date' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                        </th>
+                      )}
                       <th className="d-none d-md-table-cell">
                         <i className="text-primary fa-solid fa-circle-info" />
                       </th>
-                      <th
-                        onClick={() => (sortField === 'likes' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('likes'))}
-                        className={sortField === 'likes' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
-                      >
-                        Я це <i className="fa-solid fa-heart text-danger ms-1" />
-                        {sortField === 'likes' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
-                        {sortField === 'likes' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
-                        {sortField !== 'likes' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
-                      </th>
+                      {found && (
+                        <th
+                          onClick={() => (sortField === 'likes' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('likes'))}
+                          className={sortField === 'likes' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
+                        >
+                          Я це <i className="fa-solid fa-heart text-danger ms-1" />
+                          {sortField === 'likes' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                          {sortField === 'likes' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                          {sortField !== 'likes' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                        </th>
+                      )}
                     </tr>
                   </thead>
                   <tbody className="table-group-divider">
@@ -433,9 +438,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               </span>
                             )}
                           </td>
-                          <td className={sortField === 'date' ? 'table-secondary fw-bold d-none d-md-table-cell' : 'd-none d-md-table-cell'} title={r.date?.toLocaleDateString()}>
-                            {r.date ? ago(r.date) : <span>&mdash;</span>}
-                          </td>
+                          {found && (
+                            <td className={sortField === 'date' ? 'table-secondary fw-bold d-none d-md-table-cell' : 'd-none d-md-table-cell'} title={r.date?.toLocaleDateString()}>
+                              {r.date ? ago(r.date) : <span>&mdash;</span>}
+                            </td>
+                          )}
                           <td className="d-none d-md-table-cell">
                             {r.comment && (
                               <small title={r.comment}>
@@ -443,9 +450,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               </small>
                             )}
                           </td>
-                          <td className="text-end d-none d-md-table-cell">
-                            <Like {...r} />
-                          </td>
+                          {found && (
+                            <td className="text-end d-none d-md-table-cell">
+                              <Like {...r} />
+                            </td>
+                          )}
                         </tr>
                       ))}
                   </tbody>
@@ -512,6 +521,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
 
       <Shop />
       <Join />
+      <User />
     </main>
   )
 }

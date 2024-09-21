@@ -3,21 +3,15 @@ import { useEffect } from 'react'
 import { useAuth } from '../context/auth'
 
 export const User = () => {
-  const { user, login, logout } = useAuth()
+  const { user, found, login, logout } = useAuth()
   if (!user) {
     return null
   }
-  useEffect(() => {
-    console.log('useEffect', user)
-    if (!user) {
-      return
-    }
-    user.getIdToken().then((token) => console.log('token', token))
-  }, [user])
   return (
     <div className="bg-secondary-subtle">
       <div className="container py-2">
         <div className="d-flex align-items-center gap-3">
+          <span>{found ? <i className="fa-solid fa-credit-card" /> : <i className="fa-regular fa-credit-card" />}</span>
           {user.photoURL && <img src={user.photoURL} width="24" height="24" />}
           <span>{user.displayName}</span>
           <span>{user.email}</span>
