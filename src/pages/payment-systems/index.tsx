@@ -305,31 +305,35 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                         {sortField === 'payment' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
                         {sortField !== 'payment' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
                       </th>
-                      {found && (
-                        <th
-                          onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))}
-                          className={sortField === 'date' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
-                        >
-                          Перевірено
-                          {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-sort-down ms-1" />}
-                          {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-sort-up ms-1" />}
-                          {sortField !== 'date' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
-                        </th>
-                      )}
+                      {
+                        /*found*/ true && (
+                          <th
+                            onClick={() => (sortField === 'date' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('date'))}
+                            className={sortField === 'date' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
+                          >
+                            Перевірено
+                            {sortField === 'date' && sortDirection === 'asc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField === 'date' && sortDirection === 'desc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField !== 'date' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                        )
+                      }
                       <th className="d-none d-md-table-cell">
                         <i className="text-primary fa-solid fa-circle-info" />
                       </th>
-                      {found && (
-                        <th
-                          onClick={() => (sortField === 'likes' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('likes'))}
-                          className={sortField === 'likes' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
-                        >
-                          Я це <i className="fa-solid fa-heart text-danger ms-1" />
-                          {sortField === 'likes' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
-                          {sortField === 'likes' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
-                          {sortField !== 'likes' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
-                        </th>
-                      )}
+                      {
+                        /*found*/ true && (
+                          <th
+                            onClick={() => (sortField === 'likes' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortField('likes'))}
+                            className={sortField === 'likes' ? 'table-dark d-none d-md-table-cell' : 'd-none d-md-table-cell'}
+                          >
+                            Я це <i className="fa-solid fa-heart text-danger ms-1" />
+                            {sortField === 'likes' && sortDirection === 'asc' && <i className="fa-solid fa-sort-up ms-1" />}
+                            {sortField === 'likes' && sortDirection === 'desc' && <i className="fa-solid fa-sort-down ms-1" />}
+                            {sortField !== 'likes' && <i className="opacity-50 text-secondary fa-solid fa-sort ms-1" />}
+                          </th>
+                        )
+                      }
                     </tr>
                   </thead>
                   <tbody className="table-group-divider">
@@ -438,11 +442,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               </span>
                             )}
                           </td>
-                          {found && (
-                            <td className={sortField === 'date' ? 'table-secondary fw-bold d-none d-md-table-cell' : 'd-none d-md-table-cell'} title={r.date?.toLocaleDateString()}>
-                              {r.date ? ago(r.date) : <span>&mdash;</span>}
-                            </td>
-                          )}
+                          {
+                            /*found*/ true && (
+                              <td className={sortField === 'date' ? 'table-secondary fw-bold d-none d-md-table-cell' : 'd-none d-md-table-cell'} title={r.date?.toLocaleDateString()}>
+                                {r.date ? ago(r.date) : <span>&mdash;</span>}
+                              </td>
+                            )
+                          }
                           <td className="d-none d-md-table-cell">
                             {r.comment && (
                               <small title={r.comment}>
@@ -450,11 +456,13 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               </small>
                             )}
                           </td>
-                          {found && (
-                            <td className="text-end d-none d-md-table-cell">
-                              <Like {...r} />
-                            </td>
-                          )}
+                          {
+                            /*found*/ true && (
+                              <td className="text-end d-none d-md-table-cell">
+                                <Like {...r} />
+                              </td>
+                            )
+                          }
                         </tr>
                       ))}
                   </tbody>
