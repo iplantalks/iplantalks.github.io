@@ -15,23 +15,23 @@
   "dependencies": {
     "@hotjar/browser": "^1.0.9",
     "bootstrap": "^5.3.3",
-    "chart.js": "^4.4.3",
-    "fast-xml-parser": "^4.4.1",
-    "firebase": "^10.12.4",
+    "chart.js": "^4.4.4",
+    "fast-xml-parser": "^4.5.0",
+    "firebase": "^10.13.2",
     "gatsby": "^5.13.7",
     "gatsby-plugin-google-gtag": "^5.13.1",
     "lightweight-charts": "^4.2.0",
-    "plotly.js": "^2.34.0",
+    "plotly.js": "^2.35.2",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-plotly.js": "^2.6.0"
   },
   "devDependencies": {
-    "@types/node": "^20.14.12",
-    "@types/react": "^18.3.3",
+    "@types/node": "^22.7.4",
+    "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@types/react-plotly.js": "^2.6.3",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }
