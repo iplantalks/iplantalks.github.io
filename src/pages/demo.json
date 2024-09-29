@@ -1,0 +1,23 @@
+{
+  "time": 1727600162409,
+  "blocks": [
+    { "id": "SjeFcC9bPL", "type": "header", "data": { "text": "Article header goes here", "level": 2 } },
+    { "id": "corym5LUns", "type": "paragraph", "data": { "text": "Article description goes here" } },
+    {
+      "id": "SGm2_tE8gR",
+      "type": "table",
+      "data": {
+        "withHeadings": true,
+        "content": [
+          ["<b>key</b>", "<b>value</b>"],
+          ["one", "1"]
+        ]
+      }
+    },
+    { "id": "BAucT4fi77", "type": "paragraph", "data": { "text": "There can be some <b>inline</b> bold and <i>italic</i> parts." } },
+    { "id": "fyLyuEbaXy", "type": "paragraph", "data": { "text": "As well as lists:" } },
+    { "id": "mR0fQh0x50", "type": "list", "data": { "style": "unordered", "items": ["item 1", "item 2"] } },
+    { "id": "2drLIQgJEA", "type": "paragraph", "data": { "text": "The end" } }
+  ],
+  "version": "2.30.6"
+}
