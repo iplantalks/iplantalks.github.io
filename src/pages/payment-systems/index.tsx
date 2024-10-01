@@ -341,6 +341,8 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                       <tr>
                         <td colSpan={12} className="text-center">
                           Завантажуемо данні з Google таблички, трохи зачекайте, вона не така швидка&hellip;
+                          <br />
+                          Якщо сторінка довго не завантажується, спробуйте перезавантажити її.
                         </td>
                       </tr>
                     )}
