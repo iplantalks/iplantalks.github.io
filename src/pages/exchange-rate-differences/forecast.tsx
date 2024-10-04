@@ -206,19 +206,22 @@ const Forecast = () => {
             <label htmlFor="date" className="form-label">
               Початковий курс валюти
             </label>
-            <input type="number" className="form-control" value={exchangeRate} onChange={(e) => setExchangeRate(e.target.valueAsNumber)} disabled={!found} />
+            <input type="number" className="form-control" value={exchangeRate} onChange={(e) => setExchangeRate(e.target.valueAsNumber)} />
+            {/*disabled={!found}*/}
           </p>
           <p className="col-12 col-sm-4">
             <label htmlFor="date" className="form-label">
               Ставка податку на інвест прибуток
             </label>
-            <input type="number" className="form-control" value={tax} onChange={(e) => setTax(e.target.valueAsNumber)} disabled={!found} />
+            <input type="number" className="form-control" value={tax} onChange={(e) => setTax(e.target.valueAsNumber)} />
+            {/*disabled={!found}*/}
           </p>
           <p className="col-12 col-sm-4">
             <label htmlFor="date" className="form-label">
               Прогнозована дохідність
             </label>
-            <input type="number" className="form-control" value={expectedReturn} onChange={(e) => setExpectedReturn(e.target.valueAsNumber)} disabled={!found} />
+            <input type="number" className="form-control" value={expectedReturn} onChange={(e) => setExpectedReturn(e.target.valueAsNumber)} />
+            {/*disabled={!found}*/}
           </p>
         </div>
         <table className="table">
