@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react'
 
 async function fetchGoogleSheetsValues(range: string): Promise<string[][]> {
-  var url = new URL('https://gsr.iplan-talks.workers.dev')
+  // var url = new URL('https://gsr.iplan-talks.workers.dev')
+  // url.searchParams.set('sheet', '1d78yVZ569Glf0Zxsu29eDED00veHjd8Gk4GxyIxkx1I')
+  // url.searchParams.set('range', range)
+  // url.searchParams.set('cache', '120')
+  var url = new URL('https://europe-west3-iplantalks.cloudfunctions.net/gsr2')
   url.searchParams.set('sheet', '1d78yVZ569Glf0Zxsu29eDED00veHjd8Gk4GxyIxkx1I')
   url.searchParams.set('range', range)
-  url.searchParams.set('cache', '120')
   try {
     const res = await fetch(url)
     const text = await res.text()
     const values = JSON.parse(text)
-    console.groupCollapsed('values ' + range)
-    console.table(values)
-    console.groupEnd()
+    // console.groupCollapsed('values ' + range)
+    // console.table(values)
+    // console.groupEnd()
     return values
   } catch (error) {
+    alert(`Виникла помилка при завантаженні даних з Google Sheets: ${error instanceof Error ? error.message : error}`)
     console.group(`Error fetching '${range}' from Google Sheets because of ${error instanceof Error ? error.message : error}`)
     console.error(error)
     console.groupEnd()
@@ -73,6 +77,9 @@ export function useGoogleSheet(range: string) {
 }
 
 export function useGoogleSheetTable(range: string) {
+  if (typeof window === 'undefined') {
+    return []
+  }
   const [data, setData] = useState<Array<Record<string, string>>>([])
   useEffect(() => {
     fetchGoogleSheetsTable(range).then(setData)
