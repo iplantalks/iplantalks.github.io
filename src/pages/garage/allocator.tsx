@@ -552,9 +552,71 @@ const Allocator: React.FC = () => {
           </p>
         </div>
 
-        {/* <div className="my-5">
+        <div className="my-5">
           <h2>Як це порахувати</h2>
-        </div> */}
+          <p>
+            На прикладі{' '}
+            {Object.keys(yahoo)
+              .filter((t) => t !== 'VOO')
+              .join(', ')}
+            , нам потрібні історичні данні, беремо їх з Yahoo Finance, якщо ж розрахунок робиться в Google Sheets то за допомогою ф-ії GOOGLEFINANCE
+          </p>
+          <p>Маючи історичні данні, дохідність акції за період складатиме (end_price - start_price) / start_price * 100 відсотків</p>
+          {yahoo && Object.keys(yahoo).length > 0 && (
+            <p>
+              Тобто якщо купували {Object.keys(yahoo)[0]} за ${round(yahoo[Object.keys(yahoo)[0]][0].close, 2)}, а продали за $
+              {round(yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close, 2)}, то дохідність складатиме (
+              {round(yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close, 2)} - {round(yahoo[Object.keys(yahoo)[0]][0].close, 2)}) /{' '}
+              {round(yahoo[Object.keys(yahoo)[0]][0].close, 2)} * 100 ={' '}
+              {round(((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close) * 100, 2)}%
+            </p>
+          )}
+          <p>Наступний крок - аллокації активів</p>
+          <p>Тут все дуже просто, нам необхиодмо помножити дохідність кожного з активів на його аллокацію, та скласти результати - це і буде дохідністью портфеля</p>
+          {yahoo && Object.keys(yahoo).length > 1 && (
+            <>
+              <p>
+                Так наприклад, уявімо що наш портфель має 70% {Object.keys(yahoo)[0]} та 30% {Object.keys(yahoo)[1]}
+              </p>
+              <p>
+                {Object.keys(yahoo)[0]} мі купували по ${round(yahoo[Object.keys(yahoo)[0]][0].close, 2)} і зараз вона коштує $
+                {round(yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close, 2)}, отже дохідність (
+                {round(yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close, 2)} - {round(yahoo[Object.keys(yahoo)[0]][0].close, 2)})/
+                {round(yahoo[Object.keys(yahoo)[0]][0].close, 2)} ={' '}
+                {round((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close, 2)}
+              </p>
+              <p>
+                {Object.keys(yahoo)[1]} мі купували по ${round(yahoo[Object.keys(yahoo)[1]][0].close, 2)} і зараз вона коштує $
+                {round(yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close, 2)}, отже дохідність (
+                {round(yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close, 2)} - {round(yahoo[Object.keys(yahoo)[1]][0].close, 2)})/
+                {round(yahoo[Object.keys(yahoo)[1]][0].close, 2)} ={' '}
+                {round((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close, 2)}
+              </p>
+              <p>
+                Таким чином, дохідність портфеля складе ({Object.keys(yahoo)[0].toLowerCase()}_performance * {Object.keys(yahoo)[0].toLowerCase()}_allocation + {Object.keys(yahoo)[1].toLowerCase()}
+                _performance * {Object.keys(yahoo)[1].toLowerCase()}_allocation) = (
+                {round((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close, 2)} * 0.7 +{' '}
+                {round((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close, 2)} * 0.3) ={' '}
+                {round(
+                  ((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close) * 0.7 +
+                    ((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close) * 0.3,
+                  2
+                )}
+                , тобто{' '}
+                {round(
+                  (((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close) * 0.7 +
+                    ((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close) * 0.3) *
+                    100,
+                  2
+                )}
+                %
+              </p>
+              <p>Далі, кількість активів не важлива, хоч два, хоч двісті, розрахунок буде тим самим.</p>
+            </>
+          )}
+        </div>
+
+        <AllocateThemAll yahoo={yahoo} />
       </div>
     </main>
   )
@@ -562,3 +624,249 @@ const Allocator: React.FC = () => {
 
 export default Allocator
 export const Head: HeadFC = () => <title>Allocator</title>
+
+function round(num: number, dec: number): number {
+  return Math.round(num * 10 ** dec) / 10 ** dec
+}
+
+function calculateAllocations(numberOfAssets = 1): number[][] {
+  if (typeof numberOfAssets !== 'number' || numberOfAssets === 0 || numberOfAssets < 0) {
+    // throw new Error('Invalid input')
+    return []
+  }
+  if (numberOfAssets === 1) {
+    return [[1]]
+  }
+  const step = 0.01
+
+  function generateAllocations(assetsLeft: number, currentAllocation: number[] = []): number[][] {
+    const sumSoFar = currentAllocation.reduce((a, b) => a + b, 0)
+    if (assetsLeft === 1) {
+      return [[...currentAllocation, round(1 - sumSoFar, 2)]]
+    }
+
+    const allocationsArray = []
+    // for (let i = 0; i <= 1 - sumSoFar; i += step) {
+    for (let i = 0; i <= 1 - sumSoFar + step / 2; i += step) {
+      const allocation = [...currentAllocation, round(i, 2)]
+      allocationsArray.push(...generateAllocations(assetsLeft - 1, allocation))
+    }
+
+    return allocationsArray
+  }
+
+  return generateAllocations(numberOfAssets)
+}
+
+function AllocateThemAll({ yahoo }: { yahoo: Record<string, YahooChartRow[]> }) {
+  if (!yahoo || !Object.values(yahoo).length) {
+    return null
+  }
+  const tickers = useMemo(() => Object.keys(yahoo).filter((t) => t !== 'VOO'), [yahoo])
+  const allocations = useMemo(() => calculateAllocations(tickers.length), [tickers])
+  const { data, min, max } = useMemo(() => {
+    const data: Record<string, YahooChartRow[]> = Object.keys(yahoo)
+      .filter((t) => t !== 'VOO')
+      .reduce((acc, ticker) => Object.assign(acc, { [ticker]: yahoo[ticker].map((item) => ({ ...item, date: new Date(new Date(item.date).toISOString().split('T').shift()!) })) }), {})
+
+    const min = Math.max(...Object.values(data).map((arr) => arr[0].date.getTime()))
+    const max = Math.min(...Object.values(data).map((arr) => arr[arr.length - 1].date.getTime()))
+
+    return {
+      data: Object.keys(data).reduce(
+        (acc, ticker) => Object.assign(acc, { [ticker]: data[ticker].filter((x) => new Date(x.date).getTime() >= min && new Date(x.date).getTime() <= max) }),
+        {}
+      ) as Record<string, YahooChartRow[]>,
+      min,
+      max,
+    }
+  }, [yahoo])
+
+  if (!data || !Object.values(data).length || !tickers || !tickers.length) {
+    return null
+  }
+
+  const simulateFewYears = (data: Record<string, YahooChartRow[]>, horizon: number) => {
+    if (!data || !Object.values(data).length) {
+      return null
+    }
+    const days = data[tickers[0]].length
+    if (days < horizon) {
+      return null
+    }
+
+    const report = []
+    let best_allocation = undefined
+    let best_performance = undefined
+    for (const allocation of allocations) {
+      const simulations = []
+      for (let d = 0; d < days - horizon; d++) {
+        let portfolio = 0
+        for (const t of tickers) {
+          const s = data[t][d].close
+          const e = data[t][d + horizon].close
+          const p = (e - s) / s
+          const a = p * allocation[tickers.indexOf(t)]
+          portfolio += a
+        }
+        simulations.push(portfolio)
+      }
+      const avg = simulations.reduce((a, b) => a + b, 0) / simulations.length
+      if (avg > (best_performance || 0)) {
+        best_performance = avg
+        best_allocation = allocation
+      }
+      report.push({ allocation, performance: avg })
+    }
+
+    const top5 = report.sort((a, b) => b.performance - a.performance).slice(0, 5)
+
+    return { report: top5, best_allocation, best_performance }
+  }
+
+  const oneYear = useMemo(() => simulateFewYears(data, 1 * 252), [data])
+  const twoYears = useMemo(() => simulateFewYears(data, 2 * 252), [data])
+  const fiveYears = useMemo(() => simulateFewYears(data, 5 * 252), [data])
+
+  return (
+    <div className="my-5">
+      <h2>Allocate'em All 🤘🎸</h2>
+      <p>
+        Власне тул дозволяє візуально подивитися як аллокація впливає на результати портфелью, але ж ми як люди не в змозі переклікати та переварити усі варіації, саме тому, ось розрахунок який
+        зробила машина переклікавши взагалі все доступні комбінації аллокацій на різних відрізках часу
+      </p>
+
+      <p>
+        Загалом маємо {tickers.length} акцій, а отже існує {allocations.length} варіантів аллокації з кроком в 1%
+      </p>
+
+      <p>
+        Маємо історію за {new Date(max).getFullYear() - new Date(min).getFullYear()} років, {Math.floor((max - min) / (1000 * 60 * 60 * 24))} днів, діапазон дат з{' '}
+        {new Date(min).toISOString().split('T').shift()} до {new Date(max).toISOString().split('T').shift()}
+      </p>
+
+      <p>
+        На прикладі горизонту в один рік, ми будемо рахувати усі {allocations.length} аллокацій, для усіх {Math.floor((max - min) / (1000 * 60 * 60 * 24))} днів, починаючи з{' '}
+        {new Date(min).toISOString().split('T').shift()} і до максимальної дати мінус один рік {new Date(max - 86400000).toISOString().split('T').shift()}
+      </p>
+
+      <p>Так наприклад, беремо першву з {allocations.length} аллокацій</p>
+
+      <ul>
+        {tickers.map((t, i) => (
+          <li key={t}>
+            {t} - {round(allocations[0][i] * 100, 2)}%
+          </li>
+        ))}
+      </ul>
+
+      <p>І починаємо рахувати дохідності за рік, для кожного дня</p>
+
+      <p>Так, для першого дня {new Date(min).toISOString().split('T').shift()}, мали наступні ціни</p>
+
+      <ul>
+        {tickers.map((t) => (
+          <li key={t}>
+            {t} - ${round(data[t][0].close || 0, 2)}
+          </li>
+        ))}
+      </ul>
+
+      <p>Через рік ({new Date(data[tickers[0]][252].date).toISOString().split('T').shift()}), ціни стали такими</p>
+
+      <ul>
+        {tickers.map((t) => (
+          <li key={t}>
+            {t} - ${round(data[t][252].close || 0, 2)}
+          </li>
+        ))}
+      </ul>
+
+      <p>Отже дохідність кожної окремої акції склала</p>
+
+      <ul>
+        {tickers.map((t, i) => (
+          <li key={t}>
+            {t} - {round((((data[t][252].close || 0) - (data[t][0].close || 0)) / (data[t][0].close || 1)) * 100, 2)}%
+          </li>
+        ))}
+      </ul>
+
+      <p>
+        А отже дохідність портфеля складе{' '}
+        {round((((data[tickers[tickers.length - 1]][252].close || 0) - (data[tickers[tickers.length - 1]][0].close || 0)) / (data[tickers[tickers.length - 1]][0].close || 1)) * 100, 2)}%
+      </p>
+
+      <p>Далі беремо наступний день {data[tickers[0]][1].date.toISOString().split('T').shift()} і повторюємо розрахунок</p>
+      <p>Робимо так {Math.floor((max - min) / (1000 * 60 * 60 * 24))} разів для кожного дня</p>
+
+      <p>Після чого беремо наступну аллокацію</p>
+
+      <ul>
+        {tickers.map((t, i) => (
+          <li key={t}>
+            {t} - {round(allocations[1][i] * 100, 2)}%
+          </li>
+        ))}
+      </ul>
+
+      <p>І знову перераховуемо усі дні</p>
+
+      <p>Таким чином нам потрібно виконати 100500 мільоній розрахунків, що не є можливим для людини 🤷‍♂️</p>
+
+      <p>Саме тому ми вимушуємо машину порахувати це за нас, нижче розрахунки на різних горизонтах</p>
+
+      {oneYear && (
+        <>
+          <h3>1 year horizon</h3>
+          <p>Отже, на горизонті одного року найкращими є наступні аллокації</p>
+          <ul>
+            {tickers.map((t, i) => (
+              <li key={t}>
+                {t} - {round(oneYear.best_allocation![i] * 100, 2)}%
+              </li>
+            ))}
+          </ul>
+          <p>Що дає середню дохідність - {round(oneYear.best_performance! * 100, 2)}%</p>
+        </>
+      )}
+
+      {twoYears && (
+        <>
+          <h3>2 years horizon</h3>
+          <p>Отже, на горизонті двух років найкращими є наступні аллокації</p>
+          <ul>
+            {tickers.map((t, i) => (
+              <li key={t}>
+                {t} - {round(twoYears.best_allocation![i] * 100, 2)}%
+              </li>
+            ))}
+          </ul>
+          <p>Що дає середню дохідність - {round(twoYears.best_performance! * 100, 2)}%</p>
+        </>
+      )}
+
+      {fiveYears && (
+        <>
+          <h3>5 years horizon</h3>
+          <p>Отже, на горизонті пʼяти років найкращими є наступні аллокації</p>
+          <ul>
+            {tickers.map((t, i) => (
+              <li key={t}>
+                {t} - {round(fiveYears.best_allocation![i] * 100, 2)}%
+              </li>
+            ))}
+          </ul>
+          <p>Що дає середню дохідність - {round(fiveYears.best_performance! * 100, 2)}%</p>
+        </>
+      )}
+
+      <p>Уважний читач відразу помітить щось не ладне і запитаеться що відбувається?!</p>
+
+      <p>
+        Справа в тому, що не залежно від кількості активів, такий підхід вибиратиме завжди той актив що є найбільш прибутковим в середньому і підбирати аллокації лише за допомогою дохідності не є
+        гарною ідеєю
+      </p>
+    </div>
+  )
+}
