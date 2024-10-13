@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { GoogleAuthProvider, User, getAuth, signInWithCustomToken, signInWithPopup } from 'firebase/auth'
+import { GoogleAuthProvider, User, getAuth, signInWithCustomToken, signInWithPopup, updateProfile } from 'firebase/auth'
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 
@@ -73,7 +73,10 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
       return
     }
 
-    signInWithCustomToken(getAuth(app), token)
+    signInWithCustomToken(getAuth(app), token).then((cred) => {
+      console.log('signInWithCustomToken', cred)
+      // updateProfile(cred.user, { displayName: 'Telegram' })
+    })
   }
 
   return <AuthContext.Provider value={{ user, found, login, logout, telegram }}>{children}</AuthContext.Provider>

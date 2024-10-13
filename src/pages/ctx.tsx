@@ -8,6 +8,7 @@ const CtxPage: React.FC = () => {
     <main>
       <div className="container py-5">
         <h2>Context Demo</h2>
+        <pre>{JSON.stringify(user, null, 2)}</pre>
         {user !== undefined && user && user.displayName}
         {user !== undefined && user && <button onClick={logout}>Logout</button>}
         {user !== undefined && !user && <button onClick={login}>Login</button>}
