@@ -42,7 +42,7 @@ const Page: React.FC = () => {
     script.setAttribute('data-telegram-login', 'manymacbot')
     script.setAttribute('data-size', 'medium')
     script.setAttribute('data-radius', '5')
-    script.setAttribute('data-onauth', 'console.log(user)')
+    script.setAttribute('data-onauth', 'onTelegramAuth(user)')
     script.setAttribute('data-request-access', 'write')
 
     ref.current.appendChild(script)
