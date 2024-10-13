@@ -66,6 +66,9 @@ const fixDate = (value: string): string | null => {
 }
 
 export function useDeposits() {
+  if (typeof window === 'undefined') {
+    return []
+  }
   return rollup(useGoogleSheet('minfin!A:Z'))
     .map(({ updated, bank, currency, maturity, yield: yld }) => ({
       input_date: fixDate(updated),
@@ -85,6 +88,9 @@ export function useDeposits() {
 }
 
 export function useOvdp() {
+  if (typeof window === 'undefined') {
+    return []
+  }
   return rollup(useGoogleSheet('site!A:Z'))
     .map(({ input_date, provider_name, provider_type, instrument_type, isin, currency, maturity, yield: yld }) => ({
       input_date: fixDate(input_date),
