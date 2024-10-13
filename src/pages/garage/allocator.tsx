@@ -659,7 +659,7 @@ function calculateAllocations(numberOfAssets = 1): number[][] {
 }
 
 function AllocateThemAll({ yahoo }: { yahoo: Record<string, YahooChartRow[]> }) {
-  if (!yahoo || !Object.values(yahoo).length) {
+  if (!yahoo || !Object.values(yahoo).length || typeof window === 'undefined') {
     return null
   }
   const tickers = useMemo(() => Object.keys(yahoo).filter((t) => t !== 'VOO'), [yahoo])
