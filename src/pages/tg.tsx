@@ -1,6 +1,7 @@
 import { HeadFC } from 'gatsby'
 import * as React from 'react'
 import { useEffect, useRef } from 'react'
+import { useAuth } from '../context/auth'
 
 interface TelegramUser {
   id: number // 315833496
@@ -19,6 +20,7 @@ declare global {
 }
 
 const Page: React.FC = () => {
+  const { user, login, logout, telegram } = useAuth()
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (!ref.current || ref.current.children.length || typeof window === 'undefined') {
@@ -29,7 +31,10 @@ const Page: React.FC = () => {
       window.telegram = user
       fetch('https://europe-west3-iplantalks.cloudfunctions.net/tga', { method: 'POST', headers: { 'content-type': 'application/json; charset=utf-8' }, body: JSON.stringify(user) })
         .then((r) => r.json())
-        .then(console.log)
+        .then((token) => {
+          telegram(token)
+          console.log('TGA', token)
+        })
     }
     const script = document.createElement('script')
     script.src = 'https://telegram.org/js/telegram-widget.js?22'
@@ -47,7 +52,10 @@ const Page: React.FC = () => {
     <main>
       <div className="container py-5">
         <h2>Telegram Demo</h2>
-        <div ref={ref} />
+        {user !== undefined && !user && <div ref={ref} />}
+
+        {user !== undefined && user && <pre>{JSON.stringify(user, null, 2)}</pre>}
+        {user !== undefined && user && <button onClick={logout}>Logout</button>}
       </div>
     </main>
   )

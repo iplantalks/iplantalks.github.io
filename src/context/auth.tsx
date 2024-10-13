@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { GoogleAuthProvider, User, getAuth, signInWithPopup } from 'firebase/auth'
+import { GoogleAuthProvider, User, getAuth, signInWithCustomToken, signInWithPopup } from 'firebase/auth'
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 
@@ -15,11 +15,12 @@ const app =
         appId: '1:1006859178341:web:b5dc86f76f1872fe97518c',
       })
 
-export const AuthContext = React.createContext<{ user: User | null | undefined; found: boolean; login: () => void; logout: () => void }>({
+export const AuthContext = React.createContext<{ user: User | null | undefined; found: boolean; login: () => void; logout: () => void; telegram: (token: string) => void }>({
   user: undefined,
   found: false,
   login: () => {},
   logout: () => {},
+  telegram: () => {},
 })
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
@@ -67,7 +68,15 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
     getAuth(app).signOut()
   }
 
-  return <AuthContext.Provider value={{ user, found, login, logout }}>{children}</AuthContext.Provider>
+  const telegram = (token: string) => {
+    if (app == null) {
+      return
+    }
+
+    signInWithCustomToken(getAuth(app), token)
+  }
+
+  return <AuthContext.Provider value={{ user, found, login, logout, telegram }}>{children}</AuthContext.Provider>
 }
 
 export const useAuth = () => useContext(AuthContext)
