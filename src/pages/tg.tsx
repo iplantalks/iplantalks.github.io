@@ -52,7 +52,7 @@ const Page: React.FC = () => {
     <main>
       <div className="container py-5">
         <h2>Telegram Demo</h2>
-        {user !== undefined && !user && <div ref={ref} />}
+        <div ref={ref} />
 
         {user !== undefined && user && <pre>{JSON.stringify(user, null, 2)}</pre>}
         {user !== undefined && user && <button onClick={logout}>Logout</button>}
