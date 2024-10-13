@@ -31,7 +31,7 @@ const Page: React.FC = () => {
       window.telegram = user
       fetch('https://europe-west3-iplantalks.cloudfunctions.net/tga', { method: 'POST', headers: { 'content-type': 'application/json; charset=utf-8' }, body: JSON.stringify(user) })
         .then((r) => r.json())
-        .then((token) => {
+        .then(({ token }) => {
           telegram(token)
           console.log('TGA', token)
         })
