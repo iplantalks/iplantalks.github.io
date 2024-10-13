@@ -75,6 +75,9 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
     signInWithCustomToken(getAuth(app), token).then((cred) => {
       console.log('signInWithCustomToken', cred)
+      cred.user.getIdToken().then((idToken) => {
+        console.log('getIdToken', idToken)
+      })
       // updateProfile(cred.user, { displayName: 'Telegram' })
     })
   }
