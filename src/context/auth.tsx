@@ -73,22 +73,23 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
       return
     }
 
-    signInWithCustomToken(getAuth(app), token).then((cred) => {
-      console.log('signInWithCustomToken', cred)
-      cred.user.getIdToken().then((idToken) => {
-        console.log('getIdToken', idToken)
-        const { first_name, last_name } = JSON.parse(atob(idToken.split('.')[1]))
-        updateProfile(cred.user, {
-          displayName: [first_name, last_name].filter((x) => !!x).join(' '),
-        }).then(() => {
-          console.log('profile updated, TODO: somehow need to reload user')
-          if (user) {
-            user.reload()
-          }
-        })
-      })
-      // updateProfile(cred.user, { displayName: 'Telegram' })
-    })
+    signInWithCustomToken(getAuth(app), token)
+    // signInWithCustomToken(getAuth(app), token).then((cred) => {
+    //   console.log('signInWithCustomToken', cred)
+    //   cred.user.getIdToken().then((idToken) => {
+    //     console.log('getIdToken', idToken)
+    //     const { first_name, last_name } = JSON.parse(atob(idToken.split('.')[1]))
+    //     updateProfile(cred.user, {
+    //       displayName: [first_name, last_name].filter((x) => !!x).join(' '),
+    //     }).then(() => {
+    //       console.log('profile updated, TODO: somehow need to reload user')
+    //       if (user) {
+    //         user.reload()
+    //       }
+    //     })
+    //   })
+    //   // updateProfile(cred.user, { displayName: 'Telegram' })
+    // })
   }
 
   return <AuthContext.Provider value={{ user, found, login, logout, telegram }}>{children}</AuthContext.Provider>
