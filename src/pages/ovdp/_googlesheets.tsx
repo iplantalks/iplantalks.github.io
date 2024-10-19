@@ -108,3 +108,10 @@ export function useOvdp() {
     }))
     .filter(({ months }) => months && months > 0)
 }
+
+export function useComments(): Record<string, string | undefined> {
+  if (typeof window === 'undefined') {
+    return {}
+  }
+  return rollup(useGoogleSheet('comments!A:Z')).reduce((acc, { provider, comment }) => Object.assign(acc, { [provider]: comment }), {})
+}

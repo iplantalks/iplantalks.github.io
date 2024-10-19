@@ -4,13 +4,14 @@ import { HeadFC, PageProps, navigate } from 'gatsby'
 import '../../styles/common.css'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
-import { useDeposits, useOvdp } from './_googlesheets'
+import { useComments, useDeposits, useOvdp } from './_googlesheets'
 import { ago } from '../../utils/ago'
 import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
 import { Checkboxes2 } from '../payment-systems/components/_checkboxes'
 import { LineChart } from './_line_chart'
 import { useAuth } from '../../context/auth'
+import { Feedback } from './_feedback'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -45,6 +46,7 @@ const Ovdp: React.FC<PageProps> = () => {
 
   const ovdp = useOvdp()
   const deposits = useDeposits()
+  const comments = useComments()
 
   const rows = useMemo(() => {
     const rows = []
@@ -217,6 +219,7 @@ const Ovdp: React.FC<PageProps> = () => {
                       <th className="fw-normal small">
                         Дохідність <span className="text-secondary">%</span>
                       </th>
+                      <th className="fw-normal small"></th>
                     </tr>
                   </thead>
                   <tbody className="table-group-divider">
@@ -238,6 +241,13 @@ const Ovdp: React.FC<PageProps> = () => {
                           <td>{item.months ? item.months : ''}</td>
                           <td className={[item.months && item.yield === best_over_months[item.months] ? 'text-success' : '', item.yield === best ? 'fw-bold' : ''].join(' ')}>
                             {currency(item.yield)}%{item.yield === best ? <span title={`Найкраща пропозиція`}>🥇</span> : ''}
+                          </td>
+                          <td>
+                            {comments && comments[item.provider_name] && (
+                              <small title={comments[item.provider_name]}>
+                                <i className="text-primary fa-solid fa-circle-info" />
+                              </small>
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -265,6 +275,7 @@ const Ovdp: React.FC<PageProps> = () => {
           <p>Вони в свою чергу потім, перепродають їх нам, зі своєю націнкою, хтось трохи дорожче, хтось трохи дешевше.</p>
         </div>
       </div>
+      <Feedback />
       <Shop />
       <Join />
     </main>
