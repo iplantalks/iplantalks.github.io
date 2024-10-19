@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 
 async function fetchGoogleSheetsValues(range: string): Promise<string[][]> {
-  var url = new URL('https://gsr.iplan-talks.workers.dev')
-  url.searchParams.set('sheet', '1aSt7wyLU9ytpMAQcPFtdKRQaE8gyM4GW9nLsD4l5dEY')
-  url.searchParams.set('range', range)
-  url.searchParams.set('cache', '120')
-  // var url = new URL('https://europe-west3-iplantalks.cloudfunctions.net/gsr2')
+  // var url = new URL('https://gsr.iplan-talks.workers.dev')
   // url.searchParams.set('sheet', '1aSt7wyLU9ytpMAQcPFtdKRQaE8gyM4GW9nLsD4l5dEY')
   // url.searchParams.set('range', range)
+  // url.searchParams.set('cache', '120')
+  var url = new URL('https://europe-west3-iplantalks.cloudfunctions.net/gsr2')
+  url.searchParams.set('sheet', '1aSt7wyLU9ytpMAQcPFtdKRQaE8gyM4GW9nLsD4l5dEY')
+  url.searchParams.set('range', range)
   try {
     const res = await fetch(url)
     const text = await res.text()
