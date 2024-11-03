@@ -98,6 +98,11 @@ const Page: React.FC = () => {
     <main>
       <div className="container py-5">
         <h2>Demo</h2>
+        <h3>
+          <span style={{ opacity: user ? 0.5 : 1 }}>Anonymous</span> / <span style={{ opacity: user ? 1 : 0.5 }}>Authenticated</span> /{' '}
+          <span style={{ opacity: user && user.status ? 1 : 0.5 }}>Member</span>
+        </h3>
+        <hr />
         <p>
           Status: <span>{user ? 'loggedin' : 'anonymous'}</span>
         </p>
