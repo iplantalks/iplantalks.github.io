@@ -45,16 +45,10 @@ const initState = (): TelegramUser | null => {
 const Page: React.FC = () => {
   const [user, setUser] = useState<TelegramUser | null>(initState())
 
-  const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (!ref.current || ref.current.children.length || typeof window === 'undefined') {
+    if (typeof window === 'undefined') {
       return
     }
-    if (user) {
-      console.log('logged in', user)
-      return
-    }
-
     window.telegramCallback = (user: TelegramUser) => {
       console.log('telegramCallback', user)
       localStorage.setItem('tg', JSON.stringify(user))
@@ -71,11 +65,23 @@ const Page: React.FC = () => {
             } else {
               console.warn('membership', user, text)
             }
+            setUser(initState())
           })
         }
       )
     }
+  }, [])
 
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!ref.current || typeof window === 'undefined') {
+      return
+    }
+    if (user) {
+      console.log('logged in', user)
+      ref.current.innerHTML = ''
+      return
+    }
     const script = document.createElement('script')
     script.src = 'https://telegram.org/js/telegram-widget.js?22'
     script.async = true
@@ -86,7 +92,7 @@ const Page: React.FC = () => {
     script.setAttribute('data-request-access', 'write')
 
     ref.current.appendChild(script)
-  }, [])
+  }, [user])
 
   return (
     <main>
