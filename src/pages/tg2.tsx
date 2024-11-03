@@ -1,7 +1,7 @@
 import '../styles/common.css'
 import { HeadFC } from 'gatsby'
 import * as React from 'react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface TelegramUser {
   id: number // 315833496
@@ -10,30 +10,70 @@ interface TelegramUser {
   last_name: string // "Marchenko"
   auth_date: number // 1728808910
   hash: string // "2a49738a3f0b7a14149e1846b3c3c25c56e999ee21aff3fc93060452f7fd9bf7"
+  status?: string // "creator"
 }
 
 declare global {
   interface Window {
-    onTelegramAuth: (user: TelegramUser) => void
-    telegram?: TelegramUser
+    telegramCallback: (user: TelegramUser) => void
+  }
+}
+
+const initState = (): TelegramUser | null => {
+  if (typeof window === 'undefined') {
+    return null
+  }
+  const stored = localStorage.getItem('tg')
+  if (!stored) {
+    return null
+  }
+  try {
+    const parsed = JSON.parse(stored)
+    if (parsed.id) {
+      // optionally: check auth_date if it is too old - reauthenticate
+      return parsed
+    } else {
+      localStorage.removeItem('tg')
+      return null
+    }
+  } catch {
+    localStorage.removeItem('tg')
+    return null
   }
 }
 
 const Page: React.FC = () => {
+  const [user, setUser] = useState<TelegramUser | null>(initState())
+
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (!ref.current || ref.current.children.length || typeof window === 'undefined') {
       return
     }
-    window.onTelegramAuth = (user: TelegramUser) => {
-      console.log('onTelegramAuth', user)
-      window.telegram = user
-      fetch('https://us-central1-iplantalks.cloudfunctions.net/telegramdemo', { method: 'POST', headers: { 'content-type': 'application/json; charset=utf-8' }, body: JSON.stringify(user) })
-        .then((r) => r.json())
-        .then(({ token }) => {
-          // telegram(token)
-          console.log('TGA', token)
-        })
+    if (user) {
+      console.log('logged in', user)
+      return
+    }
+
+    window.telegramCallback = (user: TelegramUser) => {
+      console.log('telegramCallback', user)
+      localStorage.setItem('tg', JSON.stringify(user))
+      fetch('https://us-central1-iplantalks.cloudfunctions.net/telegramdemo', { method: 'POST', headers: { 'content-type': 'application/json; charset=utf-8' }, body: JSON.stringify(user) }).then(
+        (r) => {
+          r.text().then((text) => {
+            if (r.status === 200) {
+              user.status = text
+              localStorage.setItem('tg', JSON.stringify(user))
+              console.log('logged in', user)
+              if (ref.current) {
+                ref.current.innerHTML = ''
+              }
+            } else {
+              console.warn('membership', user, text)
+            }
+          })
+        }
+      )
     }
 
     const script = document.createElement('script')
@@ -52,7 +92,25 @@ const Page: React.FC = () => {
     <main>
       <div className="container py-5">
         <h2>Demo</h2>
-        <div ref={ref} />
+        <p>
+          Status: <span>{user ? 'loggedin' : 'anonymous'}</span>
+        </p>
+        <p>
+          Membership: <span>{user?.status ? user.status : 'unknown'}</span>
+        </p>
+        {user && (
+          <p>
+            <button
+              onClick={() => {
+                localStorage.removeItem('tg')
+                setUser(null)
+              }}
+            >
+              logout
+            </button>
+          </p>
+        )}
+        {!user && <div ref={ref} />}
       </div>
     </main>
   )
