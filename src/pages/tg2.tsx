@@ -28,12 +28,12 @@ const Page: React.FC = () => {
     window.onTelegramAuth = (user: TelegramUser) => {
       console.log('onTelegramAuth', user)
       window.telegram = user
-      // fetch('https://europe-west3-iplantalks.cloudfunctions.net/tga', { method: 'POST', headers: { 'content-type': 'application/json; charset=utf-8' }, body: JSON.stringify(user) })
-      //   .then((r) => r.json())
-      //   .then(({ token }) => {
-      //     // telegram(token)
-      //     console.log('TGA', token)
-      //   })
+      fetch('https://us-central1-iplantalks.cloudfunctions.net/telegramdemo', { method: 'POST', headers: { 'content-type': 'application/json; charset=utf-8' }, body: JSON.stringify(user) })
+        .then((r) => r.json())
+        .then(({ token }) => {
+          // telegram(token)
+          console.log('TGA', token)
+        })
     }
 
     const script = document.createElement('script')
