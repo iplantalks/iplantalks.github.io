@@ -212,6 +212,16 @@ const IndexPage: React.FC<PageProps> = () => {
                 </Link>
               </div>
             </div>
+            <div className="col d-flex align-items-start">
+              <i className="fa-solid fa-poo flex-shrink-0 me-3 fs-1 text-secondary"></i>
+              <div>
+                <h3 className="fs-2 text-body-emphasis">Market Timing</h3>
+                <p>Перевіряєми чи взагалі є сенс паритися</p>
+                <Link to="/garage/market-timing-backtest" className="btn btn-primary">
+                  Відкрити
+                </Link>
+              </div>
+            </div>
           </div>
           <p>
             Якщо маєш ідеї чи побажання -{' '}
