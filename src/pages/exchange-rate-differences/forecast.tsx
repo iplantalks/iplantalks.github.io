@@ -24,6 +24,10 @@ interface Row {
   tax2: number
   tax3: number
   tax4: number
+  perf1: number
+  perf2: number
+  perf3: number
+  perf4: number
 }
 
 const Forecast = () => {
@@ -35,7 +39,9 @@ const Forecast = () => {
   }, [user])
 
   const chartRef = useRef<HTMLCanvasElement>(null)
+  const returnsChartRef = useRef<HTMLCanvasElement>(null)
   const [chart, setChart] = useState<Chart>()
+  const [returnsChart, setReturnsChart] = useState<Chart>()
   const [short, setShort] = useState(true)
   const [tax, setTax] = useState(19.5)
   const [expectedReturn, setExpectedReturn] = useState(7)
@@ -122,6 +128,79 @@ const Forecast = () => {
     setChart(chart)
   }, [])
 
+  useEffect(() => {
+    if (!returnsChartRef.current) {
+      return
+    }
+
+    const chart = new Chart(returnsChartRef.current, {
+      type: 'line',
+      data: {
+        labels: new Array(50).fill(0).map((_, i) => i + 1),
+        datasets: [
+          {
+            label: '12% девальвація',
+            data: new Array(50).fill(0),
+            // fill: false,
+            // cubicInterpolationMode: 'monotone',
+            // tension: 0.4,
+          },
+          {
+            label: '10% девальваця',
+            data: new Array(50).fill(0),
+            // fill: false,
+            // cubicInterpolationMode: 'monotone',
+            // tension: 0.4,
+          },
+          {
+            label: '7% девальвація',
+            data: new Array(50).fill(0),
+            // fill: false,
+            // cubicInterpolationMode: 'monotone',
+            // tension: 0.4,
+          },
+          {
+            label: '5% девальвація',
+            data: new Array(50).fill(0),
+            // fill: false,
+            // cubicInterpolationMode: 'monotone',
+            // tension: 0.4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        animation: false,
+        plugins: {
+          title: {
+            display: true,
+            text: '% прибуток при різних % девальвації',
+          },
+        },
+        interaction: {
+          intersect: false,
+        },
+        scales: {
+          x: {
+            display: true,
+            title: {
+              display: true,
+            },
+          },
+          y: {
+            display: true,
+            title: {
+              display: true,
+              text: 'Value',
+            },
+          },
+        },
+      },
+    })
+
+    setReturnsChart(chart)
+  }, [])
+
   const rows = useMemo(() => {
     const rows: Row[] = []
 
@@ -139,6 +218,11 @@ const Forecast = () => {
     const tax3 = (tax * (returns * exchangeRate3 - exchangeRate <= 0 ? 0 : returns * exchangeRate3 - exchangeRate)) / exchangeRate3 / divider
     const tax4 = (tax * (returns * exchangeRate4 - exchangeRate <= 0 ? 0 : returns * exchangeRate4 - exchangeRate)) / exchangeRate4 / divider
 
+    const perf1 = (returns * exchangeRate1 - exchangeRate <= 0 ? 0 : returns * exchangeRate1 - exchangeRate) / exchangeRate1 / divider
+    const perf2 = (returns * exchangeRate2 - exchangeRate <= 0 ? 0 : returns * exchangeRate2 - exchangeRate) / exchangeRate2 / divider
+    const perf3 = (returns * exchangeRate3 - exchangeRate <= 0 ? 0 : returns * exchangeRate3 - exchangeRate) / exchangeRate3 / divider
+    const perf4 = (returns * exchangeRate4 - exchangeRate <= 0 ? 0 : returns * exchangeRate4 - exchangeRate) / exchangeRate4 / divider
+
     rows.push({
       year,
       exchangeRate1,
@@ -149,6 +233,10 @@ const Forecast = () => {
       tax2,
       tax3,
       tax4,
+      perf1,
+      perf2,
+      perf3,
+      perf4,
     })
 
     for (let i = 1; i < 50; i++) {
@@ -166,6 +254,11 @@ const Forecast = () => {
       const tax3 = (tax * (returns * exchangeRate3 - exchangeRate <= 0 ? 0 : returns * exchangeRate3 - exchangeRate)) / exchangeRate3 / divider
       const tax4 = (tax * (returns * exchangeRate4 - exchangeRate <= 0 ? 0 : returns * exchangeRate4 - exchangeRate)) / exchangeRate4 / divider
 
+      const perf1 = returns * exchangeRate1 - exchangeRate <= 0 ? 0 : returns * exchangeRate1 - exchangeRate / exchangeRate1 / divider
+      const perf2 = returns * exchangeRate2 - exchangeRate <= 0 ? 0 : returns * exchangeRate2 - exchangeRate / exchangeRate2 / divider
+      const perf3 = returns * exchangeRate3 - exchangeRate <= 0 ? 0 : returns * exchangeRate3 - exchangeRate / exchangeRate3 / divider
+      const perf4 = returns * exchangeRate4 - exchangeRate <= 0 ? 0 : returns * exchangeRate4 - exchangeRate / exchangeRate4 / divider
+
       rows.push({
         year,
         exchangeRate1,
@@ -176,6 +269,10 @@ const Forecast = () => {
         tax2,
         tax3,
         tax4,
+        perf1,
+        perf2,
+        perf3,
+        perf4,
       })
     }
 
@@ -190,6 +287,19 @@ const Forecast = () => {
       chart.data.datasets[2].data = rows.map((row) => row.tax3)
       chart.data.datasets[3].data = rows.map((row) => row.tax4)
       chart.update()
+    }
+
+    if (returnsChart) {
+      returnsChart.data.datasets[0].label = `${devalvation1}% девальвація`
+      returnsChart.data.datasets[1].label = `${devalvation2}% девальвація`
+      returnsChart.data.datasets[2].label = `${devalvation3}% девальвація`
+      returnsChart.data.datasets[3].label = `${devalvation4}% девальвація`
+
+      returnsChart.data.datasets[0].data = rows.map((row) => row.perf1)
+      returnsChart.data.datasets[1].data = rows.map((row) => row.perf2)
+      returnsChart.data.datasets[2].data = rows.map((row) => row.perf3)
+      returnsChart.data.datasets[3].data = rows.map((row) => row.perf4)
+      returnsChart.update()
     }
 
     return rows
@@ -220,7 +330,7 @@ const Forecast = () => {
             <label htmlFor="date" className="form-label">
               Прогнозована дохідність
             </label>
-            <input type="number" className="form-control" value={expectedReturn} onChange={(e) => setExpectedReturn(e.target.valueAsNumber)} />
+            <input type="number" className="form-control" value={expectedReturn} min={1} step={1} onChange={(e) => setExpectedReturn(e.target.valueAsNumber)} />
             {/*disabled={!found}*/}
           </p>
         </div>
@@ -283,6 +393,7 @@ const Forecast = () => {
           </label>
         </p>
         <canvas ref={chartRef} />
+        <canvas ref={returnsChartRef} />
       </div>
 
       <ExchangeRateDifferencesLinks />
