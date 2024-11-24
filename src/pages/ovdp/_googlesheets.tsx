@@ -109,9 +109,18 @@ export function useOvdp() {
     .filter(({ months }) => months && months > 0)
 }
 
-export function useComments(): Record<string, string | undefined> {
+export function useInfo() {
   if (typeof window === 'undefined') {
-    return {}
+    return []
   }
-  return rollup(useGoogleSheet('comments!A:Z')).reduce((acc, { provider, comment }) => Object.assign(acc, { [provider]: comment }), {})
+  return rollup(useGoogleSheet('info!A:Z'))
+    .map(({ provider, sale, online, dia, fee, comment }) => ({
+      provider,
+      sale: sale === 'TRUE',
+      online: online === 'TRUE',
+      dia: dia === 'TRUE',
+      fee,
+      comment,
+    }))
+    .filter(({ provider }) => !!provider)
 }
