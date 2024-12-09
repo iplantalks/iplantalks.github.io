@@ -26,11 +26,11 @@ function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
 }
 
-const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) => {
+const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string; className?: string }>) => {
   const [collapsed, setCollapsed] = useState(true)
   return (
     <>
-      <div className="mt-3">
+      <div className={props.className || 'mt-3'}>
         <div onClick={(e) => setCollapsed(!collapsed)} className="d-flex" style={{ cursor: 'pointer' }}>
           <div className="flex-grow-1">
             <b>{props.title}</b>
@@ -108,12 +108,19 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
           <h2>Платіжні системи</h2>
           <p>Поповнюємо Interactive Brokers ефективно</p>
           <div className="text-bg-light rounded-3 my-2 py-2 px-3">
-            Як переказати валюту з України за кордон
-            <a className="d-inline-block text-bg-danger rounded-2 ms-3 py-1 px-2 text-decoration-none" href="https://www.youtube.com/watch?v=23_e_wUAnPA" target="_blank">
-              <i className="fa-brands fa-youtube me-2" />
-              Video tutorial
-            </a>
+            <CollapsibleFilter title="Питання, відповіді та відео інструкція" className="faq">
+              <PaymentsFaq />
+              <hr />
+              <div>
+                Як переказати валюту з України за кордон
+                <a className="d-inline-block text-bg-danger rounded-2 ms-3 py-1 px-2 text-decoration-none" href="https://www.youtube.com/watch?v=23_e_wUAnPA" target="_blank">
+                  <i className="fa-brands fa-youtube me-2" />
+                  Video tutorial
+                </a>
+              </div>
+            </CollapsibleFilter>
           </div>
+
           <CheckboxesBankServicePivot
             combos={rowsFilteredByMegatag.filter((r) => r.works === 'TRUE')}
             onChange={({ bankCheckboxes, serviceCheckboxes }: { bankCheckboxes: Record<string, boolean>; serviceCheckboxes: Record<string, boolean> }) => {
@@ -473,10 +480,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div id="faq" className="container py-5">
-        <PaymentsFaq />
       </div>
 
       <div className="bg-body-secondary">
