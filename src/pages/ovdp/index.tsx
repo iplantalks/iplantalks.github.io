@@ -4,7 +4,7 @@ import { HeadFC, PageProps, navigate } from 'gatsby'
 import '../../styles/common.css'
 import { Shop } from '../../components/shop'
 import Join from '../../components/join'
-import { useDeposits, useInfo, useOvdp } from './_googlesheets'
+import { useDeposits, useInfo, useOvdp, useSnapshot } from './_googlesheets'
 import { ago } from '../../utils/ago'
 import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
@@ -46,6 +46,7 @@ const Ovdp: React.FC<PageProps> = () => {
 
   const ovdp = useOvdp()
   const deposits = useDeposits()
+  const snapshot = useSnapshot()
   const info = useInfo()
 
   const rows = useMemo(() => {
@@ -259,6 +260,7 @@ const Ovdp: React.FC<PageProps> = () => {
                         Дохідність <span className="text-secondary">%</span>
                       </th>
                       <th className="fw-normal small"></th>
+                      <th className="fw-normal small"></th>
                     </tr>
                   </thead>
                   <tbody className="table-group-divider">
@@ -300,6 +302,26 @@ const Ovdp: React.FC<PageProps> = () => {
                           <td>{item.months ? item.months : ''}</td>
                           <td className={[item.months && item.yield === best_over_months[item.months] ? 'text-success' : '', item.yield === best ? 'fw-bold' : ''].join(' ')}>
                             {currency(item.yield)}%{item.yield === best ? <span title={`Найкраща пропозиція`}>🥇</span> : ''}
+                          </td>
+                          <td>
+                            <span
+                              title={`Середня дохідність ${item.instrument_type} з погашенням через ${item.months} місяців за попередній період складає ${
+                                snapshot
+                                  .filter((s) => s.kind === item.instrument_type && s.currency === item.currency && s.months === item.months)
+                                  .sort((a, b) => b.month.localeCompare(a.month))
+                                  .shift()?.ror || 0
+                              }%`}
+                            >
+                              {item.yield >
+                              (snapshot
+                                .filter((s) => s.kind === item.instrument_type && s.currency === item.currency && s.months === item.months)
+                                .sort((a, b) => b.month.localeCompare(a.month))
+                                .shift()?.ror || 0) ? (
+                                <span className="text-success">&#x25B2;</span>
+                              ) : (
+                                <span className="text-danger">&#x25BC;</span>
+                              )}
+                            </span>
                           </td>
                           <td>
                             {item.info?.fee && (

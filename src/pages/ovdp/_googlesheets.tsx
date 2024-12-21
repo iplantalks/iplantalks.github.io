@@ -109,6 +109,35 @@ export function useOvdp() {
     .filter(({ months }) => months && months > 0)
 }
 
+export function useMof() {
+  if (typeof window === 'undefined') {
+    return []
+  }
+  return rollup(useGoogleSheet('mof!A:Z'))
+    .map(({ year, months, currency, ror }) => ({
+      year: parseInt(year),
+      months: parseInt(months),
+      currency: currency,
+      ror: parseFloat(ror),
+    }))
+    .filter(({ months }) => months && months > 0)
+}
+
+export function useSnapshot() {
+  if (typeof window === 'undefined') {
+    return []
+  }
+  return rollup(useGoogleSheet('snapshot!A:E'))
+    .map(({ month, kind, currency, months, ror }) => ({
+      month: month,
+      kind: kind,
+      months: parseInt(months),
+      currency: currency,
+      ror: parseFloat(ror),
+    }))
+    .filter(({ months }) => months && months > 0)
+}
+
 export function useInfo() {
   if (typeof window === 'undefined') {
     return []
