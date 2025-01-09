@@ -3,6 +3,7 @@ import type { RenderBodyArgs } from 'gatsby'
 
 export function onRenderBody({ setHeadComponents }: RenderBodyArgs): void {
   setHeadComponents([
+    createElement('script', { key: 'gatsby-plugin-smartsender-push-client', src: 'https://customer.smartsender.eu/js/client/push/fcm/client.js?version=latest', async: 'async' }),
     createElement('script', {
       key: 'gatsby-plugin-smartsender',
       dangerouslySetInnerHTML: {
