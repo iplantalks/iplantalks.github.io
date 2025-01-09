@@ -11,6 +11,7 @@ const config: GatsbyConfig = {
       resolve: `gatsby-plugin-google-gtag`,
       options: { trackingIds: ['G-HRXQ4P204N'] },
     },
+    'smartsender',
   ],
 }
 
