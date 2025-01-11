@@ -82,6 +82,7 @@ export const Header = () => (
                 <Card icon="fa-solid fa-chart-pie" title="Allocator" to="/garage/allocator" description="Як саме аллокація впливає на дохідність портфелю." />
                 <Card icon="fa-solid fa-soap" title="Bubble" to="/garage/bubble" description="Бульбашковий аніліз мультиплікативних індикаторів." />
                 <Card icon="fa-solid fa-poo" title="Market Timing" to="/garage/market-timing-backtest" description="Перевіряємо чи варто взагалі паритися." />
+                <Card icon="fa-solid fa-microscope" title="Flex Viewer" to="/garage/flex/viewer" description="Переглядач Flex звітів." />
               </div>
             </div>
           </div>
