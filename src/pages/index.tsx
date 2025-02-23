@@ -232,6 +232,16 @@ const IndexPage: React.FC<PageProps> = () => {
                 </Link>
               </div>
             </div>
+            <div className="col d-flex align-items-start">
+              <i className="fa-solid fa-utensils flex-shrink-0 me-3 fs-1 text-secondary"></i>
+              <div>
+                <h3 className="fs-2 text-body-emphasis">UA Market</h3>
+                <p>Гривня через 20 років або Прибуткові ігри</p>
+                <Link to="/ua" className="btn btn-primary">
+                  Відкрити
+                </Link>
+              </div>
+            </div>
           </div>
           <p>
             Якщо маєш ідеї чи побажання -{' '}
