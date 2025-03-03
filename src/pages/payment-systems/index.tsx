@@ -106,7 +106,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       <div className="bg-body-secondary">
         <div className="container-fluid py-5">
           <h2>Платіжні системи</h2>
-          <p>Поповнюємо Interactive Brokers ефективно</p>
+          <p>Поповнюємо Interactive Brokers ефективно, найбільш актуальна інофрмація у <a href="https://cutt.ly/2e460oFu" target="_blank">чаті</a></p>
           <div className="text-bg-light rounded-3 my-2 py-2 px-3">
             <CollapsibleFilter title="Питання, відповіді та відео інструкція" className="faq">
               <PaymentsFaq />

@@ -255,7 +255,7 @@ const IndexPage: React.FC<PageProps> = () => {
           </div>
           <p>
             Якщо маєш ідеї чи побажання -{' '}
-            <a href="https://t.me/iPlanTalksBot?start=ZGw6MjAxODc3" target="_blank">
+            <a href="https://cutt.ly/2e460oFu" target="_blank">
               долучайся до спільноти
             </a>
             , та закидуй їх до гілки <b>🎓 Tools</b>
