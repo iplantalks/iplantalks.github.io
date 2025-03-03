@@ -9,6 +9,11 @@ export interface YahooChartRow {
   volume: number
 }
 
+export interface YahooDividendRow {
+  date: Date
+  amount: number
+}
+
 /**
  * Retrieve symbol price
  * @param period1
@@ -68,4 +73,19 @@ export async function getPrice(symbol: string, date?: Date): Promise<number | nu
     }
   }
   return closest?.close || null
+}
+
+export async function getDividends(symbol: string, period1: Date, period2: Date): Promise<YahooDividendRow[]> {
+  var url = new URL('https://query1.finance.yahoo.com/v8/finance/chart/' + symbol)
+  url.searchParams.set('events', 'div')
+  url.searchParams.set('interval', '1mo')
+  url.searchParams.set('period1', Math.floor(period1.getTime() / 1000).toString())
+  url.searchParams.set('period2', Math.ceil(period2.getTime() / 1000).toString())
+  url.searchParams.set('symbol', symbol)
+  var json = await proxy(url, 3600).then((r) => r.json())
+
+  return (Object.values(json?.chart?.result[0]?.events?.dividends ?? {}) as { date: number; amount: number }[]).map(({ amount, date }) => ({
+    date: new Date(date * 1000),
+    amount,
+  }))
 }

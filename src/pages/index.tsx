@@ -242,6 +242,16 @@ const IndexPage: React.FC<PageProps> = () => {
                 </Link>
               </div>
             </div>
+            <div className="col d-flex align-items-start">
+              <i className="fa-solid fa-chart-line flex-shrink-0 me-3 fs-1 text-secondary"></i>
+              <div>
+                <h3 className="fs-2 text-body-emphasis">Monte Carlo</h3>
+                <p>Ворожіння на цифрах</p>
+                <Link to="/garage/monte-carlo" className="btn btn-primary">
+                  Відкрити
+                </Link>
+              </div>
+            </div>
           </div>
           <p>
             Якщо маєш ідеї чи побажання -{' '}
