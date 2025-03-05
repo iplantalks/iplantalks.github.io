@@ -58,7 +58,7 @@ const IndexPage: React.FC<PageProps> = () => {
       <Header />
 
       <div className="container py-5">
-        <h2 className="text-center fs-2 pb-2 border-bottom">Курсові різниці</h2>
+        <h2 className="text-center fs-2 pb-2 border-bottom">Податкові калькулятори</h2>
 
         <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
           <div className="col d-flex align-items-start">
