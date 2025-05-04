@@ -93,7 +93,7 @@ const Dividends = () => {
 
   const handle = (text: string) => {
     const ofx = parseMsMoneyOfxReport(text)
-
+    window['ofx'] = ofx
     const rows: Row[] = []
     for (const income of ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.INCOME || []) {
       if (income.INCOMETYPE !== 'DIV') {
@@ -103,8 +103,14 @@ const Dividends = () => {
       if (!ticker || !ticker.TICKER || !ticker.SECNAME) {
         continue
       }
+      if (ticker.TICKER === 'BND' && income.TOTAL == 21.95) {
+        console.log('BND')
+        console.log(income)
+        window['income'] = income
+        window['ticker'] = ticker
+      }
       const tax = ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.INVBANKTRAN?.find(
-        (t) => t.STMTTRN.TRNTYPE === 'OTHER' && t.STMTTRN.MEMO?.startsWith(ticker.TICKER + '(') && t.STMTTRN.DTPOSTED.split('.').pop() === income.INVTRAN.DTTRADE.split('.').pop()
+        (t) => t.STMTTRN.TRNTYPE === 'OTHER' && t.STMTTRN.MEMO?.startsWith(income.INVTRAN.MEMO?.split(' PER SHARE ').shift() + ' PER SHARE ')
       )
       if (!tax) {
         continue
