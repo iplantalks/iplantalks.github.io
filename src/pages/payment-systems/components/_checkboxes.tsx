@@ -112,7 +112,7 @@ export const CheckboxesBankServicePivot = ({
       <div>
         <i className="fa-regular fa-square-check me-2" />
         За для зручності вибору, скористайтеся{' '}
-        <a onClick={() => setCollapsed(!collapsed)} className="link-primary">
+        <a onClick={() => { if (typeof gtag === 'function') {gtag('event','toggle_payments_pivot')} setCollapsed(!collapsed)}} className="link-primary">
           зведеною табличкою
         </a>
       </div>
