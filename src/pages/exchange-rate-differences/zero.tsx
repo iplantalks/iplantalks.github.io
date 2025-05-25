@@ -31,7 +31,7 @@ const Zero = () => {
     }
   }, [user])
 
-  const tax = 19.5
+  const tax = 24 //19.5
   const [symbol, setSymbol] = useState('AAPL')
   const [date, setDate] = useState(new Date('2020-03-20'))
   const [price, setPrice] = useState(0)
@@ -230,7 +230,7 @@ const Zero = () => {
               </td>
             </tr>
             <tr>
-              <th>Податки: ПДФО 18% + ВЗ 1,5%</th>
+              <th>Податки: ПДФО 18% + ВЗ 5%</th>
               <td title={`Податки у валюті, від гривні\n\ntaxUsd = taxUah / currentExchangeRate = ${currency(taxUah)} / ${currency(currentExchangeRate)} = ${currency(taxUsd)}`}>{currency(taxUsd)}</td>
               <td title={`Податки у гривні, до сплати\n\ntaxUah = incomeUah * (tax/100) = ${currency(incomeUah)} * (${tax}/100) = ${currency(taxUah)}`}>{currency(taxUah)}</td>
               <td
