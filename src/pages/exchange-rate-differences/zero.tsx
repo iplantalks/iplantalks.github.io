@@ -31,7 +31,7 @@ const Zero = () => {
     }
   }, [user])
 
-  const tax = 24 //19.5
+  const tax = 23 //19.5
   const [symbol, setSymbol] = useState('AAPL')
   const [date, setDate] = useState(new Date('2020-03-20'))
   const [price, setPrice] = useState(0)
@@ -378,7 +378,7 @@ const Zero = () => {
                   <th className="fw-normal">taxUah</th>
                   <td>{(shares * currentPrice - commission) * testExchangeRate - spendUah > 0 ? currency(((shares * currentPrice - commission) * testExchangeRate - spendUah) * (tax / 100)) : 0}</td>
                   <td>
-                    Податок, ПДФО 18% + ВЗ 1,5%
+                    Податок, ПДФО 18% + ВЗ 5%
                     <br />
                     {(shares * currentPrice - commission) * testExchangeRate - spendUah > 0 && (
                       <code>
@@ -500,7 +500,7 @@ const Zero = () => {
                   <th className="fw-normal">taxUah</th>
                   <td>{(shares * testPrice - commission) * currentExchangeRate - spendUah > 0 ? currency(((shares * testPrice - commission) * currentExchangeRate - spendUah) * (tax / 100)) : 0}</td>
                   <td>
-                    Податок, ПДФО 18% + ВЗ 1,5%
+                    Податок, ПДФО 18% + ВЗ 5%
                     <br />
                     {(shares * testPrice - commission) * currentExchangeRate - spendUah > 0 && (
                       <code>
@@ -718,7 +718,7 @@ const Zero = () => {
                 <th className="fw-normal">taxUah</th>
                 <td>{currency(taxUah)}</td>
                 <td>
-                  Податки: ПДФО 18% + ВЗ 1,5%
+                  Податки: ПДФО 18% + ВЗ 5%
                   <br />
                   <code>
                     taxUah = incomeUah * (tax / 100) = {currency(incomeUah)} * ({tax} / 100) = {currency(taxUah)}
@@ -729,7 +729,7 @@ const Zero = () => {
                 <th className="fw-normal">taxUsd</th>
                 <td>{currency(taxUsd)}</td>
                 <td>
-                  Податки: ПДФО 18% + ВЗ 1,5%, перераховані у валюті
+                  Податки: ПДФО 18% + ВЗ 5%, перераховані у валюті
                   <br />
                   <code>
                     taxUsd = taxUah / currentExchangeRate = {currency(taxUah)} / {currency(currentExchangeRate)} = {currency(taxUsd)}
