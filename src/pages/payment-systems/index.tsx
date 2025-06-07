@@ -20,7 +20,6 @@ import { ago } from '../../utils/ago'
 import { PaymentsFaq } from './components/_payments-faq'
 import { Header } from '../../components/header'
 import { useAuth } from '../../context/auth'
-import { User } from '../../components/user'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -534,7 +533,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
 
       <Shop />
       <Join />
-      <User />
     </main>
   )
 }

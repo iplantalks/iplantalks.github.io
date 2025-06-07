@@ -7,7 +7,6 @@ import Join from '../components/join'
 import Hero from '../components/hero'
 import { Link } from 'gatsby'
 import { Header } from '../components/header'
-import { User } from '../components/user'
 
 const joinStyles = {
   background: 'linear-gradient(rgba(2, 2, 2, 0.2), rgba(0, 0, 0, 0.7)), url("https://italks.com.ua/users/sergii.mikulov/img/1img-20231124083739964883.jpg") fixed no-repeat center center',
@@ -264,7 +263,6 @@ const IndexPage: React.FC<PageProps> = () => {
       </div>
 
       <Join />
-      <User />
     </main>
   )
 }

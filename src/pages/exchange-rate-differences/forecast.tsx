@@ -12,7 +12,6 @@ import Subscribe from '../../components/subscribe'
 import { Shop } from '../../components/shop'
 import { Header } from '../../components/header'
 import { useAuth } from '../../context/auth'
-import { User } from '../../components/user'
 
 interface Row {
   year: number
@@ -400,7 +399,6 @@ const Forecast = () => {
       <Subscribe youtube="https://www.youtube.com/watch?v=Fiylm8c8yAc" />
       <Shop />
       <Join />
-      <User />
     </main>
   )
 }
