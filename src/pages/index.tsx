@@ -108,114 +108,6 @@ const IndexPage: React.FC<PageProps> = () => {
         </div>
       </div>
 
-      <div className="bg-body-secondary">
-        <div className="container py-5">
-          <h2 className="text-center fs-2 pb-2 border-bottom">
-            <span className="text-secondary">Інвест</span> Garage
-          </h2>
-          <p className="text-center">підбірка цікавинок та ідей що проходать валідацію часом</p>
-          <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
-            <div className="col d-flex align-items-start">
-              <i className="fa-regular fa-clock flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">Investing Clock</h3>
-                <p>Фаза ринку у якій ми знаходимося.</p>
-                <Link to="/garage/investing-clock" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-            <div className="col d-flex align-items-start">
-              <i className="fa-solid fa-coins flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">Flip the Coin</h3>
-                <p>Гра у підкидання монетки.</p>
-                <Link to="/garage/flip-the-coin" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-            <div className="col d-flex align-items-start">
-              <i className="fa-regular fa-calendar flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">Ten Days</h3>
-                <p>Що буде якщо пропустити 10 найкращих днів.</p>
-                <Link to="/garage/ten-days" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-            <div className="col d-flex align-items-start">
-              <i className="fa-solid fa-chart-pie flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">Allocator</h3>
-                <p>Як саме аллокація впливає на дохідність портфелю.</p>
-                <Link to="/garage/allocator" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-            <div className="col d-flex align-items-start">
-              <i className="fa-solid fa-soap flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">Bubble</h3>
-                <p>Бульбашковий аніліз мультиплікативних індикаторів.</p>
-                <Link to="/garage/bubble" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-            <div className="col d-flex align-items-start">
-              <i className="fa-solid fa-poo flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">Market Timing</h3>
-                <p>Перевіряєми чи взагалі є сенс паритися</p>
-                <Link to="/garage/market-timing-backtest" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-            <div className="col d-flex align-items-start">
-              <i className="fa-solid fa-microscope flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">Flex Viewer</h3>
-                <p>Переглядяч Flex звітів</p>
-                <Link to="/garage/flex/viewer" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-            <div className="col d-flex align-items-start">
-              <i className="fa-solid fa-utensils flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">UA Market</h3>
-                <p>Гривня через 20 років або Прибуткові ігри</p>
-                <Link to="/ua" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-            <div className="col d-flex align-items-start">
-              <i className="fa-solid fa-chart-line flex-shrink-0 me-3 fs-1 text-secondary"></i>
-              <div>
-                <h3 className="fs-2 text-body-emphasis">Monte Carlo</h3>
-                <p>Ворожіння на цифрах</p>
-                <Link to="/garage/monte-carlo" className="btn btn-primary">
-                  Відкрити
-                </Link>
-              </div>
-            </div>
-          </div>
-          <p>
-            Якщо маєш ідеї чи побажання -{' '}
-            <a href="https://cutt.ly/2e460oFu" target="_blank">
-              долучайся до спільноти
-            </a>
-            , та закидуй їх до гілки <b>🎓 Tools</b>
-          </p>
-        </div>
-      </div>
-
       <Join />
     </main>
   )
@@ -229,3 +121,113 @@ export const Head: HeadFC = () => (
     {/* <meta http-equiv="refresh" content="0; url=https://italks.com.ua/" /> */}
   </>
 )
+
+/*
+<div className="bg-body-secondary">
+  <div className="container py-5">
+    <h2 className="text-center fs-2 pb-2 border-bottom">
+      <span className="text-secondary">Інвест</span> Garage
+    </h2>
+    <p className="text-center">підбірка цікавинок та ідей що проходать валідацію часом</p>
+    <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
+      <div className="col d-flex align-items-start">
+        <i className="fa-regular fa-clock flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">Investing Clock</h3>
+          <p>Фаза ринку у якій ми знаходимося.</p>
+          <Link to="/garage/investing-clock" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+      <div className="col d-flex align-items-start">
+        <i className="fa-solid fa-coins flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">Flip the Coin</h3>
+          <p>Гра у підкидання монетки.</p>
+          <Link to="/garage/flip-the-coin" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+      <div className="col d-flex align-items-start">
+        <i className="fa-regular fa-calendar flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">Ten Days</h3>
+          <p>Що буде якщо пропустити 10 найкращих днів.</p>
+          <Link to="/garage/ten-days" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+      <div className="col d-flex align-items-start">
+        <i className="fa-solid fa-chart-pie flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">Allocator</h3>
+          <p>Як саме аллокація впливає на дохідність портфелю.</p>
+          <Link to="/garage/allocator" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+      <div className="col d-flex align-items-start">
+        <i className="fa-solid fa-soap flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">Bubble</h3>
+          <p>Бульбашковий аніліз мультиплікативних індикаторів.</p>
+          <Link to="/garage/bubble" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+      <div className="col d-flex align-items-start">
+        <i className="fa-solid fa-poo flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">Market Timing</h3>
+          <p>Перевіряєми чи взагалі є сенс паритися</p>
+          <Link to="/garage/market-timing-backtest" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+      <div className="col d-flex align-items-start">
+        <i className="fa-solid fa-microscope flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">Flex Viewer</h3>
+          <p>Переглядяч Flex звітів</p>
+          <Link to="/garage/flex/viewer" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+      <div className="col d-flex align-items-start">
+        <i className="fa-solid fa-utensils flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">UA Market</h3>
+          <p>Гривня через 20 років або Прибуткові ігри</p>
+          <Link to="/ua" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+      <div className="col d-flex align-items-start">
+        <i className="fa-solid fa-chart-line flex-shrink-0 me-3 fs-1 text-secondary"></i>
+        <div>
+          <h3 className="fs-2 text-body-emphasis">Monte Carlo</h3>
+          <p>Ворожіння на цифрах</p>
+          <Link to="/garage/monte-carlo" className="btn btn-primary">
+            Відкрити
+          </Link>
+        </div>
+      </div>
+    </div>
+    <p>
+      Якщо маєш ідеї чи побажання -{' '}
+      <a href="https://cutt.ly/2e460oFu" target="_blank">
+        долучайся до спільноти
+      </a>
+      , та закидуй їх до гілки <b>🎓 Tools</b>
+    </p>
+  </div>
+</div>
+*/

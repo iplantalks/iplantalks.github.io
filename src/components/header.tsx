@@ -73,18 +73,6 @@ export const Header = () => (
                 </small>
                 <Card icon="fa-solid fa-file-arrow-up" title="Поповнення IB" to="/payment-systems" description="Маршрути поповнення Interactive Brokers." />
                 <Card icon="fa-solid fa-piggy-bank" title="ОВДП та депозити" to="/ovdp" description="Куди прилаштувати гривню на визначений період." />
-                <small className="text-secondary d-block fw-bold text-nowrap" style={{ padding: '10px 20px' }}>
-                  <span className="text-secondary">Інвест</span> Garage
-                </small>
-                <Card icon="fa-regular fa-clock" title="Investing Clock" to="/garage/investing-clock" description="Фаза ринку у якій ми знаходимося." />
-                <Card icon="fa-solid fa-coins" title="Flip the Coin" to="/garage/flip-the-coin" description="Гра у підкидання монетки." />
-                <Card icon="fa-regular fa-calendar" title="Ten Days" to="/garage/ten-days" description="Що буде якщо пропустити 10 найкращих днів." />
-                <Card icon="fa-solid fa-chart-pie" title="Allocator" to="/garage/allocator" description="Як саме аллокація впливає на дохідність портфелю." />
-                <Card icon="fa-solid fa-soap" title="Bubble" to="/garage/bubble" description="Бульбашковий аніліз мультиплікативних індикаторів." />
-                <Card icon="fa-solid fa-poo" title="Market Timing" to="/garage/market-timing-backtest" description="Перевіряємо чи варто взагалі паритися." />
-                <Card icon="fa-solid fa-microscope" title="Flex Viewer" to="/garage/flex/viewer" description="Переглядач Flex звітів." />
-                <Card icon="fa-solid fa-utensils" title="UA Market" to="/ua" description="Гривня через 20 років або Прибуткові ігри." />
-                <Card icon="fa-solid fa-chart-line" title="Monte Carlo" to="/garage/monte-carlo" description="Ворожіння на цифрах." />
               </div>
             </div>
           </div>
@@ -104,19 +92,16 @@ export const Header = () => (
 )
 
 /*
-<div className="bg-rainbow text-white">
-        <div className="container">
-          <div className="d-flex align-items-center py-4">
-            <div className="d-flex-shrink-0">
-              <a href="/">
-                <img width="80" src={logo} />
-              </a>
-            </div>
-            <div className="d-flex-grow-1 ms-4">
-              <h1 className="display-6 fw-bold m-0">Курсові різниці</h1>
-              <p className="m-0">Розрахунок граничних цін та курсу інвестицій з урахуванням податку на курсові різниці</p>
-            </div>
-          </div>
-        </div>
-      </div>
+<small className="text-secondary d-block fw-bold text-nowrap" style={{ padding: '10px 20px' }}>
+  <span className="text-secondary">Інвест</span> Garage
+</small>
+<Card icon="fa-regular fa-clock" title="Investing Clock" to="/garage/investing-clock" description="Фаза ринку у якій ми знаходимося." />
+<Card icon="fa-solid fa-coins" title="Flip the Coin" to="/garage/flip-the-coin" description="Гра у підкидання монетки." />
+<Card icon="fa-regular fa-calendar" title="Ten Days" to="/garage/ten-days" description="Що буде якщо пропустити 10 найкращих днів." />
+<Card icon="fa-solid fa-chart-pie" title="Allocator" to="/garage/allocator" description="Як саме аллокація впливає на дохідність портфелю." />
+<Card icon="fa-solid fa-soap" title="Bubble" to="/garage/bubble" description="Бульбашковий аніліз мультиплікативних індикаторів." />
+<Card icon="fa-solid fa-poo" title="Market Timing" to="/garage/market-timing-backtest" description="Перевіряємо чи варто взагалі паритися." />
+<Card icon="fa-solid fa-microscope" title="Flex Viewer" to="/garage/flex/viewer" description="Переглядач Flex звітів." />
+<Card icon="fa-solid fa-utensils" title="UA Market" to="/ua" description="Гривня через 20 років або Прибуткові ігри." />
+<Card icon="fa-solid fa-chart-line" title="Monte Carlo" to="/garage/monte-carlo" description="Ворожіння на цифрах." />
 */
