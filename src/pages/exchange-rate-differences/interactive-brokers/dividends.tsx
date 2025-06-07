@@ -189,12 +189,18 @@ const Dividends = () => {
   }
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     fetch('/exchange-rate-differences/interactive-brokers/dividends/sample.ofx')
       .then((res) => res.text())
       .then(handle)
   }, [])
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     if (!chartRef.current) {
       console.log('no chart ref')
       return

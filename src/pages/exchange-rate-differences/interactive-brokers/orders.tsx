@@ -77,6 +77,9 @@ const Orders = () => {
   }, [transactions, currentExchangeRate])
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     getExchangeRate(new Date()).then((exchangeRate) => {
       appendMessage(`Курс на сьогодні: ${exchangeRate}`)
       setCurrentExchangeRate(exchangeRate)

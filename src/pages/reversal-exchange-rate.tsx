@@ -55,6 +55,9 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
   const max = useMemo(() => Math.ceil((last.forecast * 2) / 10) * 10, [rows])
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     getExchangeRate(new Date()).then((er) => setCurrentExchangeRate(round(er, 2)))
     getOVDP().then((ovdp) => {
       const items = ovdp.filter((item) => item.bidyield && item.matturity.getFullYear() === new Date().getFullYear())
@@ -140,6 +143,9 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
   }, [rows])
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     getExhcangeRateHistory().then((history) => {
       if (!chartDev.current) {
         return

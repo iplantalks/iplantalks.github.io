@@ -47,10 +47,16 @@ const Forecast = () => {
   const [devalvation4, setDevalvation4] = useState(5)
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     getExchangeRate(new Date()).then((er) => setExchangeRate(round(er, 2)))
   }, [])
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     if (!chartRef.current) {
       return
     }
@@ -124,6 +130,9 @@ const Forecast = () => {
   }, [])
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     if (!returnsChartRef.current) {
       return
     }

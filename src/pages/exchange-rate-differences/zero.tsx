@@ -113,6 +113,9 @@ const Zero = () => {
   }
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
     calculate()
   }, [])
 
