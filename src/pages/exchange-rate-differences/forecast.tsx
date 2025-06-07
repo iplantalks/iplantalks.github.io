@@ -30,7 +30,7 @@ interface Row {
 }
 
 const Forecast = () => {
-  const { user, found } = useAuth()
+  const { user } = useAuth()
   useEffect(() => {
     if (user === null) {
       navigate('/login?redirect=' + window.location.pathname)

@@ -45,7 +45,7 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string; class
 }
 
 const PaymentSystemsPage: React.FC<PageProps> = () => {
-  const { user, found } = useAuth()
+  const { user } = useAuth()
   useEffect(() => {
     if (user === null) {
       navigate('/login?redirect=' + window.location.pathname)
