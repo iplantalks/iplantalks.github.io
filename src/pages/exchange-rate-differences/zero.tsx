@@ -301,6 +301,23 @@ const Zero = () => {
           </tbody>
         </table>
 
+        <div>Курс валюти при якому фін. результат інвестицій буде нульовим при поточній ціні складає: <b>{currency(criticalExchangeRate)} грн</b></div>
+        <div>Поточна ціна акції при котрій фін. результат був би нульовим: <b>${currency(criticalPrice)}</b></div>
+
+      </div>
+
+      <Join />
+    </main>
+  )
+}
+
+export default Zero
+
+export const Head: HeadFC = () => <title>Розрахунок граничних цін та курсу інвестицій з урахуванням податку на курсові різниці</title>
+
+/*
+
+
         <div>
           <details>
             <summary>
@@ -545,6 +562,11 @@ const Zero = () => {
           </details>
         </div>
 
+*/
+
+/*
+
+
         <div className="my-5">
           <p>Розрахунки</p>
           <table className="table">
@@ -737,13 +759,4 @@ const Zero = () => {
             </tbody>
           </table>
         </div>
-      </div>
-
-      <Join />
-    </main>
-  )
-}
-
-export default Zero
-
-export const Head: HeadFC = () => <title>Розрахунок граничних цін та курсу інвестицій з урахуванням податку на курсові різниці</title>
+*/
