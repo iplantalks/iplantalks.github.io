@@ -6,12 +6,9 @@ import { getExchangeRate, getExhcangeRateHistory } from '../utils/exchange-rate'
 import '../styles/common.css'
 import '../styles/reversal-exchange-rate.css'
 import { getOVDP } from '../utils/privatbank/ovdp'
-import { createChart, ColorType } from 'lightweight-charts'
+import { createChart } from 'lightweight-charts'
 import { rri } from '../utils/rri'
-import Subscribe from '../components/subscribe'
 import Join from '../components/join'
-import Hero from '../components/hero'
-import { Shop } from '../components/shop'
 import { Header } from '../components/header'
 
 interface Row {
@@ -379,8 +376,6 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
         </div>
       </div>
 
-      <Subscribe />
-      <Shop />
       <Join />
     </main>
   )

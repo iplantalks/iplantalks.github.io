@@ -1,59 +1,13 @@
 import * as React from 'react'
 import type { HeadFC, PageProps } from 'gatsby'
 import '../styles/common.css'
-import logo from '../images/logo.svg'
-import bot from '../images/bot.png'
 import Join from '../components/join'
-import Hero from '../components/hero'
 import { Link } from 'gatsby'
 import { Header } from '../components/header'
-
-const joinStyles = {
-  background: 'linear-gradient(rgba(2, 2, 2, 0.2), rgba(0, 0, 0, 0.7)), url("https://italks.com.ua/users/sergii.mikulov/img/1img-20231124083739964883.jpg") fixed no-repeat center center',
-  backgroundSize: 'cover',
-}
-
-interface TalksVideoProps {
-  href: string
-  year: number
-  time?: string
-  children?: React.ReactNode
-}
-
-const TalksVideo = (props: TalksVideoProps) => {
-  const url = new URL(props.href)
-  const src = `https://www.youtube.com/embed/${url.searchParams.get('v')}`
-  return (
-    <div className="col d-flex align-items-stretch">
-      <div className="card w-100 rounded-0 shadow-sm">
-        <div className="card-img-top ratio ratio-16x9">
-          <iframe
-            width="560"
-            height="315"
-            src={src}
-            title="YouTube video player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          ></iframe>
-        </div>
-        <div className="card-body">
-          <p className="card-text">
-            <a href={props.href}>{props.children}</a>
-          </p>
-          <div className="d-flex justify-content-between align-items-center">
-            <small className="text-body-secondary">{props.year}</small>
-            <small className="text-body-secondary">{props.time || ''}</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 const IndexPage: React.FC<PageProps> = () => {
   return (
     <main>
-      {/* <Hero title="iTalks Tools" subtitle="Підбірка корисних фінансових тулів та калькуляторів" /> */}
       <Header />
 
       <div className="container py-5">

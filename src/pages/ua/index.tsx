@@ -13,7 +13,6 @@ import { CumulativeLinesChart } from './components/_cumulative_lines_chart'
 import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
 import Join from '../../components/join'
-import { Shop } from '../../components/shop'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -609,7 +608,6 @@ const Market = () => {
         {/* <PercentageBarChart title="portfolio" data={portfolio.reduce((acc, x) => Object.assign(acc, { [x.year]: x.value }), {})} /> */}
       </div>
 
-      <Shop />
       <Join />
     </main>
   )

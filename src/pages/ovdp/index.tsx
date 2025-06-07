@@ -2,7 +2,6 @@ import * as React from 'react'
 import { useState, useMemo, useEffect } from 'react'
 import { HeadFC, PageProps, navigate } from 'gatsby'
 import '../../styles/common.css'
-import { Shop } from '../../components/shop'
 import Join from '../../components/join'
 import { useDeposits, useInfo, useOvdp, useSnapshot } from './_googlesheets'
 import { ago } from '../../utils/ago'
@@ -305,18 +304,17 @@ const Ovdp: React.FC<PageProps> = () => {
                           </td>
                           <td>
                             <span
-                              title={`Середня дохідність ${item.instrument_type} з погашенням через ${item.months} місяців за попередній період складає ${
-                                snapshot
-                                  .filter((s) => s.kind === item.instrument_type && s.currency === item.currency && s.months === item.months)
-                                  .sort((a, b) => b.month.localeCompare(a.month))
-                                  .shift()?.ror || 0
-                              }%`}
-                            >
-                              {item.yield >
-                              (snapshot
+                              title={`Середня дохідність ${item.instrument_type} з погашенням через ${item.months} місяців за попередній період складає ${snapshot
                                 .filter((s) => s.kind === item.instrument_type && s.currency === item.currency && s.months === item.months)
                                 .sort((a, b) => b.month.localeCompare(a.month))
-                                .shift()?.ror || 0) ? (
+                                .shift()?.ror || 0
+                                }%`}
+                            >
+                              {item.yield >
+                                (snapshot
+                                  .filter((s) => s.kind === item.instrument_type && s.currency === item.currency && s.months === item.months)
+                                  .sort((a, b) => b.month.localeCompare(a.month))
+                                  .shift()?.ror || 0) ? (
                                 <span className="text-success">&#x25B2;</span>
                               ) : (
                                 <span className="text-danger">&#x25BC;</span>
@@ -357,7 +355,6 @@ const Ovdp: React.FC<PageProps> = () => {
         </div>
       </div>
       <Feedback />
-      <Shop />
       <Join />
     </main>
   )

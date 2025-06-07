@@ -6,12 +6,10 @@ import './styles.css'
 import { currency } from '../../utils/formatters'
 import { VendorLogo } from './components/_banks'
 import Join from '../../components/join'
-import Hero from '../../components/hero'
 import { useBankLinks, usePaymentSystemLinks } from './components/_links'
 import { useVideoLinks } from './components/_videos'
 import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
 import { Feedback } from './components/_feedback'
-import { Shop } from '../../components/shop'
 import Hotjar from '@hotjar/browser'
 import { Method } from './components/_method'
 import { Like } from './components/_like'
@@ -531,7 +529,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
         </div>
       </div>
 
-      <Shop />
       <Join />
     </main>
   )

@@ -6,10 +6,6 @@ import { currency, round } from '../../utils/formatters'
 import { getExchangeRate } from '../../utils/exchange-rate'
 import Chart from 'chart.js/auto'
 import Join from '../../components/join'
-import Hero from '../../components/hero'
-import ExchangeRateDifferencesLinks from '../../components/exchange-rate-differences-links'
-import Subscribe from '../../components/subscribe'
-import { Shop } from '../../components/shop'
 import { Header } from '../../components/header'
 import { useAuth } from '../../context/auth'
 
@@ -395,9 +391,6 @@ const Forecast = () => {
         <canvas ref={returnsChartRef} />
       </div>
 
-      <ExchangeRateDifferencesLinks />
-      <Subscribe youtube="https://www.youtube.com/watch?v=Fiylm8c8yAc" />
-      <Shop />
       <Join />
     </main>
   )

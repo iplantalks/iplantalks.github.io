@@ -8,10 +8,6 @@ import { getPrice } from '../../../utils/yahoo'
 import statements from '../../../images/exchange-rate-differences/statements.png'
 import popup from '../../../images/exchange-rate-differences/popup.png'
 import Join from '../../../components/join'
-import Hero from '../../../components/hero'
-import ExchangeRateDifferencesLinks from '../../../components/exchange-rate-differences-links'
-import Subscribe from '../../../components/subscribe'
-import { Shop } from '../../../components/shop'
 import { OFX, parseMsMoneyOfxReport } from '../../../utils/ibkr/ofx'
 import { Header } from '../../../components/header'
 import { useAuth } from '../../../context/auth'
@@ -423,7 +419,6 @@ const Orders = () => {
         )}
       </div>
 
-      <ExchangeRateDifferencesLinks />
       <Join />
     </main>
   )

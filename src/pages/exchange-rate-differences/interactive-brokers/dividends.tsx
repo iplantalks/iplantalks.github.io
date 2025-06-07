@@ -2,20 +2,17 @@ import * as React from 'react'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { HeadFC, navigate } from 'gatsby'
 import '../../../styles/common.css'
-import Chart, { CoreChartOptions } from 'chart.js/auto'
+import Chart from 'chart.js/auto'
 import { currency, round } from '../../../utils/formatters'
-import { getExchangeRate, getExchangeRates } from '../../../utils/exchange-rate'
+import { getExchangeRates } from '../../../utils/exchange-rate'
 import statements from '../../../images/exchange-rate-differences/statements.png'
 import msmoney from '../../../images/exchange-rate-differences/msmoney.png'
 import popup from '../../../images/exchange-rate-differences/popup.png'
 import Join from '../../../components/join'
-import Hero from '../../../components/hero'
-import ExchangeRateDifferencesLinks from '../../../components/exchange-rate-differences-links'
-import Subscribe from '../../../components/subscribe'
 import { findSecurityInfo, parseMsMoneyOfxReport, parseOfxDateTime } from '../../../utils/ibkr/ofx'
-import { Shop } from '../../../components/shop'
 import tooltip from '../../../images/tooltip.png'
 import { useAuth } from '../../../context/auth'
+import { Header } from '../../../components/header'
 
 interface Row {
   id: string
@@ -93,7 +90,7 @@ const Dividends = () => {
 
   const handle = (text: string) => {
     const ofx = parseMsMoneyOfxReport(text)
-    window['ofx'] = ofx
+    // window['ofx'] = ofx
     const rows: Row[] = []
     for (const income of ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.INCOME || []) {
       if (income.INCOMETYPE !== 'DIV') {
@@ -106,8 +103,8 @@ const Dividends = () => {
       if (ticker.TICKER === 'BND' && income.TOTAL == 21.95) {
         console.log('BND')
         console.log(income)
-        window['income'] = income
-        window['ticker'] = ticker
+        // window['income'] = income
+        // window['ticker'] = ticker
       }
       const tax = ofx.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.INVBANKTRAN?.find(
         (t) => t.STMTTRN.TRNTYPE === 'OTHER' && t.STMTTRN.MEMO?.startsWith(income.INVTRAN.MEMO?.split(' PER SHARE ').shift() + ' PER SHARE ')
@@ -252,7 +249,7 @@ const Dividends = () => {
 
   return (
     <main>
-      <Hero title="Курсові різниці" subtitle="Розрахунок податкових забовʼязань по дивідендам з виписки Interactive Brokers з урахуванням курсових різниць" />
+      <Header />
 
       <div className="container py-5">
         <p>З дивідендів, що виплачувалися впродовж року, мусимо сплатити податки на прикінці звітного періоду, але як та де швиденько подивитися картину в цілому?</p>
@@ -479,9 +476,6 @@ const Dividends = () => {
         </div>
       )}
 
-      <ExchangeRateDifferencesLinks />
-      <Subscribe youtube="https://www.youtube.com/watch?v=Fiylm8c8yAc" />
-      <Shop />
       <Join />
     </main>
   )
