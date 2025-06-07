@@ -10,7 +10,6 @@ import { useBankLinks, usePaymentSystemLinks } from './components/_links'
 import { useVideoLinks } from './components/_videos'
 import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
 import { Feedback } from './components/_feedback'
-import Hotjar from '@hotjar/browser'
 import { Method } from './components/_method'
 import { Like } from './components/_like'
 import { Checkboxes, Checkboxes2, CheckboxesBankServicePivot } from './components/_checkboxes'
@@ -49,12 +48,6 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       navigate('/login?redirect=' + window.location.pathname)
     }
   }, [user])
-
-  useEffect(() => {
-    if (!window.location.hostname.includes('localhost')) {
-      Hotjar.init(3873202, 6)
-    }
-  }, [])
   const [transfer, setTransfer] = useState<number>(1000)
   const rows = useGoogleSheetTable('Data!A1:Z')
     .map((row) => ({
