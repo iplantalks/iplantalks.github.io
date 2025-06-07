@@ -8,3 +8,15 @@ https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/#gatsby-bro
 
 // https://www.gatsbyjs.com/docs/reference/config-files/gatsby-browser/#wrapRootElement
 export const wrapRootElement: GatsbyBrowser['wrapRootElement'] = ({ element }) => <AuthProvider>{element}</AuthProvider>
+
+
+// TODO: serviceworker - prepearing for rip
+export const onClientEntry = () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+};
