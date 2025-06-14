@@ -45,16 +45,17 @@ interface Row {
 }
 
 const CalendarMonth = ({ month, rows }: { month: number; rows: Row[] }) => {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec']
+  // const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec']
+  const months = ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
   const income = rows
     .filter((row) => row.date.getMonth() === month)
-    .map((row) => row.income)
+    .map((row) => row.netIncomeUah)
     .reduce((a, b) => a + b, 0)
   return (
     <div className="card">
       <div className="card-header text-center">{months[month]}</div>
       <ul className="list-group list-group-flush">
-        <li className="list-group-item text-center">{income > 0 ? currency(income) : '-'}</li>
+        <li className="list-group-item text-center">{income > 0 ? <span>{currency(income)}<span className="text-muted">грн</span></span> : '-'}</li>
       </ul>
     </div>
   )
@@ -63,12 +64,15 @@ const CalendarMonth = ({ month, rows }: { month: number; rows: Row[] }) => {
 const Calendar = ({ rows }: { rows: Row[] }) => {
   const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
   return (
-    <div className="row">
-      {numbers.map((month) => (
-        <div className="col-4 mb-3" key={month}>
-          <CalendarMonth month={month} rows={rows} />
-        </div>
-      ))}
+    <div>
+      <h2 className="text-center mb-3">Календар виплат</h2>
+      <div className="row">
+        {numbers.map((month) => (
+          <div className="col-2 mb-3" key={month}>
+            <CalendarMonth month={month} rows={rows} />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -80,9 +84,6 @@ const Dividends = () => {
       navigate('/login?redirect=' + window.location.pathname)
     }
   }, [user])
-
-  const chartRef = useRef<HTMLCanvasElement>(null)
-  const [chart, setChart] = useState<Chart>()
 
   const [rows, setRows] = useState<Row[]>([])
 
@@ -197,62 +198,6 @@ const Dividends = () => {
       .then(handle)
   }, [])
 
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
-    if (!chartRef.current) {
-      console.log('no chart ref')
-      return
-    }
-
-    const chart = new Chart(chartRef.current, {
-      type: 'doughnut',
-      data: {
-        labels: ['ticker 1', 'ticker 2', 'ticker 3'],
-        datasets: [
-          {
-            label: 'dividends',
-            data: [33, 33, 100],
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        animation: false,
-        animations: {},
-        plugins: {
-          title: {
-            display: true,
-            text: 'Дохідність активів',
-          },
-          legend: {
-            position: 'top',
-          },
-        },
-      },
-    })
-
-    console.log('setChart', chart)
-    setChart(chart as unknown as Chart)
-  }, [])
-
-  useEffect(() => {
-    if (!chart || !rows.length) {
-      return
-    }
-    chart.data.labels = Array.from(new Set(rows.map((row) => row.ticker)))
-    chart.data.datasets[0].data = []
-    for (const ticker of chart.data.labels) {
-      const sum = rows
-        .filter((row) => row.ticker === ticker)
-        .map((row) => row.income)
-        .reduce((a, b) => a + b, 0)
-      chart.data.datasets[0].data.push(sum)
-    }
-    chart.update()
-  }, [chart, rows])
-
   return (
     <main>
       <Header />
@@ -318,7 +263,7 @@ const Dividends = () => {
                 <th title="Розрахована кількість акцій units = income / price" className="fw-normal">
                   units
                 </th>
-                <th title="Нарахування у даларах" className="fw-normal">
+                <th title="Нарахування у далларах" className="fw-normal">
                   income <span className="text-secondary">$</span>
                 </th>
                 <th title="Утримано податків зі сторони IBKR на користь США у доларах" className="fw-normal">
@@ -336,7 +281,7 @@ const Dividends = () => {
                 <th title="Нараховано у гривні загалом, без урахування податків США" className="fw-normal">
                   income <span className="text-secondary">&#8372;</span>
                 </th>
-                <th title="Подакток України - 9% ПДФО та 5% війсковий сбір, разом 14%. ВАЖЛИВО: податком обклладається зарахована сума, без урахування податку США" className="fw-normal">
+                <th title="Подакток України - 9% ПДФО та 5% війсковий збір, разом 14%. ВАЖЛИВО: податком обкладається зарахована сума, без урахування податку США" className="fw-normal">
                   tax <span className="text-secondary">&#8372;</span>
                 </th>
                 <th title="Фін. результат чистими, після сплати всіх податків у гривні" className="fw-normal">
@@ -356,7 +301,7 @@ const Dividends = () => {
                   <td>{round((Math.abs(row.tax) / row.income) * 100, 2)}</td>
                   <td title={`net income = income-tax = ${currency(row.income)}${currency(row.tax)} = ${currency(row.netIncome)}`}>{currency(row.netIncome)}</td>
                   <td className="table-secondary">{currency(row.exchangeRate)}</td>
-                  <td title={`income = income * exchange rate = ${currency(row.netIncome)} * ${currency(row.exchangeRate)} = ${currency(row.incomeUah)}`}>{currency(row.incomeUah)}</td>
+                  <td title={`income = income * exchange rate = ${currency(row.income)} * ${currency(row.exchangeRate)} = ${currency(row.incomeUah)}`}>{currency(row.incomeUah)}</td>
                   <td title={`tax = income * 0.14 = ${currency(row.incomeUah)} * 0.14 = ${currency(row.taxUah)}`}>{currency(row.taxUah)}</td>
                   <td title={`net income = income-tax = ${currency(row.incomeUah)}${currency(row.taxUah)} = ${currency(row.netIncomeUah)}`}>{currency(row.netIncomeUah)}</td>
                 </tr>
@@ -382,7 +327,7 @@ const Dividends = () => {
         )}
         <details className="my-3">
           <summary>Примітки</summary>
-          <p>Ідея цієї таблички швиденько подивитися курсові різниці без необхідності вираховувати все руками, за для можливості звіритися з іншими тулами.</p>
+          <p>Ідея цієї таблички швиденько подивитися нараховані дивіденди, та розраховані податкові забовʼязання з урахуванням курсових різниць.</p>
           <p>Майже кожна комірка у табличці має пояснення з формулою та цифрами розрахунку, за для того щоб його побачити слід підвести курсор мишки та трохи зачекати.</p>
           <ul>
             <li>
@@ -392,16 +337,16 @@ const Dividends = () => {
                   <b>date</b> - дата надходження дивідендів з виписки Interactive Brokers
                 </li>
                 <li>
-                  <b>ticker</b> - символ компанії що сплатила дивіденді
+                  <b>ticker</b> - символ компанії, що сплатила дивіденди
                 </li>
                 <li>
                   <b>price</b> - нарахування за кожну акцію, береться з повідомлення &laquo;AAPL(US0378331005) CASH DIVIDEND USD 0.22 PER SHARE (Ordinary Dividend)&raquo;
                 </li>
                 <li>
-                  <b>income</b> - нарахування дивідендів у долларах до оподаткування
+                  <b>income</b> - нарахування дивідендів у доларах до оподаткування
                 </li>
                 <li>
-                  <b>tax</b> - податок утриманий на стороні Interactive Brokers, в ідеалі має бути 15%, списуется автоматично
+                  <b>tax</b> - податок утриманий на стороні Interactive Brokers, в ідеалі має бути 15%, списується автоматично
                 </li>
               </ul>
             </li>
@@ -409,13 +354,13 @@ const Dividends = () => {
               Розрахунки
               <ul>
                 <li>
-                  <b>units</b> - кількість акцій з яких було виплачено дивіденді, розрахунок - <code>income / price</code>
+                  <b>units</b> - кількість акцій з яких було виплачено дивіденди, розрахунок - <code>income / price</code>
                 </li>
                 <li>
-                  <b>tax %</b> - рохрахунок проценту податку, рахується так <code>tax / income * 100</code>, мета - наглядно побачити де скільки утримуется
+                  <b>tax %</b> - рохрахунок проценту податку, рахується так <code>tax / income * 100</code>, мета - наглядно побачити де скільки утримується
                 </li>
                 <li>
-                  <b>net income</b> - розрахований чистий прибуток, який фактично прибавився до балансу аккаунту після утримання податку Interactive Brokers. Рахуемо як <code>income - tax</code>
+                  <b>net income</b> - розрахований чистий прибуток, який фактично додано до балансу аккаунту після утримання податку Interactive Brokers. Рахуемо як <code>income - tax</code>
                 </li>
               </ul>
             </li>
@@ -423,7 +368,7 @@ const Dividends = () => {
               Курсові різниці
               <ul>
                 <li>
-                  <b>usd/uah</b> - курс доллара на дату виплати дивідендів, данні тягнемо з <a href="https://bank.gov.ua">bank.gov.ua</a> на дату виплати дивідендів, так наприклад для 2022-12-30 данні
+                  <b>usd/uah</b> - курс долара на дату виплати дивідендів, данні тягнемо з <a href="https://bank.gov.ua">bank.gov.ua</a> на дату виплати дивідендів, так наприклад для 2022-12-30 данні
                   забираються{' '}
                   <a href="https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=USD&date=20221230&json" target="_blank">
                     звідси
@@ -431,8 +376,8 @@ const Dividends = () => {
                   і ця ж <a href="https://bank.gov.ua/ua/markets/exchangerates?date=30.12.2023">сторінка для людей</a>
                 </li>
                 <li>
-                  <b>income</b> - дохід у гривні, рахується як <code>income * usd/uah</code>, тобто ми беремо <b>не оподаткований</b> дохід у долларах та множимо на курс на дату. Чудова нагода
-                  завітати до iTalks та сказати дякую одному з єкспертів що{' '}
+                  <b>income</b> - дохід у гривні, рахується як <code>income * usd/uah</code>, тобто ми беремо <b>не оподаткований</b> дохід у доларах та множимо на курс на дату. Чудова нагода
+                  завітати до iTalks та сказати дякую одному з експертів що{' '}
                   <a href="https://t.me/c/1440806120/12717/27029" target="_blank">
                     підказав
                   </a>
@@ -447,21 +392,15 @@ const Dividends = () => {
             </li>
           </ul>
         </details>
-        <div className="row">
-          <div className="col-12 col-sm-6">
-            <canvas ref={chartRef} />
-          </div>
-          <div className="col-12 col-sm-6">
-            <Calendar rows={rows} />
-          </div>
-        </div>
+        <Calendar rows={rows} />
+
       </div>
 
       {tax30 && (
         <div className="bg-danger-subtle">
           <div className="container py-5">
             <h3>Зі звіту, схоже що відбувається подвійне оподаткування</h3>
-            <p>Між Україною та США є домовленність про відсутність подвійного оподаткування, тобто якщо я сплати податки в США то не маю повторно їх сплачувати тут</p>
+            <p>Між Україною та США є домовленність про відсутність подвійного оподаткування, тобто якщо я сплатив податки в США, то не маю повторно їх сплачувати тут</p>
             <p>Але за замовчанням ця опція виключена</p>
             <p>
               І замість очікуваних <b>15%</b> податку, IB списує усі <b>30%</b>, так наприклад <b>{tax30?.ticker}</b> мав би списати <b>{currency(tax30?.income * 0.15)}</b>, а списав{' '}
@@ -474,9 +413,8 @@ const Dividends = () => {
                 <a href="https://t.me/c/1440806120/12717/22009" target="_blank">
                   тут
                 </a>{' '}
-                була гарна переписка з прикладами, куди ідти, що робити, які тікети відкривати і т.д.
+                була гарна переписка з прикладами, куди йти, що робити, які тікети відкривати і т.д.
               </p>
-              <p>TODO: нужно последовательность действий и пример письма сюда добавить</p>
             </details>
           </div>
         </div>
