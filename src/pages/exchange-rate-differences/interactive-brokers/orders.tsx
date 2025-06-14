@@ -58,7 +58,7 @@ const Orders = () => {
         const spendUah = transaction.shares * transaction.price * transaction.exchangeRate
         const valueUah = transaction.shares * transaction.currentPrice * currentExchangeRate
         const incomeUah = valueUah - spendUah
-        const taxUah = incomeUah > 0 ? incomeUah * 0.195 : 0
+        const taxUah = incomeUah > 0 ? incomeUah * 0.23 : 0
         const taxUsd = taxUah / currentExchangeRate
         const netIncomeUah = incomeUah - taxUah
         const netIncomeUsd = transaction.currentPrice * transaction.shares - transaction.price * transaction.shares - taxUsd - transaction.commision * 2 // (текущая_цена_usd*quantity - цена_покупки_usd*quantity) - налог_в_валюте - комисия*2
@@ -233,7 +233,7 @@ const Orders = () => {
 
       <div className="container py-5">
         <p>Мета цього звіту &mdash; подивитися на свої активи в розрізі курсових різниць.</p>
-        <p>Адже можлива ситуація коли ми матимемо збиток у долларах, але після перерахунку у гривні - буде плюс, який повинен бути оподаткованим.</p>
+        <p>Адже можлива ситуація коли ми матимемо збиток у доларах, але після перерахунку у гривні - буде плюс, який повинен бути оподаткованим.</p>
 
         <div className="row">
           <p className="col-12 col-sm-6">

@@ -648,7 +648,7 @@ export const Head: HeadFC = () => <title>Розрахунок граничних
                 <th className="fw-normal">spendUsd</th>
                 <td>{currency(spendUsd)}</td>
                 <td>
-                  Інвестована сума у долларах
+                  Інвестована сума у доларах
                   <br />
                   <code>
                     spendUsd = shares * previousPrice + commission = {shares} * {currency(previousPrice)} + {currency(commission)} = {currency(spendUsd)}
@@ -670,7 +670,7 @@ export const Head: HeadFC = () => <title>Розрахунок граничних
                 <th className="fw-normal">valueUsd</th>
                 <td>{currency(valueUsd)}</td>
                 <td>
-                  Поточна вартість активу у долларах
+                  Поточна вартість активу у доларах
                   <br />
                   <code>
                     valueUsd = shares * currentPrice - commission = {shares} * {currency(currentPrice)} - {currency(commission)} = {currency(valueUsd)}
@@ -692,7 +692,7 @@ export const Head: HeadFC = () => <title>Розрахунок граничних
                 <th className="fw-normal">incomeUsd</th>
                 <td>{currency(incomeUsd)}</td>
                 <td>
-                  Прибуток або збиток у долларах (фін. результат, брутто)
+                  Прибуток або збиток у доларах (фін. результат, брутто)
                   <br />
                   <code>
                     incomeUsd = valueUsd - spendUsd = {currency(valueUsd)} - {currency(spendUsd)} = {currency(incomeUsd)}

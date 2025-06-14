@@ -310,12 +310,12 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
         <h2 className="mt-5">Графік зростання капіталу у гривні</h2>
         <div ref={chartUah} />
 
-        <h2 className="mt-5">Графік зростання капіталу у долларах</h2>
+        <h2 className="mt-5">Графік зростання капіталу у доларах</h2>
         <div ref={chartUsd} />
 
         <h2 className="mt-5">Графік курсу гривні відносно долару США</h2>
         <p>
-          За період з 2002 вартість доллара змінилася з {currency(startExchangeRate)} грн до {currency(endExchangeRate)} грн, що складає {currency(overallRRI * 100)}% річних
+          За період з 2002 вартість долара змінилася з {currency(startExchangeRate)} грн до {currency(endExchangeRate)} грн, що складає {currency(overallRRI * 100)}% річних
         </p>
         <div ref={chartDev} />
       </div>
@@ -364,7 +364,7 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
           </li>
           <li>
             <a href="https://finance.yahoo.com/quote/UAH%3DX/chart" target="_blank">
-              Курс гривні щодо доллару
+              Курс гривні щодо долару
             </a>
           </li>
           <li>
