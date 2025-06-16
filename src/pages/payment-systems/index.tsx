@@ -93,11 +93,31 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       {/* <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=23_e_wUAnPA" /> */}
       <Header />
 
+      <div className="bg-rainbow text-white">
+        <div className="container py-5">
+          <div className="d-flex align-items-center">
+            <div className="flex-grow-1 me-3">
+              <h1 className="display-4 fw-bold mt-2">Платіжні системи</h1>
+              <p className="fs-3">💡 Хочеш дізнатися, як зробити міжнародний переказ з мінімальною комісією? Переглянь відео 👉</p>
+              <p>
+                <a className="btn btn-outline-light btn-lg" href="https://t.me/iPlanTalksBot?start=ZGw6Mjc2NDc4">
+                  Отримати безкоштовний курс
+                </a>
+              </p>
+            </div>
+            <div className="flex-shrink-0 d-none d-lg-block">
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/8CSLdbODqPE?si=Gk27fEcfRmCoVL5u" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="bg-body-secondary">
-        <div className="container-fluid py-5">
-          <h2>Платіжні системи</h2>
-          <p>Поповнюємо Interactive Brokers ефективно, найбільш актуальна інофрмація у <a href="https://cutt.ly/2e460oFu" target="_blank">чаті</a></p>
-          <div className="text-bg-light rounded-3 my-2 py-2 px-3">
+        <div className="container-fluid py-3">
+          {/* <h2>Платіжні системи</h2>
+          <p>Поповнюємо Interactive Brokers ефективно</p> */}
+
+          {/* <div className="text-bg-light rounded-3 my-2 py-2 px-3">
             <CollapsibleFilter title="Питання, відповіді та відео інструкція" className="faq">
               <PaymentsFaq />
               <hr />
@@ -109,15 +129,16 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                 </a>
               </div>
             </CollapsibleFilter>
-          </div>
+          </div> */}
 
-          <CheckboxesBankServicePivot
+          {/* <CheckboxesBankServicePivot
             combos={rowsFilteredByMegatag.filter((r) => r.works === 'TRUE')}
             onChange={({ bankCheckboxes, serviceCheckboxes }: { bankCheckboxes: Record<string, boolean>; serviceCheckboxes: Record<string, boolean> }) => {
               setBankCheckboxes({ ...bankCheckboxes })
               setServiceCheckboxes({ ...serviceCheckboxes })
             }}
-          />
+          /> */}
+
           <div className="row">
             <div className="col-12 col-md-3">
               <div className="text-bg-light rounded-3 my-2 py-2 px-3">
