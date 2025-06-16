@@ -52,18 +52,18 @@ export const Header = () => (
                   to="/exchange-rate-differences/forecast"
                   description="Модель впливу податку на інвестиційний прибуток на результат інвестицій при змінних темпах девальвації та % прибутковості."
                 />
-                {/* <Card
+                <Card
                   icon="fa-regular fa-money-bill-1"
                   title="Якщо продам?"
                   to="/exchange-rate-differences/interactive-brokers/orders"
                   description="Розрахунок курсових різниць відносно позицій вашого портфелю."
-                /> */}
-                {/* <Card
+                />
+                <Card
                   icon="fa-solid fa-calendar-check"
                   title="Дивіденди"
                   to="/exchange-rate-differences/interactive-brokers/dividends"
                   description="Розрахунок податків що мали б бути сплачені з нарахованих дивідендів з урахуванням курсових різниць."
-                /> */}
+                />
                 <Card
                   icon="fa-solid fa-calendar-check"
                   title="UA Tax Web"

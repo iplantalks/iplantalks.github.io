@@ -43,18 +43,18 @@ const IndexPage: React.FC<PageProps> = () => {
             description='Формування податкової декларації з урахуванням курсових різниць та податку на прибуток.'
             link="https://ua-tax.web.app"
           />
-          {/* <Block
+          <Block
             icon="fa-regular fa-money-bill-1"
             title="Якщо продам?"
             description='Розрахунок курсових різниць відносно позицій вашого портфелю.'
             link="/exchange-rate-differences/interactive-brokers/orders"
-          /> */}
-          {/* <Block
+          />
+          <Block
             icon="fa-solid fa-calendar-check"
             title="Дивіденди"
             description='Розрахунок податків що мали б бути сплачені з нарахованих дивідендів з урахуванням курсових різниць.'
             link="/exchange-rate-differences/interactive-brokers/dividends"
-          /> */}
+          />
 
         </div>
       </div>
