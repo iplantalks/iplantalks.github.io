@@ -42,7 +42,7 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string; class
 }
 
 const PaymentSystemsPage: React.FC<PageProps> = () => {
-  const telegram = !!new URLSearchParams(window.location.search).get('telegram')
+  const telegram = typeof window !== 'undefined' && !!new URLSearchParams(window.location.search).get('telegram')
   const { user } = useAuth()
   useEffect(() => {
     if (user === null && !telegram) {
