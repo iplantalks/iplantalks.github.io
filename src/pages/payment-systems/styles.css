@@ -6,3 +6,10 @@
 .comboitem:not(:hover) i.fa-solid {
   display: none;
 }
+
+@media (max-width: 576px) {
+  /* Bootstrap's "sm" breakpoint */
+  .table {
+    font-size: 0.8rem; /* adjust as needed */
+  }
+}

@@ -42,9 +42,10 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string; class
 }
 
 const PaymentSystemsPage: React.FC<PageProps> = () => {
+  const telegram = !!new URLSearchParams(window.location.search).get('telegram')
   const { user } = useAuth()
   useEffect(() => {
-    if (user === null) {
+    if (user === null && !telegram) {
       navigate('/login?redirect=' + window.location.pathname)
     }
   }, [user])
@@ -91,9 +92,9 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
   return (
     <main>
       {/* <Hero title="Платіжні системи" subtitle="Поповнюємо Interactive Brokers ефективно" youtube="https://www.youtube.com/watch?v=23_e_wUAnPA" /> */}
-      <Header />
+      {!telegram && <Header />}
 
-      <div className="bg-rainbow text-white">
+      {!telegram && <div className="bg-rainbow text-white">
         <div className="container py-5">
           <div className="d-flex align-items-center">
             <div className="flex-grow-1 me-3">
@@ -110,7 +111,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div>}
 
       <div className="bg-body-secondary">
         <div className="container-fluid py-3">
@@ -493,7 +494,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
         </div>
       </div>
 
-      <div className="bg-body-secondary">
+      {!telegram && <div className="bg-body-secondary">
         <div className="container py-5">
           <h2>
             Збираємо відгуки про маршрути! <i className="fa-solid fa-heart text-danger" />
@@ -508,11 +509,11 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             можете бути впевнені, що ваш вибір враховано, навіть якщо зміни не відображаються відразу.
           </p>
         </div>
-      </div>
+      </div>}
 
-      <Feedback />
+      {!telegram && <Feedback />}
 
-      <div className="bg-body-secondary">
+      {!telegram && <div className="bg-body-secondary">
         <div className="container py-5">
           <h2>Корисні відео</h2>
           <p>Підбірка корисних відео щодо банків та платіжних систем.</p>
@@ -541,9 +542,9 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
             ))}
           </div>
         </div>
-      </div>
+      </div>}
 
-      <Join />
+      {!telegram && <Join />}
     </main>
   )
 }
