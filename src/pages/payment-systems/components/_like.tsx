@@ -58,9 +58,9 @@ export const Like = ({
     )
   }
   return (
-    <small style={{ whiteSpace: 'nowrap', opacity: likes > 0 ? 1 : 0.5 }} onClick={handleLike}>
+    <span role="button" style={{ whiteSpace: 'nowrap', opacity: likes > 0 ? 1 : 0.5 }} onClick={handleLike}>
       {likes}
-      <i className={likes > 0 ? 'fa-solid fa-heart text-danger ms-1' : 'fa-solid fa-heart text-secondary ms-1'} />
-    </small>
+      <i className={likes > 0 ? 'fa-solid fa-heart text-danger ms-1 fs-4 align-middle' : 'fa-solid fa-heart text-secondary ms-1 fs-4 align-middle'} />
+    </span>
   )
 }
