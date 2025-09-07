@@ -11,6 +11,13 @@ const config: GatsbyConfig = {
       resolve: `gatsby-plugin-google-gtag`,
       options: { trackingIds: ['G-HRXQ4P204N'] },
     },
+    {
+      resolve: `gatsby-plugin-hotjar`,
+      options: {
+        id: 3873202,
+        sv: 6,
+      },
+    },
   ],
 }
 
