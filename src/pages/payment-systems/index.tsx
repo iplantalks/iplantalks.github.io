@@ -18,6 +18,7 @@ import { PaymentsFaq } from './components/_payments-faq'
 import { Header } from '../../components/header'
 import { useAuth } from '../../context/auth'
 import { Currency } from './components/_currency'
+import { TooltipIcon } from './components/_tooltip'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -402,9 +403,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               <span>{r.bank}</span>
                             )}
                             {r.bank_links && r.bank_links.comment && (
-                              <small title={r.bank_links.comment} className="ms-2 d-none d-sm-inline">
-                                <i className="fa-regular fa-circle-question" />
-                              </small>
+                              <TooltipIcon className="fa-regular fa-circle-question fs-6 ms-1" tooltip={r.bank_links.comment} />
                             )}
                             <div className="text-secondary">
                               <small>
@@ -415,7 +414,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                                     <i className="fa-brands fa-youtube" />
                                   </a>
                                 )}
-                                {r.bank_links && r.bank_links.remote === 'TRUE' && <i className="text-primary fa-brands fa-bluetooth ms-2" title="Можливе віддаленне відкриття" />}
+                                {r.bank_links && r.bank_links.remote === 'TRUE' && <TooltipIcon className="text-primary fa-brands fa-bluetooth ms-1" tooltip="Можливе віддаленне відкриття" />}
                               </small>
                             </div>
                             <div className="d-block d-md-none">
@@ -433,9 +432,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               <span>{r.service}</span>
                             )}
                             {r.service_links && r.service_links.comment && (
-                              <small title={r.service_links.comment} className="ms-2 d-none d-sm-inline">
-                                <i className="text-primary fa-solid fa-circle-info" />
-                              </small>
+                              <TooltipIcon className="text-primary fa-solid fa-circle-info ms-2" tooltip={r.service_links.comment} />
                             )}
                             <div className="text-secondary">
                               <small>
@@ -473,9 +470,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           }
                           <td className="d-none d-md-table-cell">
                             {r.comment && (
-                              <small title={r.comment}>
-                                <i className="text-primary fa-solid fa-circle-info" />
-                              </small>
+                              <TooltipIcon className="text-primary fa-solid fa-circle-info" tooltip={r.comment} direction='right' width={400} />
                             )}
                           </td>
                           {
