@@ -17,6 +17,7 @@ import { ago } from '../../utils/ago'
 import { PaymentsFaq } from './components/_payments-faq'
 import { Header } from '../../components/header'
 import { useAuth } from '../../context/auth'
+import { Currency } from './components/_currency'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -418,10 +419,10 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               </small>
                             </div>
                             <div className="d-block d-md-none">
-                              {r.card_currency} {currency(r.bank_fee)}%
+                              <Currency currency={r.card_currency} /> {currency(r.bank_fee)}%
                             </div>
                           </td>
-                          <td className={sortField === 'card_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{r.card_currency}</td>
+                          <td className={sortField === 'card_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}><Currency currency={r.card_currency} /></td>
                           <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{currency(r.bank_fee)}%</td>
                           <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
                             {r.service_links && r.service_links.website ? (
@@ -442,10 +443,10 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               </small>
                             </div>
                             <div className="d-block d-md-none">
-                              {r.service_currency} {currency(r.service_fee)}%{r.service_fee_static > 0 && <span> + {currency(r.service_fee_static)}</span>}
+                              <Currency currency={r.service_currency} /> {currency(r.service_fee)}%{r.service_fee_static > 0 && <span> + {currency(r.service_fee_static)}</span>}
                             </div>
                           </td>
-                          <td className={sortField === 'service_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{r.service_currency}</td>
+                          <td className={sortField === 'service_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}><Currency currency={r.service_currency} /></td>
                           <td className={sortField === 'service_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>
                             {currency(r.service_fee)}%{r.service_fee_alert && <i className="text-warning ms-2 fa-solid fa-triangle-exclamation" title={r.service_fee_alert} />}
                             {r.service_fee_static > 0 && (
