@@ -314,6 +314,25 @@ const Forecast = () => {
       {/* <Hero title="Курсові різниці" subtitle="Модель впливу податку на інвестиційний прибуток на результат інвестицій при змінних темпах девальвації та % прибутковості" /> */}
       <Header />
 
+      <div className="bg-rainbow text-white">
+        <div className="container py-5">
+          <div className="d-flex align-items-center">
+            <div className="flex-grow-1 me-3">
+              <h1 className="display-4 fw-bold mt-2">Курсові різниці</h1>
+              <p className="fs-3">💡 Податки, прибуток і девальвація на одному графіку. Переглянь відео 👉</p>
+              <p>
+                <a className="btn btn-outline-light btn-lg" href="https://t.me/iPlanTalksBot?start=ZGw6Mjc2NDc4">
+                  Отримати безкоштовний курс
+                </a>
+              </p>
+            </div>
+            <div className="flex-shrink-0 d-none d-lg-block">
+              <iframe width="560" height="315" src="https://www.youtube.com/embed/aawVzBjOzqs?si=Y42Mlj3pF9rYVYh8" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="container py-5">
         <div className="row">
           <p className="col-12 col-sm-4">
