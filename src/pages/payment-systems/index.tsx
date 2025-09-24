@@ -576,15 +576,15 @@ function Row({ r, sortField }: { r: Row & { bank_links?: SheetLink, service_link
     {open && <tr>
       <td colSpan={12}>
         <div>
-          {r.vendor && <VendorLogo vendor={r.vendor} />}
-          <span className="ms-2">{r.card}</span>
           {r.service_links && r.service_links.website ? (
-            <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
+            <a className="text-decoration-none me-2" href={r.service_links.website} target="_blank">
               {r.service}
             </a>
           ) : (
-            <span className='ms-2'>{r.service}</span>
+            <span className='me-2'>{r.service}</span>
           )}
+          {r.vendor && <VendorLogo vendor={r.vendor} />}
+          <span className="ms-2">{r.card}</span>
         </div>
         <p>{r.bank_links && r.bank_links.comment}</p>
         <p>{r.service_links && r.service_links.comment}</p>
