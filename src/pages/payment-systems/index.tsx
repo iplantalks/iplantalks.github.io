@@ -403,9 +403,9 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                               <span>{r.bank}</span>
                             )}
                             {r.bank_links && r.bank_links.comment && (
-                              <TooltipIcon className="fa-regular fa-circle-question fs-6 ms-1" tooltip={r.bank_links.comment} />
+                              <TooltipIcon className="fa-regular fa-circle-question fs-6 ms-1 d-none d-md-inline" tooltip={r.bank_links.comment} />
                             )}
-                            <div className="text-secondary">
+                            <div className="text-secondary d-none d-md-block">
                               <small>
                                 {r.vendor && <VendorLogo vendor={r.vendor} />}
                                 <span className="ms-2">{r.card}</span>
@@ -424,15 +424,17 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           <td className={sortField === 'card_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}><Currency currency={r.card_currency} /></td>
                           <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{currency(r.bank_fee)}%</td>
                           <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
-                            {r.service_links && r.service_links.website ? (
-                              <a className="text-decoration-none" href={r.service_links.website} target="_blank">
-                                {r.service}
-                              </a>
-                            ) : (
-                              <span>{r.service}</span>
-                            )}
+                            <div className='d-none d-md-block'>
+                              {r.service_links && r.service_links.website ? (
+                                <a className="text-decoration-none" href={r.service_links.website} target="_blank">
+                                  {r.service}
+                                </a>
+                              ) : (
+                                <span>{r.service}</span>
+                              )}
+                            </div>
                             {r.service_links && r.service_links.comment && (
-                              <TooltipIcon className="text-primary fa-solid fa-circle-info ms-2" tooltip={r.service_links.comment} />
+                              <TooltipIcon className="text-primary fa-solid fa-circle-info ms-2 d-none d-md-inline" tooltip={r.service_links.comment} />
                             )}
                             <div className="text-secondary">
                               <small>
