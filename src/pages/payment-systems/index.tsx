@@ -6,7 +6,7 @@ import './styles.css'
 import { currency } from '../../utils/formatters'
 import { VendorLogo } from './components/_banks'
 import Join from '../../components/join'
-import { useBankLinks, usePaymentSystemLinks } from './components/_links'
+import { SheetLink, useBankLinks, usePaymentSystemLinks } from './components/_links'
 import { useVideoLinks } from './components/_videos'
 import { parseSheetsNumber, useGoogleSheetTable } from './components/_api'
 import { Feedback } from './components/_feedback'
@@ -19,6 +19,27 @@ import { Header } from '../../components/header'
 import { useAuth } from '../../context/auth'
 import { Currency } from './components/_currency'
 import { TooltipIcon } from './components/_tooltip'
+
+type Row = {
+  bank: string;
+  vendor: string;
+  card: string;
+  card_currency: string;
+  bank_fee: number;
+  service: string;
+  service_currency: string;
+  method: string;
+  service_fee: number;
+  service_fee_static: number;
+  service_fee_alert: string;
+  date: Date | null;
+  comment: string;
+  video: string;
+  likes: number;
+  works: string;
+  megatag: string;
+  payment: number;
+}
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -52,7 +73,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
     }
   }, [user])
   const [transfer, setTransfer] = useState<number>(1000)
-  const rows = useGoogleSheetTable('Data!A1:Z')
+  const rows: Row[] = useGoogleSheetTable('Data!A1:Z')
     .map((row) => ({
       bank: row['bank'],
       vendor: row['vendor'],
@@ -392,98 +413,7 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
                           return b[sortField].toString().localeCompare(a[sortField].toString())
                         }
                       })
-                      .map((r, i) => (
-                        <tr key={i}>
-                          <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
-                            {r.bank_links && r.bank_links.website ? (
-                              <a className="text-decoration-none" href={r.bank_links.website} target="_blank">
-                                {r.bank}
-                              </a>
-                            ) : (
-                              <span>{r.bank}</span>
-                            )}
-                            {r.bank_links && r.bank_links.comment && (
-                              <TooltipIcon className="fa-regular fa-circle-question fs-6 ms-1 d-none d-md-inline" tooltip={r.bank_links.comment} />
-                            )}
-                            <div className="text-secondary d-none d-md-block">
-                              <small>
-                                {r.vendor && <VendorLogo vendor={r.vendor} />}
-                                <span className="ms-2">{r.card}</span>
-                                {r.video && (
-                                  <a className="text-decoration-none link-danger ms-2" href={r.video} target="_blank">
-                                    <i className="fa-brands fa-youtube" />
-                                  </a>
-                                )}
-                                {r.bank_links && r.bank_links.remote === 'TRUE' && <TooltipIcon className="text-primary fa-brands fa-bluetooth ms-1" tooltip="Можливе віддаленне відкриття" />}
-                              </small>
-                            </div>
-                            <div className="d-block d-md-none">
-                              <Currency currency={r.card_currency} /> {currency(r.bank_fee)}%
-                            </div>
-                          </td>
-                          <td className={sortField === 'card_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}><Currency currency={r.card_currency} /></td>
-                          <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{currency(r.bank_fee)}%</td>
-                          <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
-                            <div className='d-none d-md-block'>
-                              {r.service_links && r.service_links.website ? (
-                                <a className="text-decoration-none" href={r.service_links.website} target="_blank">
-                                  {r.service}
-                                </a>
-                              ) : (
-                                <span>{r.service}</span>
-                              )}
-                            </div>
-                            {r.service_links && r.service_links.comment && (
-                              <TooltipIcon className="text-primary fa-solid fa-circle-info ms-2 d-none d-md-inline" tooltip={r.service_links.comment} />
-                            )}
-                            <div className="text-secondary">
-                              <small>
-                                <Method method={r.method} />
-                              </small>
-                            </div>
-                            <div className="d-block d-md-none">
-                              <Currency currency={r.service_currency} /> {currency(r.service_fee)}%{r.service_fee_static > 0 && <span> + {currency(r.service_fee_static)}</span>}
-                            </div>
-                          </td>
-                          <td className={sortField === 'service_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}><Currency currency={r.service_currency} /></td>
-                          <td className={sortField === 'service_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>
-                            {currency(r.service_fee)}%{r.service_fee_alert && <i className="text-warning ms-2 fa-solid fa-triangle-exclamation" title={r.service_fee_alert} />}
-                            {r.service_fee_static > 0 && (
-                              <div>
-                                <small title={'Фіксована комісія'}>+{currency(r.service_fee_static)}</small>
-                              </div>
-                            )}
-                          </td>
-                          <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
-                            {r.works === 'TRUE' ? (
-                              <span>{currency(r.payment)}</span>
-                            ) : (
-                              <span className="text-danger" title="Цей маршрут не працює">
-                                Не працює
-                              </span>
-                            )}
-                          </td>
-                          {
-                            /*found*/ true && (
-                              <td className={sortField === 'date' ? 'table-secondary fw-bold d-none d-md-table-cell' : 'd-none d-md-table-cell'} title={r.date?.toLocaleDateString()}>
-                                {r.date ? ago(r.date) : <span>&mdash;</span>}
-                              </td>
-                            )
-                          }
-                          <td className="d-none d-md-table-cell">
-                            {r.comment && (
-                              <TooltipIcon className="text-primary fa-solid fa-circle-info" tooltip={r.comment} direction='right' width={400} />
-                            )}
-                          </td>
-                          {
-                            /*found*/ true && (
-                              <td className="text-end d-none d-md-table-cell">
-                                <Like {...r} />
-                              </td>
-                            )
-                          }
-                        </tr>
-                      ))}
+                      .map((r, i) => <Row key={i} r={r} sortField={sortField} />)}
                   </tbody>
                 </table>
               </div>
@@ -545,6 +475,123 @@ const PaymentSystemsPage: React.FC<PageProps> = () => {
       {!telegram && <Join />}
     </main>
   )
+}
+
+function Row({ r, sortField }: { r: Row & { bank_links?: SheetLink, service_links?: SheetLink }; sortField: string }) {
+  const telegram = typeof window !== 'undefined' && !!new URLSearchParams(window.location.search).get('telegram')
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const isCollapsible = telegram || isMobile
+  const [open, setOpen] = useState(false)
+  return <>
+    <tr onClick={() => isCollapsible && setOpen(!open)} style={isCollapsible ? { cursor: 'pointer' } : {}}>
+      <td className={sortField === 'bank' ? 'table-secondary fw-bold' : ''}>
+        {r.bank_links && r.bank_links.website ? (
+          <a className="text-decoration-none" href={r.bank_links.website} target="_blank">
+            {r.bank}
+          </a>
+        ) : (
+          <span>{r.bank}</span>
+        )}
+        {r.bank_links && r.bank_links.comment && (
+          <TooltipIcon className="fa-regular fa-circle-question fs-6 ms-1 d-none d-md-inline" tooltip={r.bank_links.comment} />
+        )}
+        <div className="text-secondary d-none d-md-block">
+          <small>
+            {r.vendor && <VendorLogo vendor={r.vendor} />}
+            <span className="ms-2">{r.card}</span>
+            {r.video && (
+              <a className="text-decoration-none link-danger ms-2" href={r.video} target="_blank">
+                <i className="fa-brands fa-youtube" />
+              </a>
+            )}
+            {r.bank_links && r.bank_links.remote === 'TRUE' && <TooltipIcon className="text-primary fa-brands fa-bluetooth ms-1" tooltip="Можливе віддаленне відкриття" />}
+          </small>
+        </div>
+        <div className="d-block d-md-none">
+          <Currency currency={r.card_currency} /> {currency(r.bank_fee)}%
+        </div>
+      </td>
+      <td className={sortField === 'card_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}><Currency currency={r.card_currency} /></td>
+      <td className={sortField === 'bank_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>{currency(r.bank_fee)}%</td>
+      <td className={sortField === 'service' ? 'table-secondary fw-bold' : ''}>
+        <div className='d-none d-md-block'>
+          {r.service_links && r.service_links.website ? (
+            <a className="text-decoration-none" href={r.service_links.website} target="_blank">
+              {r.service}
+            </a>
+          ) : (
+            <span>{r.service}</span>
+          )}
+        </div>
+        {r.service_links && r.service_links.comment && (
+          <TooltipIcon className="text-primary fa-solid fa-circle-info ms-2 d-none d-md-inline" tooltip={r.service_links.comment} />
+        )}
+        <div className="text-secondary">
+          <small>
+            <Method method={r.method} />
+          </small>
+        </div>
+        <div className="d-block d-md-none">
+          <Currency currency={r.service_currency} /> {currency(r.service_fee)}%{r.service_fee_static > 0 && <span> + {currency(r.service_fee_static)}</span>}
+        </div>
+      </td>
+      <td className={sortField === 'service_currency' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}><Currency currency={r.service_currency} /></td>
+      <td className={sortField === 'service_fee' ? 'table-secondary fw-bold d-none d-sm-table-cell' : 'd-none d-sm-table-cell'}>
+        {currency(r.service_fee)}%{r.service_fee_alert && <i className="text-warning ms-2 fa-solid fa-triangle-exclamation" title={r.service_fee_alert} />}
+        {r.service_fee_static > 0 && (
+          <div>
+            <small title={'Фіксована комісія'}>+{currency(r.service_fee_static)}</small>
+          </div>
+        )}
+      </td>
+      <td className={sortField === 'payment' ? 'table-secondary fw-bold' : ''}>
+        {r.works === 'TRUE' ? (
+          <span>{currency(r.payment)}</span>
+        ) : (
+          <span className="text-danger" title="Цей маршрут не працює">
+            Не працює
+          </span>
+        )}
+      </td>
+      {
+                            /*found*/ true && (
+          <td className={sortField === 'date' ? 'table-secondary fw-bold d-none d-md-table-cell' : 'd-none d-md-table-cell'} title={r.date?.toLocaleDateString()}>
+            {r.date ? ago(r.date) : <span>&mdash;</span>}
+          </td>
+        )
+      }
+      <td className="d-none d-md-table-cell">
+        {r.comment && (
+          <TooltipIcon className="text-primary fa-solid fa-circle-info" tooltip={r.comment} direction='right' width={400} />
+        )}
+      </td>
+      {
+                            /*found*/ true && (
+          <td className="text-end d-none d-md-table-cell">
+            <Like {...r} />
+          </td>
+        )
+      }
+    </tr>
+    {open && <tr>
+      <td colSpan={12}>
+        <div>
+          {r.vendor && <VendorLogo vendor={r.vendor} />}
+          <span className="ms-2">{r.card}</span>
+          {r.service_links && r.service_links.website ? (
+            <a className="text-decoration-none ms-2" href={r.service_links.website} target="_blank">
+              {r.service}
+            </a>
+          ) : (
+            <span className='ms-2'>{r.service}</span>
+          )}
+        </div>
+        <p>{r.bank_links && r.bank_links.comment}</p>
+        <p>{r.service_links && r.service_links.comment}</p>
+        <p>{r.comment && r.comment}</p>
+      </td>
+    </tr>}
+  </>
 }
 
 export default PaymentSystemsPage
