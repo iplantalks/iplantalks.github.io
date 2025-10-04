@@ -289,30 +289,30 @@ const Allocator: React.FC = () => {
   return (
     <main>
       <Header />
-      <div className="container py-5">
-        <h2>&Alpha;&Iota;&Iota;&Theta;&Kappa;&Alpha;&Tau;&Theta;&Rho;</h2>
-        <p>Метою цього тула є наглядна демонстрація того як саме аллокація впливає на дохідність портфелю.</p>
-        <p>Спробуйте підібрати таку аллокацію при котрій ваш портфель дасть більш менш співставну дохідність відносно ринку</p>
-        <p>А потім, саме цікаве - змініть період, хоч трохи - пазл має відразу скластися :)</p>
+      <div className="container mx-auto my-0 p-4">
+        <h2 className='text-2xl font-bold mb-3'>&Alpha;&Iota;&Iota;&Theta;&Kappa;&Alpha;&Tau;&Theta;&Rho;</h2>
+        <p className='mb-3'>Метою цього тула є наглядна демонстрація того як саме аллокація впливає на дохідність портфелю.</p>
+        <p className='mb-3'>Спробуйте підібрати таку аллокацію при котрій ваш портфель дасть більш менш співставну дохідність відносно ринку</p>
+        <p className='mb-3'>А потім, саме цікаве - змініть період, хоч трохи - пазл має відразу скластися :)</p>
 
-        <div className="row">
-          <div className="col-2">
-            <p className="text-center">
+        <div className="flex gap-4 my-5">
+          <div className="max-w-2/12">
+            <p className="text-center mb-3">
               <b>Крок 1: акції</b>
             </p>
-            <p className="text-center">
-              <button className="btn btn-primary btn-sm" onClick={submit}>
+            <p className="text-center mb-3">
+              <button className="px-2 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" onClick={submit}>
                 submit
               </button>
             </p>
-            <textarea className="form-control" rows={4} value={input} onChange={(e) => setInput(e.target.value)} />
+            <textarea className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" rows={4} value={input} onChange={(e) => setInput(e.target.value)} />
           </div>
-          <div className="col-6">
-            <p className="text-center">
+          <div className="max-w-6/12">
+            <p className="text-center mb-3">
               <b>Крок 2: аллокація</b>
             </p>
-            <div className="row">
-              <div className="col-4">
+            <div className="flex gap-2">
+              <div className="max-w-4/12">
                 <Chart
                   type="doughnut"
                   options={{
@@ -338,15 +338,15 @@ const Allocator: React.FC = () => {
                   }}
                 />
               </div>
-              <div className="col-8">
-                <table className="table table-borderless align-middle table-sm">
+              <div className="max-w-8/12">
+                <table className="table-auto align-middle text-sm">
                   <tbody>
                     {allocations.map(({ id, value, locked }) => (
                       <tr key={id}>
-                        <td className="text-center">{id}</td>
-                        <td>
+                        <td className="text-center p-1">{id}</td>
+                        <td className='p-1'>
                           <input
-                            className="form-control"
+                            className="block w-full px-2 py-1 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                             type="number"
                             min="0"
                             max="100"
@@ -356,23 +356,23 @@ const Allocator: React.FC = () => {
                             style={{ width: '5em' }}
                           />
                         </td>
-                        <td>
-                          <input className="form-range" type="range" min="0" max="100" value={value} onChange={(e) => handleAllocationChange(id, e.target.valueAsNumber, locked)} disabled={locked} />
+                        <td className='p-1'>
+                          <input type="range" min="0" max="100" value={value} onChange={(e) => handleAllocationChange(id, e.target.valueAsNumber, locked)} disabled={locked} />
                         </td>
-                        <td>
-                          <input className="form-check-input" type="checkbox" checked={locked} onChange={() => handleLockedToggle(id)} />
+                        <td className='p-1'>
+                          <input type="checkbox" checked={locked} onChange={() => handleLockedToggle(id)} />
                         </td>
                       </tr>
                     ))}
                   </tbody>
                   <tfoot>
                     <tr>
-                      <td className="text-center">&Sigma;</td>
-                      <td className="text-center">
-                        <input className="form-control" type="number" min="0" max="100" value={allocations.reduce((acc, a) => acc + a.value, 0)} disabled={true} style={{ width: '5em' }} />
+                      <td className="text-center p-1">&Sigma;</td>
+                      <td className="text-center p-1">
+                        <input className="block w-full px-2 py-1 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition disabled:bg-neutral-200" type="number" min="0" max="100" value={allocations.reduce((acc, a) => acc + a.value, 0)} disabled={true} style={{ width: '5em' }} />
                       </td>
-                      <td>
-                        <button className="btn btn-primary" onClick={handleEqualize}>
+                      <td className='p-1'>
+                        <button className="px-2 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" onClick={handleEqualize}>
                           equalize
                         </button>
                       </td>
@@ -383,17 +383,17 @@ const Allocator: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="col-4">
-            <p className="text-center">
+          <div className="max-w-4/12">
+            <p className="text-center mb-3">
               <b>Крок 3: період</b>
             </p>
-            <table className="table table-borderless align-middle table-sm">
+            <table className="table-auto align-middle text-sm">
               <tbody>
                 <tr>
-                  <td colSpan={3}>
-                    <div style={{ display: 'flex' }}>
+                  <td className='p-1' colSpan={3}>
+                    <div className='flex gap-2 w-full'>
                       <input
-                        className="form-range"
+                        className='block w-full'
                         type="range"
                         min={minDate}
                         max={Math.min(maxDate, endDate)}
@@ -403,7 +403,7 @@ const Allocator: React.FC = () => {
                         style={{ paddingRight: 0, marginRight: 0, borderRight: 'none' }}
                       />
                       <input
-                        className="form-range"
+                        className='block w-full'
                         type="range"
                         min={Math.max(minDate, startDate)}
                         max={maxDate}
@@ -416,9 +416,9 @@ const Allocator: React.FC = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td align="left" valign="middle">
+                  <td className='p-1' align="left" valign="middle">
                     <input
-                      className="form-control"
+                      className="block w-full px-2 py-1 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       type="date"
                       min={minDate}
                       max={maxDate}
@@ -426,12 +426,12 @@ const Allocator: React.FC = () => {
                       onChange={(event) => setStartDate(event.target.valueAsNumber)}
                     />
                   </td>
-                  <td align="center" valign="middle">
+                  <td className='p-1' align="center" valign="middle">
                     <small>{ago(startDate, endDate)}</small>
                   </td>
-                  <td align="right" valign="middle">
+                  <td className='p-1' align="right" valign="middle">
                     <input
-                      className="form-control"
+                      className="block w-full px-2 py-1 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       type="date"
                       min={minDate}
                       max={maxDate}
@@ -441,62 +441,59 @@ const Allocator: React.FC = () => {
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan={3}>
-                    <table width="100%">
+                  <td className='p-1' colSpan={3}>
+                    <table className='table-auto w-full'>
                       <tbody>
                         <tr>
                           <td align="left" valign="top">
-                            <button className="btn btn-sm btn-outline-primary" onClick={() => setStartDate(minDate)}>
+                            <button className="px-2 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" onClick={() => setStartDate(minDate)}>
                               min
                             </button>
-                            <br />
-                            <button
-                              title="start of year"
-                              className="btn btn-sm btn-outline-primary"
-                              onClick={() =>
-                                setStartDate(
-                                  new Date(minDate).getFullYear() === new Date(startDate).getFullYear()
-                                    ? new Date(new Date(startDate).getFullYear() + 1, 0, 1, 12, 0, 0, 0).getTime()
-                                    : new Date(new Date(startDate).getFullYear(), 0, 1, 12, 0, 0, 0).getTime()
-                                )
-                              }
-                            >
-                              soy
-                            </button>
-                            <button
-                              title="end of year"
-                              className="btn btn-sm btn-outline-primary"
-                              onClick={() => setStartDate(new Date(new Date(startDate).getFullYear(), 11, 31, 23, 59, 59, 999).getTime())}
-                            >
-                              eoy
-                            </button>
-                            {/* <br />
-                                <button>6m</button>
-                                <button>1y</button>
-                                <button>3y</button>
-                                <button>5y</button> */}
+                            <div className='flex gap-1 mt-1'>
+                              <button
+                                title="start of year"
+                                className="px-2 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                                onClick={() =>
+                                  setStartDate(
+                                    new Date(minDate).getFullYear() === new Date(startDate).getFullYear()
+                                      ? new Date(new Date(startDate).getFullYear() + 1, 0, 1, 12, 0, 0, 0).getTime()
+                                      : new Date(new Date(startDate).getFullYear(), 0, 1, 12, 0, 0, 0).getTime()
+                                  )
+                                }
+                              >
+                                soy
+                              </button>
+                              <button
+                                title="end of year"
+                                className="px-2 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                                onClick={() => setStartDate(new Date(new Date(startDate).getFullYear(), 11, 31, 23, 59, 59, 999).getTime())}
+                              >
+                                eoy
+                              </button>
+                            </div>
                           </td>
                           <td align="right" valign="top">
-                            <button className="btn btn-sm btn-outline-primary" onClick={() => setEndDate(maxDate)}>
+                            <button className="px-2 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" onClick={() => setEndDate(maxDate)}>
                               max
                             </button>
-                            <br />
-                            <button title="start of year" className="btn btn-sm btn-outline-primary" onClick={() => setEndDate(new Date(new Date(endDate).getFullYear(), 0, 1, 12, 0, 0, 0).getTime())}>
-                              soy
-                            </button>
-                            <button
-                              title="end of year"
-                              className="btn btn-sm btn-outline-primary"
-                              onClick={() =>
-                                setEndDate(
-                                  new Date().getFullYear() === new Date(endDate).getFullYear()
-                                    ? new Date(new Date(endDate).getFullYear() - 1, 11, 31, 23, 59, 59, 999).getTime()
-                                    : new Date(new Date(endDate).getFullYear(), 11, 31, 23, 59, 59, 999).getTime()
-                                )
-                              }
-                            >
-                              eoy
-                            </button>
+                            <div className='flex gap-1 mt-1 justify-end'>
+                              <button title="start of year" className="px-2 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" onClick={() => setEndDate(new Date(new Date(endDate).getFullYear(), 0, 1, 12, 0, 0, 0).getTime())}>
+                                soy
+                              </button>
+                              <button
+                                title="end of year"
+                                className="px-2 py-1 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                                onClick={() =>
+                                  setEndDate(
+                                    new Date().getFullYear() === new Date(endDate).getFullYear()
+                                      ? new Date(new Date(endDate).getFullYear() - 1, 11, 31, 23, 59, 59, 999).getTime()
+                                      : new Date(new Date(endDate).getFullYear(), 11, 31, 23, 59, 59, 999).getTime()
+                                  )
+                                }
+                              >
+                                eoy
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       </tbody>
@@ -507,35 +504,37 @@ const Allocator: React.FC = () => {
             </table>
           </div>
         </div>
-        <div>
-          <div className="d-flex">
-            <div className="form-check me-3" title="Відображати мінімальну дохідність">
-              <input className="form-check-input" type="checkbox" id="displayMin" checked={displayMin} onChange={() => setDisplayMin(!displayMin)} />
-              <label className="form-check-label" htmlFor="displayMin">
+
+
+        <div className='mt-5'>
+          <div className="flex gap-4">
+            <div className="flex gap-2" title="Відображати мінімальну дохідність">
+              <input type="checkbox" id="displayMin" checked={displayMin} onChange={() => setDisplayMin(!displayMin)} />
+              <label htmlFor="displayMin">
                 min
               </label>
             </div>
-            <div className="form-check me-3" title="Відображати середню дохідність">
-              <input className="form-check-input" type="checkbox" id="displayAvg" checked={displayAvg} onChange={() => setDisplayAvg(!displayAvg)} />
-              <label className="form-check-label" htmlFor="displayAvg">
+            <div className="flex gap-2" title="Відображати середню дохідність">
+              <input type="checkbox" id="displayAvg" checked={displayAvg} onChange={() => setDisplayAvg(!displayAvg)} />
+              <label htmlFor="displayAvg">
                 avg
               </label>
             </div>
-            <div className="form-check me-3" title="Відображати максимально можливу дохідність">
-              <input className="form-check-input" type="checkbox" id="displayMax" checked={displayMax} onChange={() => setDisplayMax(!displayMax)} />
-              <label className="form-check-label" htmlFor="displayMax">
+            <div className="flex gap-2" title="Відображати максимально можливу дохідність">
+              <input type="checkbox" id="displayMax" checked={displayMax} onChange={() => setDisplayMax(!displayMax)} />
+              <label htmlFor="displayMax">
                 max
               </label>
             </div>
-            <div className="form-check me-3" title="Відображати дохідність ринку">
-              <input className="form-check-input" type="checkbox" id="displayBenchmark" checked={displayBenchmark} onChange={() => setDisplayBenchmark(!displayBenchmark)} />
-              <label className="form-check-label" htmlFor="displayBenchmark">
+            <div className="flex gap-2" title="Відображати дохідність ринку">
+              <input type="checkbox" id="displayBenchmark" checked={displayBenchmark} onChange={() => setDisplayBenchmark(!displayBenchmark)} />
+              <label htmlFor="displayBenchmark">
                 benchmark
               </label>
             </div>
-            <div className="form-check me-3" title="Відображати дохідність акцій">
-              <input className="form-check-input" type="checkbox" id="displaySymbols" checked={displaySymbols} onChange={() => setDisplaySymbols(!displaySymbols)} />
-              <label className="form-check-label" htmlFor="displaySymbols">
+            <div className="flex gap-2" title="Відображати дохідність акцій">
+              <input type="checkbox" id="displaySymbols" checked={displaySymbols} onChange={() => setDisplaySymbols(!displaySymbols)} />
+              <label htmlFor="displaySymbols">
                 symbols
               </label>
             </div>
@@ -552,17 +551,17 @@ const Allocator: React.FC = () => {
         </div>
 
         <div className="my-5">
-          <h2>Як це порахувати</h2>
-          <p>
+          <h2 className='text-2xl font-bold mb-3'>Як це порахувати</h2>
+          <p className='mb-3'>
             На прикладі{' '}
             {Object.keys(yahoo)
               .filter((t) => t !== 'VOO')
               .join(', ')}
             , нам потрібні історичні данні, беремо їх з Yahoo Finance, якщо ж розрахунок робиться в Google Sheets то за допомогою ф-ії GOOGLEFINANCE
           </p>
-          <p>Маючи історичні данні, дохідність акції за період складатиме (end_price - start_price) / start_price * 100 відсотків</p>
+          <p className='mb-3'>Маючи історичні данні, дохідність акції за період складатиме (end_price - start_price) / start_price * 100 відсотків</p>
           {yahoo && Object.keys(yahoo).length > 0 && (
-            <p>
+            <p className='mb-3'>
               Тобто якщо купували {Object.keys(yahoo)[0]} за ${round(yahoo[Object.keys(yahoo)[0]][0].close, 2)}, а продали за $
               {round(yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close, 2)}, то дохідність складатиме (
               {round(yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close, 2)} - {round(yahoo[Object.keys(yahoo)[0]][0].close, 2)}) /{' '}
@@ -570,28 +569,28 @@ const Allocator: React.FC = () => {
               {round(((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close) * 100, 2)}%
             </p>
           )}
-          <p>Наступний крок - аллокації активів</p>
-          <p>Тут все дуже просто, нам необхиодмо помножити дохідність кожного з активів на його аллокацію, та скласти результати - це і буде дохідністью портфеля</p>
+          <p className='mb-3'>Наступний крок - аллокації активів</p>
+          <p className='mb-3'>Тут все дуже просто, нам необхиодмо помножити дохідність кожного з активів на його аллокацію, та скласти результати - це і буде дохідністью портфеля</p>
           {yahoo && Object.keys(yahoo).length > 1 && (
             <>
-              <p>
+              <p className='mb-3'>
                 Так наприклад, уявімо що наш портфель має 70% {Object.keys(yahoo)[0]} та 30% {Object.keys(yahoo)[1]}
               </p>
-              <p>
+              <p className='mb-3'>
                 {Object.keys(yahoo)[0]} мі купували по ${round(yahoo[Object.keys(yahoo)[0]][0].close, 2)} і зараз вона коштує $
                 {round(yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close, 2)}, отже дохідність (
                 {round(yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close, 2)} - {round(yahoo[Object.keys(yahoo)[0]][0].close, 2)})/
                 {round(yahoo[Object.keys(yahoo)[0]][0].close, 2)} ={' '}
                 {round((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close, 2)}
               </p>
-              <p>
+              <p className='mb-3'>
                 {Object.keys(yahoo)[1]} мі купували по ${round(yahoo[Object.keys(yahoo)[1]][0].close, 2)} і зараз вона коштує $
                 {round(yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close, 2)}, отже дохідність (
                 {round(yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close, 2)} - {round(yahoo[Object.keys(yahoo)[1]][0].close, 2)})/
                 {round(yahoo[Object.keys(yahoo)[1]][0].close, 2)} ={' '}
                 {round((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close, 2)}
               </p>
-              <p>
+              <p className='mb-3'>
                 Таким чином, дохідність портфеля складе ({Object.keys(yahoo)[0].toLowerCase()}_performance * {Object.keys(yahoo)[0].toLowerCase()}_allocation + {Object.keys(yahoo)[1].toLowerCase()}
                 _performance * {Object.keys(yahoo)[1].toLowerCase()}_allocation) = (
                 {round((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close, 2)} * 0.7 +{' '}
@@ -610,7 +609,7 @@ const Allocator: React.FC = () => {
                 )}
                 %
               </p>
-              <p>Далі, кількість активів не важлива, хоч два, хоч двісті, розрахунок буде тим самим.</p>
+              <p className='mb-3'>Далі, кількість активів не важлива, хоч два, хоч двісті, розрахунок буде тим самим.</p>
             </>
           )}
         </div>
@@ -729,29 +728,29 @@ function AllocateThemAll({ yahoo }: { yahoo: Record<string, YahooChartRow[]> }) 
 
   return (
     <div className="my-5">
-      <h2>Allocate'em All 🤘🎸</h2>
-      <p>
+      <h2 className='text-2xl font-bold mb-3'>Allocate'em All 🤘🎸</h2>
+      <p className='mb-3'>
         Власне тул дозволяє візуально подивитися як аллокація впливає на результати портфелью, але ж ми як люди не в змозі переклікати та переварити усі варіації, саме тому, ось розрахунок який
         зробила машина переклікавши взагалі все доступні комбінації аллокацій на різних відрізках часу
       </p>
 
-      <p>
+      <p className='mb-3'>
         Загалом маємо {tickers.length} акцій, а отже існує {allocations.length} варіантів аллокації з кроком в 1%
       </p>
 
-      <p>
+      <p className='mb-3'>
         Маємо історію за {new Date(max).getFullYear() - new Date(min).getFullYear()} років, {Math.floor((max - min) / (1000 * 60 * 60 * 24))} днів, діапазон дат з{' '}
         {new Date(min).toISOString().split('T').shift()} до {new Date(max).toISOString().split('T').shift()}
       </p>
 
-      <p>
+      <p className='mb-3'>
         На прикладі горизонту в один рік, ми будемо рахувати усі {allocations.length} аллокацій, для усіх {Math.floor((max - min) / (1000 * 60 * 60 * 24))} днів, починаючи з{' '}
         {new Date(min).toISOString().split('T').shift()} і до максимальної дати мінус один рік {new Date(max - 86400000).toISOString().split('T').shift()}
       </p>
 
-      <p>Так наприклад, беремо першву з {allocations.length} аллокацій</p>
+      <p className='mb-3'>Так наприклад, беремо першву з {allocations.length} аллокацій</p>
 
-      <ul>
+      <ul className='list-disc list-inside ml-5 my-3'>
         {tickers.map((t, i) => (
           <li key={t}>
             {t} - {round(allocations[0][i] * 100, 2)}%
@@ -759,11 +758,11 @@ function AllocateThemAll({ yahoo }: { yahoo: Record<string, YahooChartRow[]> }) 
         ))}
       </ul>
 
-      <p>І починаємо рахувати дохідності за рік, для кожного дня</p>
+      <p className='mb-3'>І починаємо рахувати дохідності за рік, для кожного дня</p>
 
-      <p>Так, для першого дня {new Date(min).toISOString().split('T').shift()}, мали наступні ціни</p>
+      <p className='mb-3'>Так, для першого дня {new Date(min).toISOString().split('T').shift()}, мали наступні ціни</p>
 
-      <ul>
+      <ul className='list-disc list-inside ml-5 my-3'>
         {tickers.map((t) => (
           <li key={t}>
             {t} - ${round(data[t][0].close || 0, 2)}
@@ -771,9 +770,9 @@ function AllocateThemAll({ yahoo }: { yahoo: Record<string, YahooChartRow[]> }) 
         ))}
       </ul>
 
-      <p>Через рік ({new Date(data[tickers[0]][252].date).toISOString().split('T').shift()}), ціни стали такими</p>
+      <p className='mb-3'>Через рік ({new Date(data[tickers[0]][252].date).toISOString().split('T').shift()}), ціни стали такими</p>
 
-      <ul>
+      <ul className='list-disc list-inside ml-5 my-3'>
         {tickers.map((t) => (
           <li key={t}>
             {t} - ${round(data[t][252].close || 0, 2)}
@@ -781,9 +780,9 @@ function AllocateThemAll({ yahoo }: { yahoo: Record<string, YahooChartRow[]> }) 
         ))}
       </ul>
 
-      <p>Отже дохідність кожної окремої акції склала</p>
+      <p className='mb-3'>Отже дохідність кожної окремої акції склала</p>
 
-      <ul>
+      <ul className='list-disc list-inside ml-5 my-3'>
         {tickers.map((t, i) => (
           <li key={t}>
             {t} - {round((((data[t][252].close || 0) - (data[t][0].close || 0)) / (data[t][0].close || 1)) * 100, 2)}%
@@ -791,17 +790,17 @@ function AllocateThemAll({ yahoo }: { yahoo: Record<string, YahooChartRow[]> }) 
         ))}
       </ul>
 
-      <p>
+      <p className='mb-3'>
         А отже дохідність портфеля складе{' '}
         {round((((data[tickers[tickers.length - 1]][252].close || 0) - (data[tickers[tickers.length - 1]][0].close || 0)) / (data[tickers[tickers.length - 1]][0].close || 1)) * 100, 2)}%
       </p>
 
-      <p>Далі беремо наступний день {data[tickers[0]][1].date.toISOString().split('T').shift()} і повторюємо розрахунок</p>
-      <p>Робимо так {Math.floor((max - min) / (1000 * 60 * 60 * 24))} разів для кожного дня</p>
+      <p className='mb-3'>Далі беремо наступний день {data[tickers[0]][1].date.toISOString().split('T').shift()} і повторюємо розрахунок</p>
+      <p className='mb-3'>Робимо так {Math.floor((max - min) / (1000 * 60 * 60 * 24))} разів для кожного дня</p>
 
-      <p>Після чого беремо наступну аллокацію</p>
+      <p className='mb-3'>Після чого беремо наступну аллокацію</p>
 
-      <ul>
+      <ul className='list-disc list-inside ml-5 my-3'>
         {tickers.map((t, i) => (
           <li key={t}>
             {t} - {round(allocations[1][i] * 100, 2)}%
@@ -809,60 +808,60 @@ function AllocateThemAll({ yahoo }: { yahoo: Record<string, YahooChartRow[]> }) 
         ))}
       </ul>
 
-      <p>І знову перераховуемо усі дні</p>
+      <p className='mb-3'>І знову перераховуемо усі дні</p>
 
-      <p>Таким чином нам потрібно виконати 100500 мільоній розрахунків, що не є можливим для людини 🤷‍♂️</p>
+      <p className='mb-3'>Таким чином нам потрібно виконати 100500 мільоній розрахунків, що не є можливим для людини 🤷‍♂️</p>
 
-      <p>Саме тому ми вимушуємо машину порахувати це за нас, нижче розрахунки на різних горизонтах</p>
+      <p className='mb-3'>Саме тому ми вимушуємо машину порахувати це за нас, нижче розрахунки на різних горизонтах</p>
 
       {oneYear && (
         <>
-          <h3>1 year horizon</h3>
-          <p>Отже, на горизонті одного року найкращими є наступні аллокації</p>
-          <ul>
+          <h3 className='text-2xl font-bold mb-3'>1 year horizon</h3>
+          <p className='mb-3'>Отже, на горизонті одного року найкращими є наступні аллокації</p>
+          <ul className='list-disc list-inside ml-5 my-3'>
             {tickers.map((t, i) => (
               <li key={t}>
                 {t} - {round(oneYear.best_allocation![i] * 100, 2)}%
               </li>
             ))}
           </ul>
-          <p>Що дає середню дохідність - {round(oneYear.best_performance! * 100, 2)}%</p>
+          <p className='mb-3'>Що дає середню дохідність - {round(oneYear.best_performance! * 100, 2)}%</p>
         </>
       )}
 
       {twoYears && (
         <>
-          <h3>2 years horizon</h3>
-          <p>Отже, на горизонті двух років найкращими є наступні аллокації</p>
-          <ul>
+          <h3 className='text-2xl font-bold mb-3'>2 years horizon</h3>
+          <p className='mb-3'>Отже, на горизонті двух років найкращими є наступні аллокації</p>
+          <ul className='list-disc list-inside ml-5 my-3'>
             {tickers.map((t, i) => (
               <li key={t}>
                 {t} - {round(twoYears.best_allocation![i] * 100, 2)}%
               </li>
             ))}
           </ul>
-          <p>Що дає середню дохідність - {round(twoYears.best_performance! * 100, 2)}%</p>
+          <p className='mb-3'>Що дає середню дохідність - {round(twoYears.best_performance! * 100, 2)}%</p>
         </>
       )}
 
       {fiveYears && (
         <>
-          <h3>5 years horizon</h3>
-          <p>Отже, на горизонті пʼяти років найкращими є наступні аллокації</p>
-          <ul>
+          <h3 className='text-2xl font-bold mb-3'>5 years horizon</h3>
+          <p className='mb-3'>Отже, на горизонті пʼяти років найкращими є наступні аллокації</p>
+          <ul className='list-disc list-inside ml-5 my-3'>
             {tickers.map((t, i) => (
               <li key={t}>
                 {t} - {round(fiveYears.best_allocation![i] * 100, 2)}%
               </li>
             ))}
           </ul>
-          <p>Що дає середню дохідність - {round(fiveYears.best_performance! * 100, 2)}%</p>
+          <p className='mb-3'>Що дає середню дохідність - {round(fiveYears.best_performance! * 100, 2)}%</p>
         </>
       )}
 
-      <p>Уважний читач відразу помітить щось не ладне і запитаеться що відбувається?!</p>
+      <p className='mb-3'>Уважний читач відразу помітить щось не ладне і запитаеться що відбувається?!</p>
 
-      <p>
+      <p className='mb-3'>
         Справа в тому, що не залежно від кількості активів, такий підхід вибиратиме завжди той актив що є найбільш прибутковим в середньому і підбирати аллокації лише за допомогою дохідності не є
         гарною ідеєю
       </p>
