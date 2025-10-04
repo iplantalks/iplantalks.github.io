@@ -152,34 +152,37 @@ const TenDays: React.FC = () => {
   return (
     <main>
       <Header />
-      <div className="container py-5">
-        <h2>Ten Days 📈</h2>
-        <p>Якщо ви хоч інколи думали про те щоб вичекати більш гарні умови для входу, або про те щоб вийти з ринку на деякий час - ця сторінка саме для вас.</p>
-        <p>Власне робилося по гарячим слідам запитання:</p>
-        <blockquote className="px-5 py-3 text-secondary">
-          <p>Добрий день. Питання від чайника: поясніть будь ласка тезу, чому так?</p>
-          <p>"протягом 10 років є найкрутіші умовні 10 днів.</p>
-          <p>якщо в них не попасти, то буде умовно 7% річних, якщо попасти - то буде 10% річних."</p>
+
+
+      <div className="container mx-auto my-0 p-4">
+        <h2 className='text-2xl font-bold mb-3'>Ten Days 📈</h2>
+        <p className='mb-3'>Якщо ви хоч інколи думали про те щоб вичекати більш гарні умови для входу, або про те щоб вийти з ринку на деякий час - ця сторінка саме для вас.</p>
+        <p className='mb-3'>Власне робилося по гарячим слідам запитання:</p>
+        <blockquote className="px-5 py-3 text-neutral-500">
+          <p className='mb-3'>Добрий день. Питання від чайника: поясніть будь ласка тезу, чому так?</p>
+          <p className='mb-3'>"протягом 10 років є найкрутіші умовні 10 днів.</p>
+          <p className='mb-3'>якщо в них не попасти, то буде умовно 7% річних, якщо попасти - то буде 10% річних."</p>
           <p>
             я не дуже розумію за рахунок чого відбувається такий великий приріст дохідності лише за 10 років? адже якщо нас умовно кажучи цікавить прирост капіталу (тобто т.А і т.Б) і те що
             відбувається всередені між цими точками- не має значення.
           </p>
         </blockquote>
 
-        <p>У цій симуляції буде показано що відбудеться якщо ви "прогуляєте" пʼять днів і як це вплине на фінальний результат.</p>
+        <p className='mb-3'>У цій симуляції буде показано що відбудеться якщо ви "прогуляєте" пʼять днів і як це вплине на фінальний результат.</p>
+
         <div className="my-5">
-          <div className="row">
-            <div className="col">
-              Акція
-              <input className="form-control" type="text" value={symbol} onChange={(e) => setSymbol(e.target.value)} />
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <div className='mb-2'>Акція</div>
+              <input className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" type="text" value={symbol} onChange={(e) => setSymbol(e.target.value)} />
             </div>
-            <div className="col">
-              Кількість
-              <input className="form-control" type="number" min="1" max="99" value={days} onChange={(e) => setDays(e.target.valueAsNumber)} />
+            <div>
+              <div className='mb-2'>Кількість</div>
+              <input className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" type="number" min="1" max="99" value={days} onChange={(e) => setDays(e.target.valueAsNumber)} />
             </div>
-            <div className="col">
-              Період
-              <select className="form-select" onChange={(e) => setPeriod(e.target.value)}>
+            <div>
+              <div className='mb-2'>Період</div>
+              <select className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" onChange={(e) => setPeriod(e.target.value)}>
                 <option value="10">10 років</option>
                 <option value="5">5 років</option>
                 <option value="3">3 років</option>
@@ -195,7 +198,7 @@ const TenDays: React.FC = () => {
         </div>
 
         <div className="my-5">
-          <p>Дуже цікаво, дійсно, лише неділя-дві радикально впливають на результати. Але ще цікавіше те як працює зворотнє припущення з пропуском найгірших днів.</p>
+          <p className='mb-3'>Дуже цікаво, дійсно, лише неділя-дві радикально впливають на результати. Але ще цікавіше те як працює зворотнє припущення з пропуском найгірших днів.</p>
           <p>
             <b>ВАЖЛИВО</b> розуміти що у цьому розрахунку ми рахуємо трохи не звичний нам формат - це щось близьке до щоденного входу та виходу з ринку, якщо б ми рахували прибутковість від першого
             дня - то там нічого особливого би не змінилося, адже дійсно, купивши акцію десять років тому за $20 і продавши сьогодні за $200 - маємо прибуток в 900%, якщо в середині цього періоду мі
@@ -204,58 +207,61 @@ const TenDays: React.FC = () => {
         </div>
 
         <div className="my-5">
-          <h2>Як це рахується</h2>
-          <p>Спочатку забираємо історичні данні з Yahoo Finance</p>
-          <p>
-            <a href={`https://finance.yahoo.com/quote/{symbol}/history/`} target="_blank">
+          <h2 className='text-2xl font-bold mb-3'>Як це рахується</h2>
+          <p className='mb-3'>Спочатку забираємо історичні данні з Yahoo Finance</p>
+          <p className='mb-3'>
+            <a className='text-blue-500' href={`https://finance.yahoo.com/quote/{symbol}/history/`} target="_blank">
               https://finance.yahoo.com/quote/{symbol}/history/
             </a>
           </p>
-          <p className="text-secondary">
+          <p className="mb-3 text-neutral-500">
             Примітка: для GoogleSheets використовуємо <code>=GOOGLEFINANCE("{symbol}", "price", "1990-01-01", TODAY(), "DAILY")</code>
           </p>
-          <p>Далі фільтруємо ці данні, залишаючі {period} останніх років</p>
-          <p className="text-secondary">Примітка: тут лише рабочі дні, отже в році 252 дня, тобо нам потрібні останні {parseInt(period || '10') * 252} днів</p>
-          <table className="table">
+          <p className='mb-3'>Далі фільтруємо ці данні, залишаючі {period} останніх років</p>
+          <p className="mb-3 text-neutral-500">Примітка: тут лише рабочі дні, отже в році 252 дня, тобо нам потрібні останні {parseInt(period || '10') * 252} днів</p>
+
+          <table className="table-auto my-5">
             <thead>
               <tr>
-                <th>day</th>
-                <th>date</th>
-                <th>price</th>
+                <th className='p-2 border border-neutral-200 text-left'>day</th>
+                <th className='p-2 border border-neutral-200 text-left'>date</th>
+                <th className='p-2 border border-neutral-200 text-left'>price</th>
               </tr>
             </thead>
             <tbody>
               {filtered.slice(0, 3).map((d, i) => (
                 <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
-                  <td>{currency(d.value)}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{i + 1}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{currency(d.value)}</td>
                 </tr>
               ))}
               <tr>
-                <td colSpan={2}>&hellip;</td>
+                <td className='p-2 border border-neutral-200 text-center' colSpan={3}>&hellip;</td>
               </tr>
               {filtered.slice(filtered.length - 3).map((d, i) => (
                 <tr key={i}>
-                  <td>{filtered.findIndex((x) => x.time === d.time) + 1}</td>
-                  <td>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
-                  <td>{currency(d.value)}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{filtered.findIndex((x) => x.time === d.time) + 1}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{currency(d.value)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <p>
+
+          <p className='mb-3'>
             Маючі ці данні, розраховуємо щоденну дохідність за формулою <code>(curr-prev)/prev</code>
           </p>
-          <p className="text-secondary">Примітка: тут в нас виходить на один рядок менше, адже не зможемо порахувати дохідність першого дня</p>
-          <table className="table">
+          <p className="mb-3 text-neutral-500">Примітка: тут в нас виходить на один рядок менше, адже не зможемо порахувати дохідність першого дня</p>
+
+          <table className="table-auto my-5">
             <thead>
               <tr>
-                <th>day</th>
-                <th>date</th>
-                <th>prev</th>
-                <th>curr</th>
-                <th>(curr-prev)/prev</th>
+                <th className='p-2 border border-neutral-200 text-left'>day</th>
+                <th className='p-2 border border-neutral-200 text-left'>date</th>
+                <th className='p-2 border border-neutral-200 text-left'>prev</th>
+                <th className='p-2 border border-neutral-200 text-left'>curr</th>
+                <th className='p-2 border border-neutral-200 text-left'>(curr-prev)/prev</th>
               </tr>
             </thead>
             <tbody>
@@ -270,15 +276,15 @@ const TenDays: React.FC = () => {
                 }))
                 .map((d, i) => (
                   <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>{d.date}</td>
-                    <td>{currency(d.prev)}</td>
-                    <td>{currency(d.curr)}</td>
-                    <td>{currency(d.perc)}%</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{i + 1}</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{d.date}</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{currency(d.prev)}</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{currency(d.curr)}</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{currency(d.perc)}%</td>
                   </tr>
                 ))}
               <tr>
-                <td colSpan={5}>&hellip;</td>
+                <td className='p-2 border border-neutral-200 text-center' colSpan={5}>&hellip;</td>
               </tr>
               {dailyReturns
                 .slice(dailyReturns.length - 3)
@@ -291,132 +297,137 @@ const TenDays: React.FC = () => {
                 }))
                 .map((d, i) => (
                   <tr key={i}>
-                    <td>{d.date}</td>
-                    <td>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
-                    <td>{currency(d.prev)}</td>
-                    <td>{currency(d.curr)}</td>
-                    <td>{currency(d.perc)}%</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{d.date}</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{currency(d.prev)}</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{currency(d.curr)}</td>
+                    <td className='p-2 border border-neutral-200 text-left'>{currency(d.perc)}%</td>
                   </tr>
                 ))}
             </tbody>
           </table>
-          <p>
+
+          <p className='mb-3'>
             Маючи щоденні дохідності знаходимо {days} найкращих та найгірших днів, а також за для забави беремо {days} випадкових днів
           </p>
-          <div className="row">
-            <div className="col-4">
+
+          <div className="flex gap-4 my-5">
+            <div>
               <p className="text-center">
                 <b>Найкращі дні</b>
               </p>
-              <table className="table">
+              <table className="table-auto">
                 <thead>
                   <tr>
-                    <th>Дата</th>
-                    <th>Дохід</th>
+                    <th className='p-2 border border-neutral-200 text-left'>Дата</th>
+                    <th className='p-2 border border-neutral-200 text-left'>Дохід</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bestDays.map((d, i) => (
                     <tr key={i}>
-                      <td>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
-                      <td>{(d.value * 100).toFixed(2)}%</td>
+                      <td className='p-2 border border-neutral-200 text-left'>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
+                      <td className='p-2 border border-neutral-200 text-left'>{(d.value * 100).toFixed(2)}%</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div className="col-4">
+            <div>
               <p className="text-center">
                 <b>Найгірші дні</b>
               </p>
-              <table className="table">
+              <table className="table-auto">
                 <thead>
                   <tr>
-                    <th>Дата</th>
-                    <th>Дохід</th>
+                    <th className='p-2 border border-neutral-200 text-left'>Дата</th>
+                    <th className='p-2 border border-neutral-200 text-left'>Дохід</th>
                   </tr>
                 </thead>
                 <tbody>
                   {worstDays.map((d, i) => (
                     <tr key={i}>
-                      <td>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
-                      <td>{(d.value * 100).toFixed(2)}%</td>
+                      <td className='p-2 border border-neutral-200 text-left'>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
+                      <td className='p-2 border border-neutral-200 text-left'>{(d.value * 100).toFixed(2)}%</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div className="col-4">
+            <div>
               <p className="text-center">
                 <b>Випадкові дні</b>
               </p>
-              <table className="table">
+              <table className="table-auto">
                 <thead>
                   <tr>
-                    <th>Дата</th>
-                    <th>Дохід</th>
+                    <th className='p-2 border border-neutral-200 text-left'>Дата</th>
+                    <th className='p-2 border border-neutral-200 text-left'>Дохід</th>
                   </tr>
                 </thead>
                 <tbody>
                   {randomDays.map((d, i) => (
                     <tr key={i}>
-                      <td>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
-                      <td>{(d.value * 100).toFixed(2)}%</td>
+                      <td className='p-2 border border-neutral-200 text-left'>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
+                      <td className='p-2 border border-neutral-200 text-left'>{(d.value * 100).toFixed(2)}%</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </div>
-          <p>Маючі відповідні дні можемо відфільтрувати та побудувати таблички з:</p>
-          <ul>
-            <li>- щоденна дохідність</li>
-            <li>- щоденна дохідність без найкращих днів</li>
-            <li>- щоденна дохідність без найгірших днів</li>
-            <li>- щоденна дохідність без випадкових днів</li>
+          <p className='mb-3'>Маючі відповідні дні можемо відфільтрувати та побудувати таблички з:</p>
+          <ul className='list-disc list-inside ml-5 my-3'>
+            <li>щоденна дохідність</li>
+            <li>щоденна дохідність без найкращих днів</li>
+            <li>щоденна дохідність без найгірших днів</li>
+            <li>щоденна дохідність без випадкових днів</li>
           </ul>
-          <p>А також їхні кумулятивні дохідності</p>
-          <p>
+          <p className='mb-3'>А також їхні кумулятивні дохідності</p>
+          <p className='mb-3'>
             За для розрахунку кумулятивної дохідності використовуємо формулу: <code>prev*(1+curr)</code>
           </p>
-          <p>Ось приклад розрахунку кумулятивної дохідності:</p>
-          <p className="text-secondary">Примітка: робимо теж саме для табличок без найращих, найгірших та випадкових днів</p>
-          <table className="table">
+          <p className='mb-3'>Ось приклад розрахунку кумулятивної дохідності:</p>
+          <p className="mb-3 text-neutral-500">Примітка: робимо теж саме для табличок без найращих, найгірших та випадкових днів</p>
+          <table className="table-auto">
             <thead>
               <tr>
-                <th>day</th>
-                <th>date</th>
-                <th>price</th>
-                <th>daily returns</th>
-                <th>cumulative returns</th>
+                <th className='p-2 border border-neutral-200 text-left'>day</th>
+                <th className='p-2 border border-neutral-200 text-left'>date</th>
+                <th className='p-2 border border-neutral-200 text-left'>price</th>
+                <th className='p-2 border border-neutral-200 text-left'>daily returns</th>
+                <th className='p-2 border border-neutral-200 text-left'>cumulative returns</th>
               </tr>
             </thead>
             <tbody>
               {cumulativeDailyReturns.slice(0, 5).map((d, i) => (
                 <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
-                  <td>${currency(filtered.find((x) => x.time === d.time)?.value || 0)}</td>
-                  <td>{currency(100 * (dailyReturns.find((x) => x.time === d.time)?.value || 0))}%</td>
-                  <td>{(d.value * 100).toFixed(2)}%</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{i + 1}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>${currency(filtered.find((x) => x.time === d.time)?.value || 0)}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{currency(100 * (dailyReturns.find((x) => x.time === d.time)?.value || 0))}%</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{(d.value * 100).toFixed(2)}%</td>
                 </tr>
               ))}
               <tr>
-                <td colSpan={5}>&hellip;</td>
+                <td className='p-2 border border-neutral-200 text-center' colSpan={5}>&hellip;</td>
               </tr>
               {cumulativeDailyReturns.slice(cumulativeDailyReturns.length - 5).map((d, i) => (
                 <tr key={i}>
-                  <td>{cumulativeDailyReturns.findIndex((x) => x.time === d.time) + 1}</td>
-                  <td>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
-                  <td>${currency(filtered.find((x) => x.time === d.time)?.value || 0)}</td>
-                  <td>{currency(100 * (dailyReturns.find((x) => x.time === d.time)?.value || 0))}%</td>
-                  <td>{(d.value * 100).toFixed(2)}%</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{cumulativeDailyReturns.findIndex((x) => x.time === d.time) + 1}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{new Date(d.time * 1000).toISOString().split('T').shift()}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>${currency(filtered.find((x) => x.time === d.time)?.value || 0)}</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{currency(100 * (dailyReturns.find((x) => x.time === d.time)?.value || 0))}%</td>
+                  <td className='p-2 border border-neutral-200 text-left'>{(d.value * 100).toFixed(2)}%</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+
+
     </main>
   )
 }
