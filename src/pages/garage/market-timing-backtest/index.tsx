@@ -751,44 +751,52 @@ const Page = () => {
   return (
     <main>
       <Header />
-      <div className="container py-5">
-        <h1>Market Timing 💩 Backtest</h1>
-        <p>Мабуть ви вже чули вислів що не є можливим пігадати таймінг для покупки акцій.</p>
-        <p>Але чи так це на справді? Чому тоді все тримають якісь кошти на випадок просадки, щоб дозакупитися, або взагалі нічого не купляють і чекають її.</p>
-        <p>Інші можуть розглядати усілякі показники накшатл SMA, RSI та інші.</p>
-        <p>Дехто взагалі не париться і докуповує акції як зʼявляються кошти, а дехто, робить це раз в квартал чи рік.</p>
-        <p>Власне, у мене була така думка - ось що року, у вересні відбуваються значні коливання, можливо варто взагалі цілий рік відкладати і тільки тоді закупатися 🤔</p>
-        <p>
+
+
+      <div className="container mx-auto my-0 p-4">
+        <h1 className='text-2xl font-bold mb-3'>Market Timing 💩 Backtest</h1>
+        <p className="mb-3">Мабуть ви вже чули вислів що не є можливим пігадати таймінг для покупки акцій.</p>
+        <p className="mb-3">Але чи так це на справді? Чому тоді все тримають якісь кошти на випадок просадки, щоб дозакупитися, або взагалі нічого не купляють і чекають її.</p>
+        <p className="mb-3">Інші можуть розглядати усілякі показники накшатл SMA, RSI та інші.</p>
+        <p className="mb-3">Дехто взагалі не париться і докуповує акції як зʼявляються кошти, а дехто, робить це раз в квартал чи рік.</p>
+        <p className="mb-3">Власне, у мене була така думка - ось що року, у вересні відбуваються значні коливання, можливо варто взагалі цілий рік відкладати і тільки тоді закупатися 🤔</p>
+        <p className="mb-3">
           Справа в тому що тут немає правильної чи не правильної відповіді і все залежить від: акції та періоду часу, тобто якщо мова йде про PEP vs TSLA то будуть мати сенс зовсім різні підходи, тому
           не варто намагатися знайти золоту середину на всі випадки
         </p>
-        <p>
+        <p className="mb-3">
           Тож метою цього тула не є пошут найбіль вигідного способу докуповуватися, а лише намагання підсвітити наскільки такіх підходів може бути багато і як зміна акції чи періоду змінює результати.
         </p>
 
-        <p>Перш за все нам потрібно обрати акцію та період за для симуляції</p>
-        <div className="row gy-2 gx-3 align-items-center">
-          <div className="col-auto">
-            <input type="text" className="form-control" id="ticker" placeholder="ticker like AAPL" value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} />
+        <p className="mb-3">Перш за все нам потрібно обрати акцію та період за для симуляції</p>
+
+
+        <div className="flex gap-4 items-center my-5">
+          <div>
+            <input type="text" className="px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" id="ticker" placeholder="ticker like AAPL" value={ticker} onChange={(e) => setTicker(e.target.value.toUpperCase())} />
           </div>
-          <div className="col-auto">
-            <input type="date" className="form-control" id="period1" placeholder="2020-01-01" value={period1} onChange={(e) => setPeriod1(e.target.valueAsDate!.toISOString().split('T').shift()!)} />
+          <div>
+            <input type="date" className="px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" id="period1" placeholder="2020-01-01" value={period1} onChange={(e) => setPeriod1(e.target.valueAsDate!.toISOString().split('T').shift()!)} />
           </div>
-          <div className="col-auto">
-            <button type="submit" className="btn btn-primary" onClick={submit}>
+          <div>
+            <button type="submit" className="px-4 py-2 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" onClick={submit}>
               submit
             </button>
           </div>
         </div>
+
+
       </div>
-      <div className="container py-5">
-        <h2 className="mb-3">Крок 1: Отримати історичні ціни</h2>
-        <p>
+
+
+      <div className="container mx-auto my-0 p-4">
+        <h2 className="text-2xl font-bold mb-3">Крок 1: Отримати історичні ціни</h2>
+        <p className="mb-3">
           За для подальших розрахунків нам потрібні історичні ціни {ticker} з {period1} по сьогодні
         </p>
-        <p>
+        <p className="mb-3">
           Дістати їх можно з Yahoo Finance ось{' '}
-          <a href={`https://finance.yahoo.com/quote/${ticker}/`} target="_blank">
+          <a className='text-blue-500' href={`https://finance.yahoo.com/quote/${ticker}/`} target="_blank">
             тут
           </a>
           , або в використовуючи ф-ію{' '}
@@ -797,21 +805,23 @@ const Page = () => {
           </code>{' '}
           в Google Sheets
         </p>
+
         <div ref={pricesChart} className="my-5" />
+
         <details>
           <summary>Табличка історичних цін</summary>
-          <table className="table table-sm">
+          <table className="table-auto text-sm my-5">
             <thead>
               <tr>
-                <th className="table-secondary">year</th>
-                <th className="table-secondary">month</th>
-                <th className="table-secondary">week</th>
-                <th>date</th>
-                <th>open</th>
-                <th>high</th>
-                <th>low</th>
-                <th>close</th>
-                <th>volume</th>
+                <th className="p-2 bg-neutral-300">year</th>
+                <th className="p-2 bg-neutral-300">month</th>
+                <th className="p-2 bg-neutral-300">week</th>
+                <th className='p-2'>date</th>
+                <th className='p-2'>open</th>
+                <th className='p-2'>high</th>
+                <th className='p-2'>low</th>
+                <th className='p-2'>close</th>
+                <th className='p-2'>volume</th>
               </tr>
             </thead>
             <tbody>
@@ -832,62 +842,64 @@ const Page = () => {
                     key={price.date.toISOString()}
                     style={{ borderTopWidth: price.nextMonth ? '4px' : price.nextWeek ? '2px' : '1px', borderTopColor: price.nextMonth || price.nextWeek ? 'black' : undefined }}
                   >
-                    <td className="table-light">{price.year}</td>
-                    <td className="table-light">{price.month}</td>
-                    <td className="table-light">{price.week}</td>
-                    <td>{price.date.toISOString().split('T').shift()}</td>
-                    <td>{round(price.open, 2)}</td>
-                    <td>{round(price.high, 2)}</td>
-                    <td>{round(price.low, 2)}</td>
-                    <td>{round(price.close, 2)}</td>
-                    <td>{price.volume}</td>
+                    <td className="p-2 bg-neutral-200">{price.year}</td>
+                    <td className="p-2 bg-neutral-200">{price.month}</td>
+                    <td className="p-2 bg-neutral-200">{price.week}</td>
+                    <td className='p-2'>{price.date.toISOString().split('T').shift()}</td>
+                    <td className='p-2'>{round(price.open, 2)}</td>
+                    <td className='p-2'>{round(price.high, 2)}</td>
+                    <td className='p-2'>{round(price.low, 2)}</td>
+                    <td className='p-2'>{round(price.close, 2)}</td>
+                    <td className='p-2'>{price.volume}</td>
                   </tr>
                 ))}
             </tbody>
           </table>
         </details>
       </div>
-      <div className="container py-5">
-        <h2 className="mb-3">Крок 2: Метрики</h2>
-        <p>За для перевірки гіпотез, маємо розрахувати деякі метрики</p>
-        <p>
+
+
+      <div className="container mx-auto my-0 p-4">
+        <h2 className="text-2xl font-bold mb-3">Крок 2: Метрики</h2>
+        <p className="mb-3">За для перевірки гіпотез, маємо розрахувати деякі метрики</p>
+        <p className="mb-3">
           Metrics are calculated for each day using historic data and used in backtests. There are date related metrics to calulate is it first day of the month, is it monday etc and price related
           metrics like SMA, EMA, RSI, MACD, etc
         </p>
         <details className="mb-3">
           <summary>Табличка з розрахованими метриками</summary>
-          <div className="table-responsive">
-            <table className="table table-sm">
+          <div className="overflow-x-auto my-5">
+            <table className="table-auto text-sm">
               <thead>
                 <tr>
-                  <th className="table-secondary">date</th>
-                  <th className="table-secondary">open</th>
-                  <th className="table-secondary">high</th>
-                  <th className="table-secondary">low</th>
-                  <th className="table-secondary">close</th>
-                  <th className="table-secondary">volume</th>
-                  <th>num</th>
-                  <th>change</th>
-                  <th>sma14</th>
-                  <th>sma20</th>
-                  <th>sma50</th>
-                  <th>sma200</th>
-                  <th>ema50</th>
-                  <th>low20</th>
-                  <th>year</th>
-                  <th>month</th>
-                  <th>monthname</th>
-                  <th>weekday</th>
-                  <th>weekdayname</th>
-                  <th>weeknum</th>
-                  <th>last_monday</th>
-                  <th>last_friday</th>
-                  <th>monthfirsthay</th>
-                  <th>rsi</th>
-                  <th>rsi_ma14</th>
-                  <th>atr</th>
-                  <th>peak</th>
-                  <th>drawdown</th>
+                  <th className="p-2 bg-neutral-300">date</th>
+                  <th className="p-2 bg-neutral-300">open</th>
+                  <th className="p-2 bg-neutral-300">high</th>
+                  <th className="p-2 bg-neutral-300">low</th>
+                  <th className="p-2 bg-neutral-300">close</th>
+                  <th className="p-2 bg-neutral-300">volume</th>
+                  <th className="p-2">num</th>
+                  <th className="p-2">change</th>
+                  <th className="p-2">sma14</th>
+                  <th className="p-2">sma20</th>
+                  <th className="p-2">sma50</th>
+                  <th className="p-2">sma200</th>
+                  <th className="p-2">ema50</th>
+                  <th className="p-2">low20</th>
+                  <th className="p-2">year</th>
+                  <th className="p-2">month</th>
+                  <th className="p-2">monthname</th>
+                  <th className="p-2">weekday</th>
+                  <th className="p-2">weekdayname</th>
+                  <th className="p-2">weeknum</th>
+                  <th className="p-2">last_monday</th>
+                  <th className="p-2">last_friday</th>
+                  <th className="p-2">monthfirsthay</th>
+                  <th className="p-2">rsi</th>
+                  <th className="p-2">rsi_ma14</th>
+                  <th className="p-2">atr</th>
+                  <th className="p-2">peak</th>
+                  <th className="p-2">drawdown</th>
                 </tr>
               </thead>
               <tbody>
@@ -899,86 +911,89 @@ const Page = () => {
                       borderTopColor: row.month !== (arr[idx - 1] || row).month || row.weeknum !== (arr[idx - 1] || row).weeknum ? 'black' : undefined,
                     }}
                   >
-                    <td className="table-light text-nowrap">{row.date.toISOString().split('T').shift()}</td>
-                    <td className="table-light text-nowrap">{round(row.open, 2)}</td>
-                    <td className="table-light text-nowrap">{round(row.high, 2)}</td>
-                    <td className="table-light text-nowrap">{round(row.low, 2)}</td>
-                    <td className="table-light text-nowrap">{round(row.close, 2)}</td>
-                    <td className="table-light text-nowrap">{row.volume}</td>
-                    <td className="text-nowrap">{row.num}</td>
-                    <td className="text-nowrap">{round(row.change, 2)}</td>
-                    <td className="text-nowrap">{round(row.sma14, 2)}</td>
-                    <td className="text-nowrap">{round(row.sma20, 2)}</td>
-                    <td className="text-nowrap">{round(row.sma50, 2)}</td>
-                    <td className="text-nowrap">{round(row.sma200, 2)}</td>
-                    <td className="text-nowrap">{round(row.ema50, 2)}</td>
-                    <td className="text-nowrap">{round(row.low20, 2)}</td>
-                    <td className="text-nowrap">{row.year}</td>
-                    <td className="text-nowrap">{row.month}</td>
-                    <td className="text-nowrap">{row.monthname}</td>
-                    <td className="text-nowrap">{row.weekday}</td>
-                    <td className="text-nowrap">{row.weekdayname}</td>
-                    <td className="text-nowrap">{row.weeknum}</td>
-                    <td className="text-nowrap">{row.last_monday ? 'Y' : ''}</td>
-                    <td className="text-nowrap">{row.last_friday ? 'Y' : ''}</td>
-                    <td className="text-nowrap">{row.monthfirstday ? 'Y' : ''}</td>
-                    <td className="text-nowrap">{round(row.rsi, 2)}</td>
-                    <td className="text-nowrap">{round(row.rsi_ma14, 2)}</td>
-                    <td className="text-nowrap">{round(row.atr, 2)}</td>
-                    <td className="text-nowrap">{round(row.peak, 2)}</td>
-                    <td className="text-nowrap">{round(row.drawdown, 2)}</td>
+                    <td className="p-2 bg-neutral-200 text-nowrap">{row.date.toISOString().split('T').shift()}</td>
+                    <td className="p-2 bg-neutral-200 text-nowrap">{round(row.open, 2)}</td>
+                    <td className="p-2 bg-neutral-200 text-nowrap">{round(row.high, 2)}</td>
+                    <td className="p-2 bg-neutral-200 text-nowrap">{round(row.low, 2)}</td>
+                    <td className="p-2 bg-neutral-200 text-nowrap">{round(row.close, 2)}</td>
+                    <td className="p-2 bg-neutral-200 text-nowrap">{row.volume}</td>
+                    <td className="p-2 text-nowrap">{row.num}</td>
+                    <td className="p-2 text-nowrap">{round(row.change, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.sma14, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.sma20, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.sma50, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.sma200, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.ema50, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.low20, 2)}</td>
+                    <td className="p-2 text-nowrap">{row.year}</td>
+                    <td className="p-2 text-nowrap">{row.month}</td>
+                    <td className="p-2 text-nowrap">{row.monthname}</td>
+                    <td className="p-2 text-nowrap">{row.weekday}</td>
+                    <td className="p-2 text-nowrap">{row.weekdayname}</td>
+                    <td className="p-2 text-nowrap">{row.weeknum}</td>
+                    <td className="p-2 text-nowrap">{row.last_monday ? 'Y' : ''}</td>
+                    <td className="p-2 text-nowrap">{row.last_friday ? 'Y' : ''}</td>
+                    <td className="p-2 text-nowrap">{row.monthfirstday ? 'Y' : ''}</td>
+                    <td className="p-2 text-nowrap">{round(row.rsi, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.rsi_ma14, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.atr, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.peak, 2)}</td>
+                    <td className="p-2 text-nowrap">{round(row.drawdown, 2)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </details>
-        <p className="text-muted">
+        <p className="text-neutral-500">
           Примітка: метрик забагато, тож мабуть не має сенсу описувати кожну, адже це не є метою розрахунку, і завтра тут може зʼявитися ще 100500 метрик за для розрахунку якихось ідей, також тут є
           деякі розрахунки що не є метриками, накшталт факту чи є конретний день першим понеділком місяця - чому ні, це також може бути стратегією дозакупки
         </p>
       </div>
-      <div className="container py-5">
-        <h2 className="mb-3">Крок 3: Симуляція</h2>
-        <p>Ми запускаеємо симуляцію від першого дня і по сьогодні, щомісяца, поповнюємо баланс на $1000, кожна стратегія, щодня, вирішує чи треба купувати чи ні.</p>
-        <p className="text-muted">
+
+
+      <div className="container mx-auto my-0 p-4">
+        <h2 className="text-2xl font-bold mb-3">Крок 3: Симуляція</h2>
+        <p className="mb-3">Ми запускаеємо симуляцію від першого дня і по сьогодні, щомісяца, поповнюємо баланс на $1000, кожна стратегія, щодня, вирішує чи треба купувати чи ні.</p>
+        <p className="text-neutral-500 mb-3">
           Примітка: $1000 тут не важливо, можно хоч $100 хоч $100500 це не змінить суті розрахунку, нам потрібная якась сумма якої вистачатиме на покупку хоча б одної акції, щоб було з чого рахувати
           симуляціі
         </p>
-        <p>Ми купуємо по ціні open, це важливо, адже мало хто з нас купує акції о 22:59 коли ринок ось ось закриється, зазвичай покупаємо посеред дня</p>
-        <p>Нижче наведена табличка результатів для кажної стратегії, якщо підвести курсор до її назви - буде показано опис, нас цікапить остання колонка з результатом - чим він більший тим краще.</p>
-        <p>Також, можно подивитися графік та деталі кожної стратегії клікнувши на відповідне посилання</p>
+        <p className="mb-3">Ми купуємо по ціні open, це важливо, адже мало хто з нас купує акції о 22:59 коли ринок ось ось закриється, зазвичай покупаємо посеред дня</p>
+        <p className="mb-3">Нижче наведена табличка результатів для кажної стратегії, якщо підвести курсор до її назви - буде показано опис, нас цікапить остання колонка з результатом - чим він більший тим краще.</p>
+        <p className="mb-3">Також, можно подивитися графік та деталі кожної стратегії клікнувши на відповідне посилання</p>
+
         <details className="mb-3">
           <summary>Результати симуляцій усіх стратегій</summary>
-          <table className="table table-sm">
+          <table className="table-auto text-sm">
             <thead>
               <tr>
-                <th>name</th>
-                <th>positions</th>
-                <th>orders</th>
-                <th>cash</th>
-                <th>spent</th>
-                <th>value</th>
-                <th>pl</th>
-                <th>change</th>
-                <th></th>
+                <th className="p-2">name</th>
+                <th className="p-2">positions</th>
+                <th className="p-2">orders</th>
+                <th className="p-2">cash</th>
+                <th className="p-2">spent</th>
+                <th className="p-2">value</th>
+                <th className="p-2">pl</th>
+                <th className="p-2">change</th>
+                <th className="p-2"></th>
               </tr>
             </thead>
             <tbody>
               {results.map((result) => (
-                <tr key={result.name}>
-                  <td title={descriptions[result.name]}>{result.name}</td>
-                  <td title="Кількість акцій на прикінці симуляції">{result.positions}</td>
-                  <td title="Кількість покупок">{result.orders}</td>
-                  <td title="Залишок готівки на рахунку">{result.cash}</td>
-                  <td title="Усього витрачено на шоппінг">{result.spent}</td>
-                  <td title="Поточна вартість активів">{result.value}</td>
-                  <td title="Прибуток (чи збиток) на прикінці єксперименту">{result.pl}</td>
-                  <td title="Результат стратегії у відсотках, зеленим та червоним підсвічені пʼять найкращих та найгірших варіантів">
+                <tr className='border-t border-neutral-200' key={result.name}>
+                  <td className="p-2" title={descriptions[result.name]}>{result.name}</td>
+                  <td className="p-2" title="Кількість акцій на прикінці симуляції">{result.positions}</td>
+                  <td className="p-2" title="Кількість покупок">{result.orders}</td>
+                  <td className="p-2" title="Залишок готівки на рахунку">{result.cash}</td>
+                  <td className="p-2" title="Усього витрачено на шоппінг">{result.spent}</td>
+                  <td className="p-2" title="Поточна вартість активів">{result.value}</td>
+                  <td className="p-2" title="Прибуток (чи збиток) на прикінці єксперименту">{result.pl}</td>
+                  <td className="p-2" title="Результат стратегії у відсотках, зеленим та червоним підсвічені пʼять найкращих та найгірших варіантів">
                     <span className={simulationChangeClassName(result.change || 0)}>{result.change}%</span>
                   </td>
-                  <td>
-                    <a href="javascript:void(0)" onClick={() => setSelectedStrategy(result.name)}>
+                  <td className="p-2">
+                    <a className='text-blue-500' href="javascript:void(0)" onClick={() => setSelectedStrategy(result.name)}>
                       показати
                     </a>
                   </td>
@@ -988,40 +1003,42 @@ const Page = () => {
           </table>
         </details>
       </div>
-      <div className="container py-5">
-        <h2 className="mb-3">Крок 4: Результати</h2>
-        <p>
+
+
+      <div className="container mx-auto my-0 p-4">
+        <h2 className="text-2xl font-bold mb-3">Крок 4: Результати</h2>
+        <p className="mb-3">
           Отже найкращими "стратегіями" для {ticker} на проміжку від {period1} і по сьогодні є:
         </p>
-        <table className="table table-sm">
+        <table className="table-auto text-sm my-5">
           <thead>
             <tr>
-              <th>name</th>
-              <th>positions</th>
-              <th>orders</th>
-              <th>cash</th>
-              <th>spent</th>
-              <th>value</th>
-              <th>pl</th>
-              <th>change</th>
-              <th></th>
+              <th className="p-2">name</th>
+              <th className="p-2">positions</th>
+              <th className="p-2">orders</th>
+              <th className="p-2">cash</th>
+              <th className="p-2">spent</th>
+              <th className="p-2">value</th>
+              <th className="p-2">pl</th>
+              <th className="p-2">change</th>
+              <th className="p-2"></th>
             </tr>
           </thead>
           <tbody>
             {topResults.map((result) => (
-              <tr key={result.name}>
-                <td title={descriptions[result.name]}>{result.name}</td>
-                <td title="Кількість акцій на прикінці симуляції">{result.positions}</td>
-                <td title="Кількість покупок">{result.orders}</td>
-                <td title="Залишок готівки на рахунку">{result.cash}</td>
-                <td title="Усього витрачено на шоппінг">{result.spent}</td>
-                <td title="Поточна вартість активів">{result.value}</td>
-                <td title="Прибуток (чи збиток) на прикінці єксперименту">{result.pl}</td>
-                <td title="Результат стратегії у відсотках, зеленим та червоним підсвічені пʼять найкращих та найгірших варіантів">
+              <tr className='border-t border-neutral-200' key={result.name}>
+                <td className="p-2" title={descriptions[result.name]}>{result.name}</td>
+                <td className="p-2" title="Кількість акцій на прикінці симуляції">{result.positions}</td>
+                <td className="p-2" title="Кількість покупок">{result.orders}</td>
+                <td className="p-2" title="Залишок готівки на рахунку">{result.cash}</td>
+                <td className="p-2" title="Усього витрачено на шоппінг">{result.spent}</td>
+                <td className="p-2" title="Поточна вартість активів">{result.value}</td>
+                <td className="p-2" title="Прибуток (чи збиток) на прикінці єксперименту">{result.pl}</td>
+                <td className="p-2" title="Результат стратегії у відсотках, зеленим та червоним підсвічені пʼять найкращих та найгірших варіантів">
                   <span className={simulationChangeClassName(result.change || 0)}>{result.change}%</span>
                 </td>
-                <td>
-                  <a href="javascript:void(0)" onClick={() => setSelectedStrategy(result.name)}>
+                <td className="p-2">
+                  <a className='text-blue-500' href="javascript:void(0)" onClick={() => setSelectedStrategy(result.name)}>
                     показати
                   </a>
                 </td>
@@ -1029,15 +1046,16 @@ const Page = () => {
             ))}
           </tbody>
         </table>
-        {topResults.find((result) => result.name === 'asap') && <p>Зауважте, що варіант "купляти відразу" є в топі</p>}
-        {topResults.find((result) => result.name === 'random') && <p>Цікавий факт, варіант "random" є у топі</p>}
-        <p>Клініть на посилання "показати" поряд з будь якою стратегію щоб переглянути графік та детальний звіт.</p>
+        {topResults.find((result) => result.name === 'asap') && <p className="mb-3">Зауважте, що варіант "купляти відразу" є в топі</p>}
+        {topResults.find((result) => result.name === 'random') && <p className="mb-3">Цікавий факт, варіант "random" є у топі</p>}
+        <p className="mb-3">Клініть на посилання "показати" поряд з будь якою стратегію щоб переглянути графік та детальний звіт.</p>
       </div>
 
+
       {selectedStrategy && (
-        <div className="container py-5">
-          <h2 className="mb-3">{selectedStrategy}</h2>
-          {descriptions[selectedStrategy] && <p>{descriptions[selectedStrategy]}</p>}
+        <div className="container mx-auto my-0 p-4">
+          <h2 className="text-2xl font-bold mb-3">{selectedStrategy}</h2>
+          {descriptions[selectedStrategy] && <p className="mb-3">{descriptions[selectedStrategy]}</p>}
           <div ref={simulationChart} className="my-5" />
           <details>
             <summary>Табличка з подробицями</summary>
@@ -1046,9 +1064,10 @@ const Page = () => {
         </div>
       )}
 
-      <div className="container py-5">
-        <h2 className="mb-3">Крок 5: Висновки</h2>
-        <ol>
+
+      <div className="container mx-auto my-0 p-4">
+        <h2 className="text-2xl font-bold mb-3">Крок 5: Висновки</h2>
+        <ol className="list-decimal list-inside ml-5 my-3">
           <li>Не варто розраховувати що одна й та сама стратегія буде однаково гарно працювати для PEP та TSLA</li>
           <li>Не варто розраховувати що ідеальна учора стратегія буде ідеальною завтра</li>
           <li>Ідеї накшатл - чекати просадки, або цілий рік - варто перевіряти розрахунками - це значно швидше ніж втрачати час</li>
@@ -1062,10 +1081,13 @@ const Page = () => {
         </ol>
       </div>
 
-      <div className="container py-5">
-        <h2 className="mb-3">Крок N: А як щодо варіанту ...</h2>
-        <p>Якщо в тебе є ідеї стратегій які вважаєш за потрібне дослідити - доєднуйся до iTalks і там хлопці допоможуть її свормулювати, перевірити, протестити і можливо добавити сюди</p>
+
+      <div className="container mx-auto my-0 p-4">
+        <h2 className="text-2xl font-bold mb-3">Крок N: А як щодо варіанту ...</h2>
+        <p className="mb-3">Якщо в тебе є ідеї стратегій які вважаєш за потрібне дослідити - доєднуйся до iTalks і там хлопці допоможуть її свормулювати, перевірити, протестити і можливо добавити сюди</p>
       </div>
+
+
     </main>
   )
 }
@@ -1224,44 +1246,44 @@ const Demo = ({ name, data, columns }: { name: string; data: Record<string, unkn
     return value.toString()
   }
   return (
-    <table className="table table-sm">
+    <table className="table-auto text-sm my-5">
       <thead>
         <tr>
-          <th>date</th>
-          <th>open</th>
-          <th>close</th>
+          <th className='p-2'>date</th>
+          <th className='p-2'>open</th>
+          <th className='p-2'>close</th>
           {columns.map((column) => (
-            <th className="table-secondary" key={column}>
+            <th className='p-2' className="bg-neutral-200" key={column}>
               {column}
             </th>
           ))}
-          <th>positions</th>
-          <th>orders</th>
-          <th>cash</th>
-          <th>spent</th>
-          <th>value</th>
-          <th>pl</th>
-          <th>change</th>
+          <th className='p-2'>positions</th>
+          <th className='p-2'>orders</th>
+          <th className='p-2'>cash</th>
+          <th className='p-2'>spent</th>
+          <th className='p-2'>value</th>
+          <th className='p-2'>pl</th>
+          <th className='p-2'>change</th>
         </tr>
       </thead>
       <tbody>
         {data.map((item, idx) => (
-          <tr key={idx}>
-            <td>{(item.date as Date).toISOString().split('T').shift()}</td>
-            <td>{round(item.open as number, 2)}</td>
-            <td>{round(item.close as number, 2)}</td>
+          <tr className='border-t border-neutral-200' key={idx}>
+            <td className="p-2">{(item.date as Date).toISOString().split('T').shift()}</td>
+            <td className="p-2">{round(item.open as number, 2)}</td>
+            <td className="p-2">{round(item.close as number, 2)}</td>
             {columns.map((column) => (
-              <td className="table-light" key={column}>
+              <td className="p-2 bg-neutral-200" key={column}>
                 {stringify(item[column])}
               </td>
             ))}
-            <td>{item[name + '_positions'] as number}</td>
-            <td>{item[name + '_orders'] as number}</td>
-            <td>{round(item[name + '_cash'] as number, 2)}</td>
-            <td>{round(item[name + '_spent'] as number, 2)}</td>
-            <td>{round(item[name + '_value'] as number, 2)}</td>
-            <td>{round(item[name + '_pl'] as number, 2)}</td>
-            <td>{round((item[name + '_change'] as number) * 100, 2)}</td>
+            <td className="p-2">{item[name + '_positions'] as number}</td>
+            <td className="p-2">{item[name + '_orders'] as number}</td>
+            <td className="p-2">{round(item[name + '_cash'] as number, 2)}</td>
+            <td className="p-2">{round(item[name + '_spent'] as number, 2)}</td>
+            <td className="p-2">{round(item[name + '_value'] as number, 2)}</td>
+            <td className="p-2">{round(item[name + '_pl'] as number, 2)}</td>
+            <td className="p-2">{round((item[name + '_change'] as number) * 100, 2)}</td>
 
             {/* positions	orders	cash	spent	value	pl	change */}
           </tr>
