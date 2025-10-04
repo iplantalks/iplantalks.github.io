@@ -3,7 +3,6 @@ import { FC, useState, useEffect, useMemo, useRef } from 'react'
 import type { HeadFC, PageProps } from 'gatsby'
 import { currency, round } from '../utils/formatters'
 import { getExchangeRate, getExhcangeRateHistory } from '../utils/exchange-rate'
-import '../styles/reversal-exchange-rate.css'
 import { getOVDP } from '../utils/privatbank/ovdp'
 import { createChart, LineSeries } from 'lightweight-charts'
 import { rri } from '../utils/rri'
@@ -259,12 +258,12 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
           <tbody id="result" className="table-group-divider">
             {rows.map(({ uah, usd, reverse, year, change, forecast }, idx) => (
               <tr className={`border-t border-neutral-300 ${idx % 2 === 0 ? 'bg-neutral-100' : 'bg-white'}`} key={year}>
-                <td className='p-2 text-red-500'>{currency(uah)}</td>
-                <td className='p-2 text-blue-500'>{currency(usd)}</td>
+                <td className={'p-2 ' + (idx === rows.length - 1 ? ' text-blue-500' : ' text-red-500')}>{currency(uah)}</td>
+                <td className={'p-2 ' + (idx === rows.length - 1 ? ' text-orange-500' : ' text-blue-500')}>{currency(usd)}</td>
                 <td className='p-2'>{currency(reverse)}</td>
                 <td className='p-2'>{year}</td>
                 <td className='p-2'>{currency(change)}</td>
-                <td className='p-2'>{currency(forecast)}</td>
+                <td className={'p-2' + (idx === rows.length - 1 ? ' text-green-500' : '')}>{currency(forecast)}</td>
               </tr>
             ))}
           </tbody>
