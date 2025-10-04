@@ -1,3 +1,4 @@
+import { Heart, LoaderCircle } from 'lucide-react'
 import * as React from 'react'
 import { useState } from 'react'
 
@@ -51,16 +52,16 @@ export const Like = ({
 
   if (loading) {
     return (
-      <small>
-        {likes}
-        <i className="fa-solid fa-spinner ms-1" />
-      </small>
+      <span className='flex gap-1 text-nowrap items-center'>
+        <span>{likes}</span>
+        <LoaderCircle size={14} className='text-neutral-500' />
+      </span>
     )
   }
   return (
-    <span role="button" style={{ whiteSpace: 'nowrap', opacity: likes > 0 ? 1 : 0.5 }} onClick={handleLike}>
-      {likes}
-      <i className={likes > 0 ? 'fa-solid fa-heart text-danger ms-1 fs-4 align-middle' : 'fa-solid fa-heart text-secondary ms-1 fs-4 align-middle'} />
+    <span className='flex gap-1 text-nowrap items-center group' role="button" style={{ opacity: likes > 0 ? 1 : 0.5 }} onClick={handleLike}>
+      <span>{likes}</span>
+      <Heart size={14} className={likes > 0 ? 'fill-red-500 text-red-500 group-hover:scale-105' : 'fill-neutral-500 text-neutral-500 group-hover:scale-105'} />
     </span>
   )
 }

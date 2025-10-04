@@ -57,9 +57,9 @@ export function useBanks() {
 export const VendorLogo = ({ vendor }: { vendor: string }) => {
   switch (vendor) {
     case 'Visa':
-      return <img title="Visa" alt="Visa" src={visa} width="30" />
+      return <img className='inline-block' title="Visa" alt="Visa" src={visa} width="30" />
     case 'MasterCard':
-      return <img title="MasterCard" alt="MasterCard" src={mastercard} width="30" />
+      return <img className='inline-block' title="MasterCard" alt="MasterCard" src={mastercard} width="30" />
     default:
       return null
   }

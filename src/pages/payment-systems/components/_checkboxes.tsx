@@ -4,11 +4,11 @@ import { useId, useState, useRef, useEffect } from 'react'
 export const Checkboxes = ({ names, checkboxes, onChange }: { names: string[]; checkboxes: Record<string, boolean>; onChange: (name: string) => void }) => {
   const id = useId()
   return (
-    <div>
+    <div className='flex flex-col gap-1'>
       {names.map((name) => (
-        <div className="form-check form-check-inline" key={`bank-checkbox-${id}-${name}`}>
-          <input className="form-check-input" type="checkbox" id={`bank-checkbox-${id}-${name}`} checked={!checkboxes[name]} onChange={() => onChange(name)} />
-          <label className="form-check-label" htmlFor={`bank-checkbox-${id}-${name}`}>
+        <div className="flex gap-2" key={`bank-checkbox-${id}-${name}`}>
+          <input type="checkbox" id={`bank-checkbox-${id}-${name}`} checked={!checkboxes[name]} onChange={() => onChange(name)} />
+          <label htmlFor={`bank-checkbox-${id}-${name}`}>
             {name}
           </label>
         </div>
@@ -20,11 +20,11 @@ export const Checkboxes = ({ names, checkboxes, onChange }: { names: string[]; c
 export const Checkboxes2 = ({ names, checkboxes, onChange }: { names: string[]; checkboxes: Record<string, boolean>; onChange: (name: string) => void }) => {
   const id = useId()
   return (
-    <div>
+    <div className='flex flex-col gap-1'>
       {names.map((name) => (
-        <div className="form-check" key={`bank-checkbox-${id}-${name}`}>
-          <input className="form-check-input" type="checkbox" id={`bank-checkbox-${id}-${name}`} checked={!checkboxes[name]} onChange={() => onChange(name)} />
-          <label className="form-check-label" htmlFor={`bank-checkbox-${id}-${name}`}>
+        <div className="flex gap-2" key={`bank-checkbox-${id}-${name}`}>
+          <input type="checkbox" id={`bank-checkbox-${id}-${name}`} checked={!checkboxes[name]} onChange={() => onChange(name)} />
+          <label htmlFor={`bank-checkbox-${id}-${name}`}>
             {name}
           </label>
         </div>
@@ -112,7 +112,7 @@ export const CheckboxesBankServicePivot = ({
       <div>
         <i className="fa-regular fa-square-check me-2" />
         За для зручності вибору, скористайтеся{' '}
-        <a onClick={() => { if (typeof gtag === 'function') {gtag('event','toggle_payments_pivot')} setCollapsed(!collapsed)}} className="link-primary">
+        <a onClick={() => { if (typeof gtag === 'function') { gtag('event', 'toggle_payments_pivot') } setCollapsed(!collapsed) }} className="link-primary">
           зведеною табличкою
         </a>
       </div>

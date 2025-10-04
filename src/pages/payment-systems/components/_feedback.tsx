@@ -32,31 +32,32 @@ export const Feedback = () => {
   }
 
   return (
-    <div className="text-bg-primary">
-      <div className="container py-5">
-        <h2>Маєте що додати?</h2>
-        <p>Звісно, неможливо повністю передбачити або перевірити всі можливі варіанти.</p>
-        <p>Тому якщо у вас є додаткові пропозиції або коментарі, будь ласка, використайте наступну форму для зворотного зв'язку:</p>
-        <form className="row g-3 my-3" onSubmit={submit}>
-          <div className="col-12">
-            <label htmlFor="inputComment" className="form-label">
-              Коментар <b className="text-danger">*</b>
+    <div className="bg-sky-700 text-white">
+      <div className="container mx-auto my-0 p-4 py-8">
+        <h2 className='text-2xl font-bold mb-3'>Маєте що додати?</h2>
+        <p className='mb-3'>Звісно, неможливо повністю передбачити або перевірити всі можливі варіанти.</p>
+        <p className='mb-3'>Тому якщо у вас є додаткові пропозиції або коментарі, будь ласка, використайте наступну форму для зворотного зв'язку:</p>
+        <form className="my-3" onSubmit={submit}>
+          <div>
+            <label htmlFor="inputComment" className="block mb-2">
+              Коментар <b className="text-red-500">*</b>
             </label>
-            <textarea className="form-control" id="inputComment" rows={4} required={true} value={comment} onChange={(e) => setComment(e.target.value)} />
+            <textarea className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" id="inputComment" rows={4} required={true} value={comment} onChange={(e) => setComment(e.target.value)} />
           </div>
-          <div className="col-12">
-            {message && !error && <div className="alert alert-success mb-0">{message}</div>}
-            {error && <div className="alert alert-warning mb-0">{error}</div>}
+          <div>
+            {message && !error && <div className="bg-green-100 p-4 mt-5 text-black">{message}</div>}
+            {error && <div className="bg-red-100 p-4 mt-5 text-black">{error}</div>}
             {!message && !error && (
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="mt-5 px-4 py-2 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                 Відправити
               </button>
             )}
           </div>
         </form>
-        <p>Про всяк випадок залиште якийсь контакт за яким можна буде звʼязатися за для уточнення деталей.</p>
-        <p>Або ще краще, <a href="https://cutt.ly/2e460oFu" target="_blank">доєднуйтесь до спільноти</a>, де ви зможете поділитися своїми знахідками з однодумцями не дочикуючись поки ми виправимо помилку або додамо новий маршрут.</p>
+        <p className='mb-3'>Про всяк випадок залиште якийсь контакт за яким можна буде звʼязатися за для уточнення деталей.</p>
+        <p className='mb-3'>Або ще краще, <a className='text-blue-500' href="https://cutt.ly/2e460oFu" target="_blank">доєднуйтесь до спільноти</a>, де ви зможете поділитися своїми знахідками з однодумцями не дочикуючись поки ми виправимо помилку або додамо новий маршрут.</p>
         <iframe
+          className='mt-5 aspect-video'
           width="560"
           height="315"
           src="https://www.youtube.com/embed/k4wp01K0q-A?si=oiAmUK70LdqvMpIa"
