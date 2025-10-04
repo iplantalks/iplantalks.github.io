@@ -14,6 +14,7 @@ import { ChartData, ChartEvent, ChartOptions } from 'chart.js/auto'
 import { useAuth } from '../../../context/auth'
 import { TradingViewDataItem, useTradingView } from '../../../utils/tradingview/tradingview'
 import { YahooChartRow, queryChart } from '../../../utils/yahoo'
+import { ArrowDown, ArrowUp } from 'lucide-react'
 
 function color_green(value: number) {
   if (value < 2) {
@@ -129,11 +130,11 @@ const TableRow = ({ country, gdp, ir }: { country: string; gdp: TradingViewDataI
 
   const gdp_curr = gdp[gdp.length - 1].close
   const gdp_prev = gdp[gdp.length - 2].close
-  const gdp_color = gdp_curr < 2 ? 'text-danger' : gdp_curr > 4 ? 'text-success' : ''
+  const gdp_color = gdp_curr < 2 ? 'text-red-500' : gdp_curr > 4 ? 'text-green-500' : ''
 
   const id_curr = ir[ir.length - 1].close
   const id_prev = ir[ir.length - 2].close
-  const id_color = id_curr < 2 ? 'text-success' : id_curr > 4 ? 'text-danger' : ''
+  const id_color = id_curr < 2 ? 'text-green-500' : id_curr > 4 ? 'text-red-500' : ''
 
   const inflation_rises = id_curr > id_prev
   const inflation_falls = id_curr < id_prev
@@ -141,42 +142,42 @@ const TableRow = ({ country, gdp, ir }: { country: string; gdp: TradingViewDataI
   const growth_weaknens = gdp_curr < gdp_prev
 
   let phase = 'unknown'
-  let phase_color = 'text-secondary'
+  let phase_color = 'text-neutral-500'
 
   if (growth_recovers && inflation_falls) {
     phase = 'Recovery'
-    phase_color = 'text-success'
+    phase_color = 'text-green-500'
   } else if (inflation_rises && growth_recovers) {
     phase = 'Overheat'
-    phase_color = 'text-danger'
+    phase_color = 'text-red-500'
   } else if (growth_weaknens && inflation_rises) {
     phase = 'Stagflation'
-    phase_color = 'text-warning'
+    phase_color = 'text-orange-500'
   } else if (inflation_falls && growth_weaknens) {
     phase = 'Reflation'
-    phase_color = 'text-info'
+    phase_color = 'text-blue-500'
   }
 
   return (
-    <tr>
-      <td>
+    <tr className='border-t border-neutral-200'>
+      <td className='p-2'>
         <img src={'https://s3-symbol-logo.tradingview.com/country/' + country + '.svg'} alt={country} title={country} className="rounded-circle" />
       </td>
-      <td>
-        {gdp_curr > gdp_prev && <i className="fa-solid fa-arrow-up me-2 text-success" />}
-        {gdp_curr < gdp_prev && <i className="fa-solid fa-arrow-down me-2 text-danger" />}
-        <a className="text-decoration-none" style={{ color: 'inherit' }} href={`https://www.tradingview.com/symbols/ECONOMICS-${country}GDPYY/`} target="_blank">
+      <td className='p-2'>
+        {gdp_curr > gdp_prev && <ArrowUp className='text-green-500 mr-2 inline-block' />}
+        {gdp_curr < gdp_prev && <ArrowDown className='text-red-500 mr-2 inline-block' />}
+        <a className="no-underline text-black" href={`https://www.tradingview.com/symbols/ECONOMICS-${country}GDPYY/`} target="_blank">
           <span className={gdp_color}>{gdp_curr}%</span>
         </a>
       </td>
-      <td>
-        {id_curr > id_prev && <i className="fa-solid fa-arrow-up me-2 text-success" />}
-        {id_curr < id_prev && <i className="fa-solid fa-arrow-down me-2 text-danger" />}
-        <a className="text-decoration-none" style={{ color: 'inherit' }} href={`https://www.tradingview.com/symbols/ECONOMICS-${country}IRYY/`} target="_blank">
+      <td className='p-2'>
+        {id_curr > id_prev && <ArrowUp className='text-green-500 mr-2 inline-block' />}
+        {id_curr < id_prev && <ArrowDown className='text-red-500 mr-2 inline-block' />}
+        <a className="no-underline text-black" href={`https://www.tradingview.com/symbols/ECONOMICS-${country}IRYY/`} target="_blank">
           <span className={id_color}>{id_curr}%</span>
         </a>
       </td>
-      <td>
+      <td className='p-2'>
         <span className={phase_color}>{phase}</span>
       </td>
     </tr>
@@ -269,29 +270,27 @@ const InvestingClock = () => {
   return (
     <main>
       <Header />
-      <div className="container py-5">
-        <h1>Investing Clock</h1>
+      <div className="container mx-auto my-0 p-4">
+        <h1 className='text-2xl font-bold mb-4'>Investing Clock</h1>
 
-        <p>TODO: опис що воно таке та як працює</p>
-
-        <table className="table text-center">
+        <table className="table-auto w-full border-collapse text-center my-5">
           <thead>
             <tr>
-              <th className="fw-normal"></th>
-              <th className="fw-normal px-2">
+              <th className="p-2 font-normal"></th>
+              <th className="p-2 font-normal">
                 ВВП
                 <br />
-                <small className="text-secondary">GDP Growth</small>
+                <small className="text-neutral-500">GDP Growth</small>
               </th>
-              <th className="fw-normal">
+              <th className="p-2 font-normal">
                 Інфляція
                 <br />
-                <small className="text-secondary">Inflation Rate</small>
+                <small className="text-neutral-500">Inflation Rate</small>
               </th>
-              <th className="fw-normal">
+              <th className="p-2 font-normal">
                 Фаза
                 <br />
-                <small className="text-secondary">Investment Clock</small>
+                <small className="text-neutral-500">Investment Clock</small>
               </th>
             </tr>
           </thead>
@@ -305,18 +304,18 @@ const InvestingClock = () => {
 
         <details>
           <summary>Примітки</summary>
-          <ul>
+          <ul className='list-disc list-inside ml-5'>
             <li>
-              стрілочками <i className="fa-solid fa-arrow-up" /> та <i className="fa-solid fa-arrow-down" /> відмічається як змінився показник відносно попереднього періода
+              стрілочками <ArrowUp className="inline-block" /> та <ArrowDown className="inline-block" /> відмічається як змінився показник відносно попереднього періода
             </li>
             <li>вважається що значення у проміжку 2..4 відсотка є нормальними, значення вище та нижче помічаються червоним та зеленим кольором</li>
             <li>
-              фаза вираховується відносно зміни показнику, наприклад ВВП <i className="fa-solid fa-arrow-down" />, а інфляція <i className="fa-solid fa-arrow-up" /> - Stagflation, і також відмічається
+              фаза вираховується відносно зміни показнику, наприклад ВВП <ArrowDown className="inline-block" /> , а інфляція <ArrowUp className="inline-block" /> - Stagflation, і також відмічається
               кольором
             </li>
             <li>
               джерело даних -{' '}
-              <a href="https://www.tradingview.com/markets/world-economy/indicators/" target="_blank">
+              <a className='text-blue-500' href="https://www.tradingview.com/markets/world-economy/indicators/" target="_blank">
                 TradingView
               </a>
             </li>
@@ -324,13 +323,13 @@ const InvestingClock = () => {
           </ul>
         </details>
 
-        <h2 className="mt-5">
-          <img src="https://s3-symbol-logo.tradingview.com/country/US.svg" alt="US" title="US" className="rounded-circle me-2" width="24" height="24" style={{ verticalAlign: 'baseline' }} /> United
-          States <span className="text-secondary">YoY</span>
+        <h2 className="text-2xl font-bold my-5 flex items-center gap-2">
+          <img src="https://s3-symbol-logo.tradingview.com/country/US.svg" alt="US" title="US" className="rounded-full" width="24" height="24" style={{ verticalAlign: 'baseline' }} /> United
+          States <span className="text-neutral-500">YoY</span>
         </h2>
 
-        <div className="d-flex justify-content-between align-items-center">
-          <div className="flex-grow-1 pe-5">
+        <div className="grid grid-cols-2 gap-4 my-5">
+          <div>
             <Chart
               ref={ref}
               type="bar"
@@ -394,7 +393,7 @@ const InvestingClock = () => {
 
         <details>
           <summary>Примітки</summary>
-          <ul>
+          <ul className='list-disc list-inside ml-5'>
             <li>USGDPYY - ВВП</li>
             <li>USIRYY - інфляція</li>
             <li>Значення ВВП оновлюється щоквартала</li>
@@ -406,7 +405,7 @@ const InvestingClock = () => {
           </ul>
         </details>
 
-        <p>TODO: ідея в тому щоб подивитися як у період {q} вели себе різні види активів</p>
+        <p className='mt-10'>ідея в тому щоб подивитися як у період {q} вели себе різні види активів</p>
         <div>
           {demo && (
             <Chart
@@ -434,42 +433,42 @@ const InvestingClock = () => {
           )}
         </div>
 
-        <p>TODO: потрібно розібратися з індексами</p>
+        <p className='mt-10'>TODO: потрібно розібратися з індексами</p>
 
-        <h2>Індекси</h2>
-        <ul>
+        <h2 className='text-2xl font-bold my-5'>Індекси</h2>
+        <ul className='list-disc list-inside ml-5'>
           <li>NDX - recovery</li>
           <li>SPGSCI - overheat</li>
           <li>IRX - stagflation</li>
           <li>AGG - reflation</li>
         </ul>
 
-        <h2>Індекси</h2>
+        <h2 className='text-2xl font-bold my-5'>Індекси</h2>
         <p>
           Закалом виділяють 11 секторів єкономіки, по кожному з них є свої індекси, які ми і будемо використовувати за для розрахунків. Також, окремо, виділимо TLT як репрезентативний індекс
           облігацій.
         </p>
-        <ul>
+        <ul className='list-disc list-inside ml-5'>
           <li>
             <b>Overheat</b> - cyclical value, commodities
-            <ul>
+            <ul className='list-disc list-inside ml-5'>
               <li>
                 Materials Sector (
-                <a href="https://finance.yahoo.com/quote/XLB/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLB/" target="_blank">
                   XLB
                 </a>
                 )
               </li>
               <li>
                 Energy Sector (
-                <a href="https://finance.yahoo.com/quote/XLE/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLE/" target="_blank">
                   XLE
                 </a>
                 )
               </li>
               <li>
                 Industrials Sector (
-                <a href="https://finance.yahoo.com/quote/XLI/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLI/" target="_blank">
                   XLI
                 </a>
                 )
@@ -478,24 +477,24 @@ const InvestingClock = () => {
           </li>
           <li>
             <b>Stagflation</b> - defensive value, cash
-            <ul>
+            <ul className='list-disc list-inside ml-5'>
               <li>
                 Utilities Sector (
-                <a href="https://finance.yahoo.com/quote/XLU/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLU/" target="_blank">
                   XLU
                 </a>
                 )
               </li>
               <li>
                 Consumer Staples Sector (
-                <a href="https://finance.yahoo.com/quote/XLP/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLP/" target="_blank">
                   XLP
                 </a>
                 )
               </li>
               <li>
                 Health Care Sector (
-                <a href="https://finance.yahoo.com/quote/XLV/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLV/" target="_blank">
                   XLV
                 </a>
                 )
@@ -504,24 +503,24 @@ const InvestingClock = () => {
           </li>
           <li>
             <b>Reflation</b> - defensive growth, bonds
-            <ul>
+            <ul className='list-disc list-inside ml-5'>
               <li>
                 Technology Sector (
-                <a href="https://finance.yahoo.com/quote/XLK/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLK/" target="_blank">
                   XLK
                 </a>
                 )
               </li>
               <li>
                 Communication Service Sector (
-                <a href="https://finance.yahoo.com/quote/XLC/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLC/" target="_blank">
                   XLC
                 </a>
                 )
               </li>
               <li>
                 Treasury Bonds (
-                <a href="https://finance.yahoo.com/quote/TLT/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/TLT/" target="_blank">
                   TLT
                 </a>
                 )
@@ -530,24 +529,24 @@ const InvestingClock = () => {
           </li>
           <li>
             <b>Recovery</b> - cyclical value, stocks
-            <ul>
+            <ul className='list-disc list-inside ml-5'>
               <li>
                 Financials Sector (
-                <a href="https://finance.yahoo.com/quote/XLF/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLF/" target="_blank">
                   XLF
                 </a>
                 )
               </li>
               <li>
                 Consumer Discretionary Sector (
-                <a href="https://finance.yahoo.com/quote/XLY/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLY/" target="_blank">
                   XLY
                 </a>
                 )
               </li>
               <li>
                 Industrials Sector (
-                <a href="https://finance.yahoo.com/quote/XLI/" target="_blank">
+                <a className='text-blue-500' href="https://finance.yahoo.com/quote/XLI/" target="_blank">
                   XLI
                 </a>
                 )
@@ -556,8 +555,8 @@ const InvestingClock = () => {
           </li>
         </ul>
 
-        <h2>Індекси</h2>
-        <ul>
+        <h2 className='text-2xl font-bold my-5'>Індекси</h2>
+        <ul className='list-disc list-inside ml-5'>
           <li>VT - stocks</li>
           <li>GLAG - bonds</li>
           <li>SHV - cash</li>
