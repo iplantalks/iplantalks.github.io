@@ -716,6 +716,7 @@ const Page = () => {
           color: 'blue',
           text: 'deposit',
           size: 2,
+          price: data[i].low as number,
         })
       }
       if (data[i][selectedStrategy + '_buy']) {
@@ -726,6 +727,7 @@ const Page = () => {
           color: 'red',
           text: 'buy',
           size: 2,
+          price: data[i].high as number,
         })
       }
     }
