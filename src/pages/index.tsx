@@ -107,7 +107,7 @@ const IndexPage: React.FC<PageProps> = () => {
               <div>
                 <h3 className="fs-2 text-body-emphasis">Investing Clock</h3>
                 <p>Фаза ринку у якій ми знаходимося.</p>
-                <Link to="/garage/investing-clock" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/garage/investing-clock/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
@@ -117,7 +117,7 @@ const IndexPage: React.FC<PageProps> = () => {
               <div>
                 <h3 className="fs-2 text-body-emphasis">Flip the Coin</h3>
                 <p>Гра у підкидання монетки.</p>
-                <Link to="/garage/flip-the-coin" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/garage/flip-the-coin/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
@@ -127,7 +127,7 @@ const IndexPage: React.FC<PageProps> = () => {
               <div>
                 <h3 className="fs-2 text-body-emphasis">Ten Days</h3>
                 <p>Що буде якщо пропустити 10 найкращих днів.</p>
-                <Link to="/garage/ten-days" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/garage/ten-days/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
@@ -137,27 +137,27 @@ const IndexPage: React.FC<PageProps> = () => {
               <div>
                 <h3 className="fs-2 text-body-emphasis">Allocator</h3>
                 <p>Як саме аллокація впливає на дохідність портфелю.</p>
-                <Link to="/garage/allocator" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/garage/allocator/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
             </div>
-            {/* <div className="col d-flex align-items-start position-relative">
+            <div className="col d-flex align-items-start position-relative">
               <i className="fa-solid fa-soap flex-shrink-0 me-3 fs-1 text-secondary"></i>
               <div>
                 <h3 className="fs-2 text-body-emphasis">Bubble</h3>
                 <p>Бульбашковий аніліз мультиплікативних індикаторів.</p>
-                <Link to="/garage/bubble" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/garage/bubble/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
-            </div> */}
+            </div>
             <div className="col d-flex align-items-start position-relative">
               <i className="fa-solid fa-poo flex-shrink-0 me-3 fs-1 text-secondary"></i>
               <div>
                 <h3 className="fs-2 text-body-emphasis">Market Timing</h3>
                 <p>Перевіряєми чи взагалі є сенс паритися</p>
-                <Link to="/garage/market-timing-backtest" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/garage/market-timing-backtest/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
@@ -167,7 +167,7 @@ const IndexPage: React.FC<PageProps> = () => {
               <div>
                 <h3 className="fs-2 text-body-emphasis">Flex Viewer</h3>
                 <p>Переглядяч Flex звітів</p>
-                <Link to="/garage/flex/viewer" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/garage/flex/viewer/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
@@ -177,7 +177,7 @@ const IndexPage: React.FC<PageProps> = () => {
               <div>
                 <h3 className="fs-2 text-body-emphasis">UA Market</h3>
                 <p>Гривня через 20 років або Прибуткові ігри</p>
-                <Link to="/ua" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/ua/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
@@ -187,7 +187,7 @@ const IndexPage: React.FC<PageProps> = () => {
               <div>
                 <h3 className="fs-2 text-body-emphasis">Monte Carlo</h3>
                 <p>Ворожіння на цифрах</p>
-                <Link to="/garage/monte-carlo" className="position-absolute bottom-0 btn btn-primary">
+                <Link to="/garage/monte-carlo/" className="position-absolute bottom-0 btn btn-primary">
                   Відкрити
                 </Link>
               </div>
