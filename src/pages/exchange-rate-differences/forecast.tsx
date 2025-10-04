@@ -25,12 +25,12 @@ interface Row {
 }
 
 const Forecast = () => {
-  const { user } = useAuth()
-  useEffect(() => {
-    if (user === null) {
-      navigate('/login?redirect=' + window.location.pathname)
-    }
-  }, [user])
+  // const { user } = useAuth()
+  // useEffect(() => {
+  //   if (user === null) {
+  //     navigate('/login?redirect=' + window.location.pathname)
+  //   }
+  // }, [user])
 
   const chartRef = useRef<HTMLCanvasElement>(null)
   const returnsChartRef = useRef<HTMLCanvasElement>(null)

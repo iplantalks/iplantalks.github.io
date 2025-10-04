@@ -36,12 +36,12 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) =>
 }
 
 const Ovdp: React.FC<PageProps> = () => {
-  const { user } = useAuth()
-  useEffect(() => {
-    if (user === null) {
-      navigate('/login?redirect=' + window.location.pathname)
-    }
-  }, [user])
+  // const { user } = useAuth()
+  // useEffect(() => {
+  //   if (user === null) {
+  //     navigate('/login?redirect=' + window.location.pathname)
+  //   }
+  // }, [user])
 
   const ovdp = useOvdp()
   const deposits = useDeposits()

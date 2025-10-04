@@ -18,12 +18,12 @@ function guardNaN(value: number, fallback = 0): number {
 }
 
 const Zero = () => {
-  const { user } = useAuth()
-  useEffect(() => {
-    if (user === null) {
-      navigate('/login?redirect=' + window.location.pathname)
-    }
-  }, [user])
+  // const { user } = useAuth()
+  // useEffect(() => {
+  //   if (user === null) {
+  //     navigate('/login?redirect=' + window.location.pathname)
+  //   }
+  // }, [user])
 
   const tax = 23 //19.5
   const [symbol, setSymbol] = useState('AAPL')
