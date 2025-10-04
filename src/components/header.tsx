@@ -2,7 +2,7 @@ import * as React from 'react'
 import logo from '../images/logo.svg'
 import { Link } from 'gatsby'
 import { createElement } from 'react'
-import { Banknote, Bubbles, CalendarCheck, CalendarX, ChartPie, ChartSpline, Clock, Coins, FileUp, Infinity, LucideProps, Magnet, Microscope, PiggyBank, Utensils, Watch } from 'lucide-react'
+import { Banknote, Bubbles, CalendarCheck, CalendarX, ChartPie, ChartSpline, ChevronDown, Clock, Coins, FileUp, Infinity, LucideProps, Magnet, Microscope, PiggyBank, Utensils, Watch } from 'lucide-react'
 
 export const Header = () => (
   <header className="bg-sky-500 text-white">
@@ -23,9 +23,9 @@ export const Header = () => (
             Послуги
           </a>
           <div className="relative group">
-            <a className="text-white hover:opacity-75 uppercase" href="#">
+            <a className="text-white hover:opacity-75 uppercase flex gap-2" href="#">
               <span>Інструменти</span>
-              <i className="fa-solid fa-chevron-down ms-2" />
+              <ChevronDown />
             </a>
             <div className='absolute left-0 top-full hidden group-hover:block bg-white shadow-lg z-10 min-w-[300px]'>
               <div className='py-2'>

@@ -9,7 +9,7 @@ const Join = () => (
         <div className="flex-1">
           <img width="120" src={logo} />
           <h1 className="text-3xl font-bold mt-2">iPlan Talks</h1>
-          <p className="text-2xl">Отримуй цінний досвід планерів iPlan.ua</p>
+          <p className="text-2xl my-3">Отримуй цінний досвід планерів iPlan.ua</p>
           <p>
             <a className="inline-block border border-white text-white text-lg px-6 py-2 rounded hover:bg-white hover:!text-black transition font-semibold" href="https://cutt.ly/2e460oFu" target="_blank">
               Дізнатись більше

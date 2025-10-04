@@ -170,7 +170,7 @@ export const Head: HeadFC = () => (
 )
 
 function Block({ to, title, description, icon }: { to: string, title: string, description: string, icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>> }) {
-  return <Link to={to} className='flex gap-3 items-start border border-neutral-200 rounded px-3 py-4 hover:shadow hover:border-neutral-300 group'>
+  return <Link to={to} className='flex gap-3 items-start border border-neutral-200 rounded p-4 hover:shadow hover:border-neutral-300 group'>
     {createElement(icon, { className: 'w-14 h-14 transition-transform text-neutral-500 group-hover:!text-blue-500 group-hover:scale-105' })}
     <div>
       <h3 className='text-lg font-semibold mb-1 text-black group-hover:!text-blue-500'>{title}</h3>
