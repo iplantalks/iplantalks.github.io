@@ -14,6 +14,7 @@ export interface PaymentSystem {
 }
 
 export function usePaymentSystems() {
+  if (typeof window === 'undefined') { return [] }
   return useGoogleSheet('Платіжки!A2:Z').map(
     (row, i): PaymentSystem => ({
       key: 'p' + i,

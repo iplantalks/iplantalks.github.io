@@ -35,6 +35,7 @@ export interface Bank {
 }
 
 export function useBanks() {
+  if (typeof window === 'undefined') { return [] }
   return useGoogleSheet('Банки!A2:Z').map(
     (row, i): Bank => ({
       key: 'b' + i,

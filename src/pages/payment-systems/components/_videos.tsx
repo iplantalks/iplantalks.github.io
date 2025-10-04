@@ -8,6 +8,7 @@ export interface VideoLink {
 }
 
 export function useVideoLinks() {
+  if (typeof window === 'undefined') { return [] }
   return useGoogleSheet('Videos!A2:Z').map(
     (row): VideoLink => ({
       name: row[0],

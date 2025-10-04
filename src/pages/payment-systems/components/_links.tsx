@@ -11,6 +11,7 @@ export interface SheetLink {
 }
 
 export function useBankLinks() {
+  if (typeof window === 'undefined') { return [] }
   const links = useGoogleSheet('BankLinks!A2:Z')
     .map(
       (row): SheetLink => ({
@@ -28,6 +29,7 @@ export function useBankLinks() {
 }
 
 export function usePaymentSystemLinks() {
+  if (typeof window === 'undefined') { return [] }
   const links = useGoogleSheet('PaymentsLinks!A2:Z')
     .map(
       (row): SheetLink => ({
