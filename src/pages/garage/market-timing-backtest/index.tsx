@@ -5,7 +5,7 @@ import '../../../styles/common.css'
 import { Header } from '../../../components/header'
 import { queryChart, YahooChartRow } from '../../../utils/yahoo'
 import { round } from '../../../utils/formatters'
-import { createChart, SeriesMarkerPosition, SeriesMarkerShape } from 'lightweight-charts'
+import { CandlestickSeries, createChart, createSeriesMarkers, HistogramSeries, SeriesMarker, SeriesMarkerPosition, SeriesMarkerShape, Time } from 'lightweight-charts'
 
 function getWeekNumberWithinMonth(date: Date): number {
   // Get the date at the start of the month
@@ -399,7 +399,7 @@ const Page = () => {
       // },
     })
 
-    const candles = chart.addCandlestickSeries()
+    const candles = chart.addSeries(CandlestickSeries)
     candles.setData(
       prices.map((item) => {
         return {
@@ -411,7 +411,7 @@ const Page = () => {
         }
       })
     )
-    const volume = chart.addHistogramSeries({
+    const volume = chart.addSeries(HistogramSeries, {
       priceFormat: {
         type: 'volume',
       },
@@ -675,7 +675,7 @@ const Page = () => {
       width: simulationChart.current.clientWidth,
       height: Math.floor(simulationChart.current.clientWidth / 3),
     })
-    const candles = chart.addCandlestickSeries()
+    const candles = chart.addSeries(CandlestickSeries)
     candles.setData(
       prices.map((item) => {
         return {
@@ -687,7 +687,7 @@ const Page = () => {
         }
       })
     )
-    const volume = chart.addHistogramSeries({
+    const volume = chart.addSeries(HistogramSeries, {
       priceFormat: {
         type: 'volume',
       },
@@ -720,7 +720,7 @@ const Page = () => {
       }
       if (data[i][selectedStrategy + '_buy']) {
         markers.push({
-          time: (data[i].date as Date).toISOString().split('T').shift()!,
+          time: (data[i].date as Date).toISOString().split('T').shift()! as Time,
           position: 'aboveBar' as SeriesMarkerPosition,
           shape: 'arrowDown' as SeriesMarkerShape,
           color: 'red',
@@ -729,7 +729,7 @@ const Page = () => {
         })
       }
     }
-    candles.setMarkers(markers)
+    createSeriesMarkers(candles, markers)
     // chart.timeScale().fitContent()
     return () => {
       chart.remove()

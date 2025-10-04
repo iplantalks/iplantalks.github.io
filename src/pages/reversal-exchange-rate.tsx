@@ -6,7 +6,7 @@ import { getExchangeRate, getExhcangeRateHistory } from '../utils/exchange-rate'
 import '../styles/common.css'
 import '../styles/reversal-exchange-rate.css'
 import { getOVDP } from '../utils/privatbank/ovdp'
-import { createChart } from 'lightweight-charts'
+import { createChart, LineSeries } from 'lightweight-charts'
 import { rri } from '../utils/rri'
 import Join from '../components/join'
 import { Header } from '../components/header'
@@ -78,8 +78,8 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
       handleScroll: false,
     })
 
-    var uah = chart.addLineSeries({ color: 'red', title: 'UAH' })
-    var usd = chart.addLineSeries({ color: 'blue', title: 'USD' })
+    var uah = chart.addSeries(LineSeries, { color: 'red', title: 'UAH' })
+    var usd = chart.addSeries(LineSeries, { color: 'blue', title: 'USD' })
 
     chart.applyOptions({ localization: { priceFormatter: Intl.NumberFormat(undefined, { style: 'currency', currency: 'UAH' }).format } })
 
@@ -116,8 +116,8 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
       handleScroll: false,
     })
 
-    var uah = chart.addLineSeries({ color: 'red', title: 'UAH' })
-    var usd = chart.addLineSeries({ color: 'blue', title: 'USD' })
+    var uah = chart.addSeries(LineSeries, { color: 'red', title: 'UAH' })
+    var usd = chart.addSeries(LineSeries, { color: 'blue', title: 'USD' })
 
     chart.applyOptions({ localization: { priceFormatter: Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format } })
 
@@ -160,7 +160,7 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
         height: Math.floor(chartDev.current.clientWidth / 3),
       })
 
-      var line = chart.addLineSeries({ color: 'orange', title: 'USD/UAH' })
+      var line = chart.addSeries(LineSeries, { color: 'orange', title: 'USD/UAH' })
 
       chart.applyOptions({ localization: { priceFormatter: Intl.NumberFormat(undefined, { style: 'currency', currency: 'UAH' }).format } })
 

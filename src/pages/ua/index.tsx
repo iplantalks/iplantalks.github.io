@@ -4,7 +4,7 @@ import '../../styles/common.css'
 import { HeadFC } from 'gatsby'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut, Line } from 'react-chartjs-2'
-import { LineStyle, createChart } from 'lightweight-charts'
+import { LineSeries, LineStyle, createChart } from 'lightweight-charts'
 import { inflation, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, cash_usd, deposit_usd_orig, colors, useData } from './components/_data'
 import { BarChart } from './components/_bar-chart'
 import { PercentageBarChart } from './components/_percentage-bar-chart'
@@ -301,10 +301,10 @@ const Market = () => {
         portfolio[items[i].year] += items[i].value * allocation
       }
       if (showActives) {
-        chart.addLineSeries({ color: `rgba(${colors[idx]}, .5)`, title: id, priceLineVisible: true }).setData(toTimeseries(cumulative(items)))
+        chart.addSeries(LineSeries, { color: `rgba(${colors[idx]}, .5)`, title: id, priceLineVisible: true }).setData(toTimeseries(cumulative(items)))
       }
     })
-    chart.addLineSeries({ color: 'black', title: 'Portfolio', priceLineVisible: true }).setData(toTimeseries(cumulative(Object.entries(portfolio).map(([year, value]) => ({ year: +year, value })))))
+    chart.addSeries(LineSeries, { color: 'black', title: 'Portfolio', priceLineVisible: true }).setData(toTimeseries(cumulative(Object.entries(portfolio).map(([year, value]) => ({ year: +year, value })))))
 
     // const portfolioCum: Array<{ time: string; value: number }> = []
     // for (let i = 0; i < portfolioCombined.length; i++) {
@@ -322,7 +322,7 @@ const Market = () => {
       //   infitems.push({ time: `${infl[i].year}-01-01`, value: cumulative })
       // }
       // chart.addLineSeries({ color: 'red', title: 'Inflation', lineStyle: LineStyle.Dashed }).setData(infitems)
-      chart.addLineSeries({ color: 'red', title: 'Inflation', lineStyle: LineStyle.Dashed }).setData(toTimeseries(cumulative(inflation.filter(({ year }) => year >= startDate && year <= endDate))))
+      chart.addSeries(LineSeries, { color: 'red', title: 'Inflation', lineStyle: LineStyle.Dashed }).setData(toTimeseries(cumulative(inflation.filter(({ year }) => year >= startDate && year <= endDate))))
     }
 
     chart.timeScale().fitContent()

@@ -5,7 +5,7 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 import { Header } from '../../../components/header'
 import { queryChart, YahooChartRow } from '../../../utils/yahoo';
 import { currency } from '../../../utils/formatters';
-import { createChart, UTCTimestamp } from 'lightweight-charts';
+import { createChart, LineSeries, UTCTimestamp } from 'lightweight-charts';
 
 export default function Page() {
   const [minYear, setMinYear] = useState(2000)
@@ -238,14 +238,14 @@ const Chart = ({ portfolio, yahoo, startYear }: { portfolio: Array<{ ticker: str
           return { time: time, value: perf }
         })
 
-      const series = chart.addLineSeries({
+      const series = chart.addSeries(LineSeries, {
         title: ticker,
         color: `rgba(${colors[Object.keys(yahoo).indexOf(ticker)]}, 0.3)`
       })
       series.setData(data)
     }
 
-    const portfolioSeries = chart.addLineSeries({
+    const portfolioSeries = chart.addSeries(LineSeries, {
       title: 'portfolio',
       color: 'rgba(0, 0, 0, 1.0)',
     })

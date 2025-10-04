@@ -4,7 +4,7 @@ import '../../styles/common.css'
 import { Header } from '../../components/header'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { YahooChartRow, queryChart } from '../../utils/yahoo'
-import { IChartApi, createChart } from 'lightweight-charts'
+import { BaselineSeries, CandlestickSeries, IChartApi, createChart } from 'lightweight-charts'
 import { currency } from '../../utils/formatters'
 import Join from '../../components/join'
 
@@ -205,10 +205,10 @@ const FlipTheCoin = () => {
       width: ref.current.clientWidth,
       height: 400, // ref.current.clientWidth / 3,
     })
-    const series = chart.addCandlestickSeries()
+    const series = chart.addSeries(CandlestickSeries)
     series.setData((reveled ? data : before).map((item) => ({ time: item.date.toISOString().split('T').shift()!, open: item.open, high: item.high, low: item.low, close: item.close })))
 
-    const forecast = chart.addBaselineSeries({
+    const forecast = chart.addSeries(BaselineSeries, {
       baseValue: { type: 'price', price: before[before.length - 1]?.close },
       topLineColor: 'rgba( 38, 166, 154, 1)',
       topFillColor1: 'rgba( 38, 166, 154, 0.28)',

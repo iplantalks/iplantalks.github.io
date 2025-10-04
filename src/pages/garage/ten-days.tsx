@@ -4,7 +4,7 @@ import '../../styles/common.css'
 import { Header } from '../../components/header'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { YahooChartRow, queryChart } from '../../utils/yahoo'
-import { createChart, UTCTimestamp } from 'lightweight-charts'
+import { createChart, LineSeries, UTCTimestamp } from 'lightweight-charts'
 import { currency } from '../../utils/formatters'
 
 const TenDays: React.FC = () => {
@@ -125,16 +125,16 @@ const TenDays: React.FC = () => {
       height: 300,
     })
 
-    const cumulativeDailyReturnsSeries = chart.addLineSeries({ color: 'black', title: symbol, priceFormat: { type: 'percent' } })
+    const cumulativeDailyReturnsSeries = chart.addSeries(LineSeries, { color: 'black', title: symbol, priceFormat: { type: 'percent' } })
     cumulativeDailyReturnsSeries.setData(cumulativeDailyReturns)
 
-    const cumulativeDailyReturnsWithoutBestDaysSeries = chart.addLineSeries({ color: 'red', title: `Without ${days} Best Days`, priceFormat: { type: 'percent' } })
+    const cumulativeDailyReturnsWithoutBestDaysSeries = chart.addSeries(LineSeries, { color: 'red', title: `Without ${days} Best Days`, priceFormat: { type: 'percent' } })
     cumulativeDailyReturnsWithoutBestDaysSeries.setData(cumulativeDailyReturnsWithoutBestDays)
 
-    const cumulativeDailyReturnsWithoutWorstDaysSeries = chart.addLineSeries({ color: 'green', title: `Without ${days} Worst Days`, priceFormat: { type: 'percent' } })
+    const cumulativeDailyReturnsWithoutWorstDaysSeries = chart.addSeries(LineSeries, { color: 'green', title: `Without ${days} Worst Days`, priceFormat: { type: 'percent' } })
     cumulativeDailyReturnsWithoutWorstDaysSeries.setData(cumulativeDailyReturnsWithoutWorstDays)
 
-    const cumulativeDailyReturnsWithoutRandomDaysSeries = chart.addLineSeries({ color: 'orange', title: `Without ${days} Random Days`, priceFormat: { type: 'percent' } })
+    const cumulativeDailyReturnsWithoutRandomDaysSeries = chart.addSeries(LineSeries, { color: 'orange', title: `Without ${days} Random Days`, priceFormat: { type: 'percent' } })
     cumulativeDailyReturnsWithoutRandomDaysSeries.setData(cumulativeDailyReturnsWithoutRandomDays)
 
     chart.timeScale().fitContent()

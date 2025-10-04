@@ -4,7 +4,7 @@ import '../../styles/common.css'
 import { Header } from '../../components/header'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { YahooChartRow, queryChart } from '../../utils/yahoo'
-import { createChart, UTCTimestamp } from 'lightweight-charts'
+import { createChart, LineSeries, UTCTimestamp } from 'lightweight-charts'
 import { currency } from '../../utils/formatters'
 import 'chart.js/auto'
 import { Chart } from 'react-chartjs-2'
@@ -179,7 +179,7 @@ const Allocator: React.FC = () => {
           return { time: time, value: perf }
         })
       if (displaySymbols) {
-        const series = chart.addLineSeries({
+        const series = chart.addSeries(LineSeries, {
           title: symbol,
           color: symbol === 'VOO' ? 'rgba(255,165,0, 1.0)' : `rgba(${colors[Object.keys(yahoo).indexOf(symbol)]}, 0.3)`,
         })
@@ -188,7 +188,7 @@ const Allocator: React.FC = () => {
     }
 
     if (displayMin) {
-      const minSeries = chart.addLineSeries({
+      const minSeries = chart.addSeries(LineSeries, {
         title: 'min',
         color: 'rgba(200, 0, 0, 0.8)',
         // lineStyle: LineStyle.Dotted,
@@ -197,7 +197,7 @@ const Allocator: React.FC = () => {
       minSeries.setData(Object.entries(min).map(([time, value]) => ({ time, value })))
     }
     if (displayMax) {
-      const maxSeries = chart.addLineSeries({
+      const maxSeries = chart.addSeries(LineSeries, {
         title: 'max',
         color: 'rgba(0, 200, 0, 0.8)',
         // lineStyle: LineStyle.Dotted,
@@ -207,7 +207,7 @@ const Allocator: React.FC = () => {
     }
 
     if (displayAvg) {
-      const avgSeries = chart.addLineSeries({
+      const avgSeries = chart.addSeries(LineSeries, {
         title: 'avg',
         color: 'rgba(100, 100, 100, 0.4)',
         // lineStyle: LineStyle.Dotted,
@@ -217,7 +217,7 @@ const Allocator: React.FC = () => {
     }
 
     if (displayBenchmark) {
-      const vooSeries = chart.addLineSeries({
+      const vooSeries = chart.addSeries(LineSeries, {
         title: 'VOO',
         color: 'rgba(255,165,0, 1.0)',
         // lineStyle: LineStyle.Dotted,
@@ -233,7 +233,7 @@ const Allocator: React.FC = () => {
       )
     }
 
-    const portfolioSeries = chart.addLineSeries({
+    const portfolioSeries = chart.addSeries(LineSeries, {
       title: 'portfolio',
       color: 'rgba(0, 0, 0, 1.0)',
     })
@@ -599,14 +599,14 @@ const Allocator: React.FC = () => {
                 {round((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close, 2)} * 0.3) ={' '}
                 {round(
                   ((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close) * 0.7 +
-                    ((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close) * 0.3,
+                  ((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close) * 0.3,
                   2
                 )}
                 , тобто{' '}
                 {round(
                   (((yahoo[Object.keys(yahoo)[0]][yahoo[Object.keys(yahoo)[0]].length - 1].close - yahoo[Object.keys(yahoo)[0]][0].close) / yahoo[Object.keys(yahoo)[0]][0].close) * 0.7 +
                     ((yahoo[Object.keys(yahoo)[1]][yahoo[Object.keys(yahoo)[1]].length - 1].close - yahoo[Object.keys(yahoo)[1]][0].close) / yahoo[Object.keys(yahoo)[1]][0].close) * 0.3) *
-                    100,
+                  100,
                   2
                 )}
                 %
