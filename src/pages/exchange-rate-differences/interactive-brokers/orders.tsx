@@ -360,13 +360,13 @@ const Orders = () => {
                     />
                   </td>
                   <td>{t.currency}</td>
-                  <td>{currency(t.price)}</td>
-                  <td>{currency(t.currentPrice)}</td>
+                  <td title={`${currency(t.exchangeRate * t.price)}грн`}>{currency(t.price)}</td>
+                  <td title={`${currency(currentExchangeRate * t.currentPrice)}грн`}>{currency(t.currentPrice)}</td>
                   <td className="border-end">{currency(t.commision)}</td>
                   {/* <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td> */}
-                  <td className="table-secondary">{currency(t.taxUsd)}</td>
+                  <td title={`${currency(t.taxUah)}грн`} className="table-secondary">{currency(t.taxUsd)}</td>
                   {/* <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td> */}
-                  <td className={t.netIncomeUsd < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUsd)}</td>
+                  <td title={`${currency(t.netIncomeUah)}грн`} className={t.netIncomeUsd < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUsd)}</td>
                   <td className={t.netIncomeUsd < 0 ? 'text-danger border-start' : 'border-start'}>{currency((t.netIncomeUsd / (t.price * t.shares + t.taxUsd + t.commision * 2)) * 100)}</td>{' '}
                   {/*фин_результат_в_валюте/ (цена_покупки_usd*quantity+ налог_в_валюте + комисия*2)*/}
                 </tr>
