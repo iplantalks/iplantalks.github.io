@@ -22,17 +22,17 @@ const FlexItems = ({ name, count, doc }: { name: string; count: number, doc: Doc
     })
   }
   return <div>
-    <h2 className='mb-5'>{name} ({count}) <button onClick={handleCopy} className='btn btn-primary btn-sm'>{label}</button></h2>
-    <div className='table-responsive'>
-      <table className="table table-striped table-sm table-hover table-bordered">
+    <h2 className='text-2xl font-bold mb-5'>{name} ({count}) <button onClick={handleCopy} className='px-2 py-1 text-sm rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition'>{label}</button></h2>
+    <div className='overflow-x-auto'>
+      <table className="table-auto text-sm">
         <thead>
-          <tr className='table-dark'>
-            {attributes.map(attr => <th key={attr} className="fw-normal">{attr}</th>)}
+          <tr className='bg-black text-white'>
+            {attributes.map(attr => <th key={attr} className="p-1 font-normal text-nowrap">{attr}</th>)}
           </tr>
         </thead>
         <tbody className="table-group-divider">
           {elements.map((el, i) => <tr key={i}>
-            {attributes.map(attr => <td key={attr}>{el.getAttribute(attr)}</td>)}
+            {attributes.map(attr => <td className={'p-1 border border-neutral-200 text-nowrap' + (i % 2 == 0 ? ' bg-neutral-100' : '')} key={attr}>{el.getAttribute(attr)}</td>)}
           </tr>)}
         </tbody>
       </table>
@@ -63,16 +63,18 @@ const FlexViewer = () => {
   return (
     <main>
       <Header />
-      <div className="container py-5">
-        <h1>
+
+      <div className="container mx-auto my-5 p-4">
+        <h1 className='text-2xl font-bold mb-3'>
           Flex Report Viewer 🔬
         </h1>
-        <p>Переглядяч Flex звітів</p>
-        <p>Завантажте ваш звіт</p>
-        <input id="xml" className="form-control" type="file" accept=".xml" onChange={(e) => handleFileChoosen(e.target.files![0])} />
+        <p className='mb-3'>Переглядяч Flex звітів</p>
+        <p className='mb-3'>Завантажте ваш звіт</p>
+        <input id="xml" className="px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" type="file" accept=".xml" onChange={(e) => handleFileChoosen(e.target.files![0])} />
       </div>
+
       {tagCounts.map(({ name, count }, i) => <div key={name} className={i % 2 === 0 ? 'bg-body-secondary' : ''}>
-        <div className="container py-5">
+        <div className="container mx-auto my-5 p-4">
           <FlexItems name={name} count={count} doc={doc} />
         </div>
       </div>)}
