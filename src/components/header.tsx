@@ -27,7 +27,7 @@ export const Header = () => (
               <span>Інструменти</span>
               <ChevronDown />
             </a>
-            <div className='absolute left-0 top-full hidden group-hover:block bg-white shadow-lg z-10 min-w-[300px]'>
+            <div className='absolute left-0 top-full hidden group-hover:block bg-white shadow-lg z-90 min-w-[300px]'>
               <div className='py-2'>
                 <small className="text-neutral-500 block font-bold text-nowrap py-2 px-3">
                   Курсові різниці
