@@ -37,6 +37,7 @@ function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
 }
 
+/*
 export const CheckboxesBankServicePivot = ({
   combos,
   onChange,
@@ -48,7 +49,7 @@ export const CheckboxesBankServicePivot = ({
   const banks = getUniqueValues(combos, 'bank').sort((a, b) => a.localeCompare(b))
   const services = getUniqueValues(combos, 'service').sort((a, b) => a.localeCompare(b))
 
-  const collapsibleRef = useRef(null)
+  const collapsibleRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (collapsibleRef.current) {
@@ -159,3 +160,4 @@ export const CheckboxesBankServicePivot = ({
     </div>
   )
 }
+*/
