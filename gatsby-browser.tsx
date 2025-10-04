@@ -3,6 +3,7 @@ import type { GatsbyBrowser } from 'gatsby'
 import { AuthProvider } from './src/context/auth'
 
 import './src/styles/common.css'
+import './src/styles/rainbow.css'
 
 /*
 https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/#gatsby-browsertsx--gatsby-ssrtsx
