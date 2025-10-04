@@ -185,34 +185,34 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
       <Header />
       {/* <Hero title="Курсові різниці" subtitle="Курс розвороту" /> */}
 
-      <div className="container py-5">
-        <p>Даний калькулятор дозволяє порівняти ефективність інвестування в гривневі та валютні інструменти - шляхом визначення паритетного майбутнього курсу долара до гривні.</p>
-        <p>&nbsp;</p>
-        <p>Наприклад.</p>
-        <p>
-          У вас є якась сума, скажімо, <span className="text-success">{money} доларів</span>.
+      <div className="container mx-auto my-5 p-4">
+        <p className="mb-3">Даний калькулятор дозволяє порівняти ефективність інвестування в гривневі та валютні інструменти - шляхом визначення паритетного майбутнього курсу долара до гривні.</p>
+        <p className="mb-3">&nbsp;</p>
+        <p className="mb-3">Наприклад.</p>
+        <p className="mb-3">
+          У вас є якась сума, скажімо, <span className="text-green-500">{money} доларів</span>.
         </p>
-        <p>Ви хочете проінвестувати її на {years} років в депозити, ОВДП або інші інструменти.</p>
-        <p>
-          Зараз ви бачите, що в гривні (депозит, ОВДП) можна отримати &mdash; <span className="text-primary">{expectedReturnUah}%</span> річних, а в валюті &mdash;{' '}
-          <span className="text-warning">{expectedReturnUsd}%</span> річних, відповідно.
+        <p className="mb-3">Ви хочете проінвестувати її на {years} років в депозити, ОВДП або інші інструменти.</p>
+        <p className="mb-3">
+          Зараз ви бачите, що в гривні (депозит, ОВДП) можна отримати &mdash; <span className="text-blue-500">{expectedReturnUah}%</span> річних, а в валюті &mdash;{' '}
+          <span className="text-orange-500">{expectedReturnUsd}%</span> річних, відповідно.
         </p>
-        <p>&nbsp;</p>
-        <p>Через {years} років вам хотілося б мати кошти в доларах.</p>
-        <p>
-          На сьогодні курс 1 долара = <span className="text-danger">{currency(currentExchangeRate)} грн</span>.
+        <p className="mb-3">&nbsp;</p>
+        <p className="mb-3">Через {years} років вам хотілося б мати кошти в доларах.</p>
+        <p className="mb-3">
+          На сьогодні курс 1 долара = <span className="text-red-500">{currency(currentExchangeRate)} грн</span>.
         </p>
-        <p>&nbsp;</p>
-        <div className="alert alert-secondary">
+        <p className="mb-3">&nbsp;</p>
+        <div className="bg-neutral-100 p-4 my-4">
           Постає питання: Що ефективніше - покласти зараз існуючу валюту на доларовий вклад, чи обміняти все на гривню, інвестувати в гривневий інструмент під більший відсоток, а через {years} років
           на отриману суму знову купити валюту?
         </div>
-        <p>&nbsp;</p>
-        <p>Щоб вам легше було прийняти таке рішення, скористайтеся нашим калькулятором. Давайте введемо дані з прикладу.</p>
+        <p className="mb-3">&nbsp;</p>
+        <p className="mb-3">Щоб вам легше було прийняти таке рішення, скористайтеся нашим калькулятором. Давайте введемо дані з прикладу.</p>
 
-        <div className="row g-3 align-items-center py-3">
+        <div className="flex gap-3 mb-3 items-center">
           <div className="col-auto">
-            <input id="moneyInput" className="form-control text-success" type="number" min="1" value={money} onChange={(e) => setMoney(e.target.valueAsNumber)} required />
+            <input id="moneyInput" className="px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-green-500" type="number" min="1" value={money} onChange={(e) => setMoney(e.target.valueAsNumber)} required />
           </div>
           <div className="col-auto">
             <label htmlFor="moneyInput" className="col-form-label">
@@ -220,7 +220,7 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
             </label>
           </div>
           <div className="col-auto">
-            <input id="uahusdInput" className="form-control text-danger" type="number" min="1" value={currentExchangeRate} onChange={(e) => setCurrentExchangeRate(e.target.valueAsNumber)} required />
+            <input id="uahusdInput" className="px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-red-500" type="number" min="1" value={currentExchangeRate} onChange={(e) => setCurrentExchangeRate(e.target.valueAsNumber)} required />
           </div>
           <div className="col-auto">
             <label htmlFor="uahusdInput" className="col-form-label">
@@ -229,114 +229,114 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
           </div>
         </div>
 
-        <table className="table table-striped table-bordered">
+        <table className="table-auto w-full border-collapse my-5">
           <thead>
             <tr>
-              <th>Дохідність (%) та сумма накопичень (грн) інструменту у грн.</th>
-              <th>Дохідність (%) та сумма накопичень ($) інструменту у $</th>
-              <th>Курс розвороту</th>
-              <th>Роки</th>
-              <th>% зміни від поточного курсу</th>
-              <th>Прогноз курсу з темпом девальвації</th>
+              <th className='p-2 text-left'>Дохідність (%) та сумма накопичень (грн) інструменту у грн.</th>
+              <th className='p-2 text-left'>Дохідність (%) та сумма накопичень ($) інструменту у $</th>
+              <th className='p-2 text-left'>Курс розвороту</th>
+              <th className='p-2 text-left'>Роки</th>
+              <th className='p-2 text-left'>% зміни від поточного курсу</th>
+              <th className='p-2 text-left'>Прогноз курсу з темпом девальвації</th>
             </tr>
-            <tr>
-              <th>
-                <input className="form-control text-primary" type="number" min="1" max="100" value={expectedReturnUah} onChange={(e) => setExpectedReturnUah(e.target.valueAsNumber)} required />
+            <tr className='border-t border-neutral-200'>
+              <th className='p-2 text-left'>
+                <input className="px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-blue-500" type="number" min="1" max="100" value={expectedReturnUah} onChange={(e) => setExpectedReturnUah(e.target.valueAsNumber)} required />
               </th>
-              <th>
-                <input className="form-control text-warning" type="number" min="1" max="100" value={expectedReturnUsd} onChange={(e) => setExpectedReturnUsd(e.target.valueAsNumber)} required />
+              <th className='p-2 text-left'>
+                <input className="px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-orange-500" type="number" min="1" max="100" value={expectedReturnUsd} onChange={(e) => setExpectedReturnUsd(e.target.valueAsNumber)} required />
               </th>
-              <th></th>
-              <th>
-                <input style={{ minWidth: '4em' }} className="form-control" type="number" min="1" max="100" value={years} onChange={(e) => setYears(e.target.valueAsNumber)} required />
+              <th className='p-2 text-left'></th>
+              <th className='p-2 text-left'>
+                <input style={{ minWidth: '4em' }} className="px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-black" type="number" min="1" max="100" value={years} onChange={(e) => setYears(e.target.valueAsNumber)} required />
               </th>
-              <th></th>
-              <th>
-                <input className="form-control" id="infInput" type="number" min="1" max="100" value={expectedDevaluation} onChange={(e) => setExpectedDevaluation(e.target.valueAsNumber)} required />
+              <th className='p-2 text-left'></th>
+              <th className='p-2 text-left'>
+                <input className="px-3 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" id="infInput" type="number" min="1" max="100" value={expectedDevaluation} onChange={(e) => setExpectedDevaluation(e.target.valueAsNumber)} required />
               </th>
             </tr>
           </thead>
           <tbody id="result" className="table-group-divider">
-            {rows.map(({ uah, usd, reverse, year, change, forecast }) => (
-              <tr key={year}>
-                <td style={{ color: 'red' }}>{currency(uah)}</td>
-                <td style={{ color: 'blue' }}>{currency(usd)}</td>
-                <td>{currency(reverse)}</td>
-                <td>{year}</td>
-                <td>{currency(change)}</td>
-                <td>{currency(forecast)}</td>
+            {rows.map(({ uah, usd, reverse, year, change, forecast }, idx) => (
+              <tr className={`border-t border-neutral-300 ${idx % 2 === 0 ? 'bg-neutral-100' : 'bg-white'}`} key={year}>
+                <td className='p-2 text-red-500'>{currency(uah)}</td>
+                <td className='p-2 text-blue-500'>{currency(usd)}</td>
+                <td className='p-2'>{currency(reverse)}</td>
+                <td className='p-2'>{year}</td>
+                <td className='p-2'>{currency(change)}</td>
+                <td className='p-2'>{currency(forecast)}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div className="alert alert-secondary my-4">
-          <p>
-            Отже ми бачимо - що курс розвороту через {years} років становитиме &mdash; <span className="text-success">{currency(last.reverse)} грн</span>. Це курс, при якому ефективність доларового і
+        <div className="bg-neutral-100 p-4 my-4">
+          <p className="mb-3">
+            Отже ми бачимо - що курс розвороту через {years} років становитиме &mdash; <span className="text-green-500">{currency(last.reverse)} грн</span>. Це курс, при якому ефективність доларового і
             гривневого вкладення будуть однакові.
           </p>
-          <p>
-            Якщо на вашу думку, через {years} років курс долара до гривні буде більшим, скажімо <span className="text-secondary">{currency(max)} грн</span> за долар - то ви маєте прагнути до того, щоб
+          <p className="mb-3">
+            Якщо на вашу думку, через {years} років курс долара до гривні буде більшим, скажімо <span className="text-neutral-500">{currency(max)} грн</span> за долар - то ви маєте прагнути до того, щоб
             вкладати вашу валюту одразу в валютний інструмент.
           </p>
-          <p>
-            Якщо ж на вашу думку курс буде меншим - скажімо <span className="text-secondary">{currency(min)} грн</span> за долар - то ефективніше зараз обміняти валюту, покласти на гривневий вклад, а
+          <p className="mb-3">
+            Якщо ж на вашу думку курс буде меншим - скажімо <span className="text-neutral-500">{currency(min)} грн</span> за долар - то ефективніше зараз обміняти валюту, покласти на гривневий вклад, а
             потім знову на отриману суму купити долар.
           </p>
         </div>
 
-        <p>
-          В нашому прикладі через {years} років на гривневому вкладі інвестор матиме - <span className="text-primary">{currency(last.uah)} грн</span>.
+        <p className="mb-3">
+          В нашому прикладі через {years} років на гривневому вкладі інвестор матиме - <span className="text-blue-500">{currency(last.uah)} грн</span>.
         </p>
-        <p>
-          На валютному вкладі - <span className="text-warning">{currency(last.usd)} дол</span>.
+        <p className="mb-3">
+          На валютному вкладі - <span className="text-orange-500">{currency(last.usd)} дол</span>.
         </p>
-        <p>&nbsp;</p>
-        <p>
-          Давайте проведемо розрахунки, скільки доларів на руки отримав би інвестор, при гривневому вкладі за умови майбутнього курса <span className="text-secondary">{currency(min)} грн</span> за
-          долар, та <span className="text-secondary">{currency(max)} грн</span> за долар.
+        <p className="mb-3">&nbsp;</p>
+        <p className="mb-3">
+          Давайте проведемо розрахунки, скільки доларів на руки отримав би інвестор, при гривневому вкладі за умови майбутнього курса <span className="text-neutral-500">{currency(min)} грн</span> за
+          долар, та <span className="text-neutral-500">{currency(max)} грн</span> за долар.
         </p>
-        <p>&nbsp;</p>
-        <p>
-          <span className="text-secondary">{currency(min)} грн за дол</span> = <span className="text-primary">{currency(last.uah)}</span> / <span className="text-secondary">{currency(min)}</span> ={' '}
-          {currency(last.uah / min)} дол, що <b>більше</b> за отримані <span className="text-warning">{currency(last.usd)} дол</span> на валютному вкладі.
+        <p className="mb-3">&nbsp;</p>
+        <p className="mb-3">
+          <span className="text-neutral-500">{currency(min)} грн за дол</span> = <span className="text-blue-500">{currency(last.uah)}</span> / <span className="text-neutral-500">{currency(min)}</span> ={' '}
+          {currency(last.uah / min)} дол, що <b>більше</b> за отримані <span className="text-orange-500">{currency(last.usd)} дол</span> на валютному вкладі.
         </p>
-        <p>
-          <span className="text-secondary">{currency(max)} грн грн за дол</span> = <span className="text-primary">{currency(last.uah)}</span> / <span className="text-secondary">{currency(max)}</span>{' '}
-          = {currency(last.uah / max)} дол, що <b>менше</b> за отримані <span className="text-warning">{currency(last.usd)} дол</span> на валютному вкладі.
+        <p className="mb-3">
+          <span className="text-neutral-500">{currency(max)} грн грн за дол</span> = <span className="text-blue-500">{currency(last.uah)}</span> / <span className="text-neutral-500">{currency(max)}</span>{' '}
+          = {currency(last.uah / max)} дол, що <b>менше</b> за отримані <span className="text-orange-500">{currency(last.usd)} дол</span> на валютному вкладі.
         </p>
 
-        <h2 className="mt-5">Графік зростання капіталу у гривні</h2>
+        <h2 className="text-2xl font-bold mt-10 mb-5">Графік зростання капіталу у гривні</h2>
         <div ref={chartUah} />
 
-        <h2 className="mt-5">Графік зростання капіталу у доларах</h2>
+        <h2 className="text-2xl font-bold mt-10 mb-5">Графік зростання капіталу у доларах</h2>
         <div ref={chartUsd} />
 
-        <h2 className="mt-5">Графік курсу гривні відносно долару США</h2>
-        <p>
+        <h2 className="text-2xl font-bold mt-10 mb-5">Графік курсу гривні відносно долару США</h2>
+        <p className='mb-5'>
           За період з 2002 вартість долара змінилася з {currency(startExchangeRate)} грн до {currency(endExchangeRate)} грн, що складає {currency(overallRRI * 100)}% річних
         </p>
         <div ref={chartDev} />
       </div>
 
-      <div className="container py-5">
-        <h2 className="mb-3">Авторство</h2>
-        <div className="d-flex">
-          <div className="flex-shrink-0">
+      <div className="container mx-auto my-5 p-4">
+        <h2 className="text-2xl font-bold mb-5">Авторство</h2>
+        <div className="flex gap-5 items-start">
+          <div>
             <img src="https://iplan.ua/wp-content/uploads/2021/07/iplan-web-2.jpg" alt="Артем Ваганов" width="239" height="159" />
           </div>
-          <div className="flex-grow-1 ms-3">
-            <p>
+          <div>
+            <p className="mb-3">
               Автор таблиці - Артем Ваганов, фінансовий планер{' '}
-              <a href="https://iplan.ua/about-us/#vahanov" target="_blank">
+              <a className='text-blue-500' href="https://iplan.ua/about-us/#vahanov" target="_blank">
                 iPlan.ua
               </a>
               , засновник спільноти
-              <a href="https://t.me/iPlanTalksBot?start=ZGw6OTIzNzU" target="_blank">
+              <a className='text-blue-500' href="https://t.me/iPlanTalksBot?start=ZGw6OTIzNzU" target="_blank">
                 iPlan Talks
               </a>
               , автор Телеграм каналу{' '}
-              <a href="https://t.me/dengirabotayut" target="_blank">
+              <a className='text-blue-500' href="https://t.me/dengirabotayut" target="_blank">
                 Гроші працюють
               </a>
               .
@@ -344,38 +344,38 @@ const ReversalExchangeRatePage: FC<PageProps> = () => {
           </div>
         </div>
 
-        <h2 className="mt-5 mb-3">Джерела</h2>
-        <ul>
+        <h2 className="text-2xl font-bold mb-5 mt-5">Джерела</h2>
+        <ul className='list-disc list-inside ml-5'>
           <li>
-            <a href="https://docs.google.com/spreadsheets/d/1sCxUUS63wJ04LnjuokY2EQ5gDgekScSZn-PhfKLNxYY" target="_blank">
+            <a className='text-blue-500' href="https://docs.google.com/spreadsheets/d/1sCxUUS63wJ04LnjuokY2EQ5gDgekScSZn-PhfKLNxYY" target="_blank">
               Приклад самостійного розрахунку в Google Sheets
             </a>
           </li>
           <li>
-            <a href="https://api.privatbank.ua/#p24/exchange" target="_blank">
+            <a className='text-blue-500' href="https://api.privatbank.ua/#p24/exchange" target="_blank">
               Курси валют ПриватБанку
             </a>
           </li>
           <li>
-            <a href="https://index.minfin.com.ua/ua/economy/index/devaluation/" target="_blank">
+            <a className='text-blue-500' href="https://index.minfin.com.ua/ua/economy/index/devaluation/" target="_blank">
               Девальвація української гривні
             </a>
           </li>
           <li>
-            <a href="https://finance.yahoo.com/quote/UAH%3DX/chart" target="_blank">
+            <a className='text-blue-500' href="https://finance.yahoo.com/quote/UAH%3DX/chart" target="_blank">
               Курс гривні щодо долару
             </a>
           </li>
           <li>
-            <a href="https://privatbank.ua/ovdp" target="_blank">
+            <a className='text-blue-500' href="https://privatbank.ua/ovdp" target="_blank">
               Облігації внутрішньої державної позики України
             </a>
           </li>
         </ul>
       </div>
 
-      <div className="bg-warning-subtle">
-        <div className="container py-5">
+      <div className="bg-yellow-100 mt-5 mb-0">
+        <div className="container mx-auto my-0 p-4">
           Увага! Калькулятор не прогнозує майбутній курс, він лише визначає курс - після якого ефективність доларових та гривневих інвестицій перевертається. Міркування щодо можливості чи не
           можливості таргетування певного курсу через необхідний вам проміжок часу - ви робите самостійно та на ваш розсуд.
         </div>
