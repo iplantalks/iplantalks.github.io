@@ -310,84 +310,82 @@ const Forecast = () => {
 
   return (
     <main>
-      {/* <Hero title="Курсові різниці" subtitle="Модель впливу податку на інвестиційний прибуток на результат інвестицій при змінних темпах девальвації та % прибутковості" /> */}
       <Header />
 
       <div className="bg-rainbow text-white">
-        <div className="container py-5">
-          <div className="d-flex align-items-center">
-            <div className="flex-grow-1 me-3">
-              <h1 className="display-4 fw-bold mt-2">Курсові різниці</h1>
-              <p className="fs-3">💡 Податки, прибуток і девальвація на одному графіку. Переглянь відео 👉</p>
+        <div className="container mx-auto my-0 px-4 py-10">
+          <div className="flex gap-5 items-center justify-between">
+            <div>
+              <h1 className="text-6xl font-bold">Курсові різниці</h1>
+              <p className="text-3xl my-5">💡 Податки, прибуток і девальвація на одному графіку. Переглянь відео 👉</p>
               <p>
-                <a className="btn btn-outline-light btn-lg" href="https://t.me/iPlanTalksBot?start=ZGw6Mjc2NDc4">
+                <a className="inline-block border border-white text-white text-lg px-6 py-2 rounded hover:bg-white hover:!text-black transition font-semibold" href="https://t.me/iPlanTalksBot?start=ZGw6Mjc2NDc4">
                   Отримати безкоштовний курс
                 </a>
               </p>
             </div>
-            <div className="flex-shrink-0 d-none d-lg-block">
-              <iframe width="560" height="315" src="https://www.youtube.com/embed/aawVzBjOzqs?si=Y42Mlj3pF9rYVYh8" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
-            </div>
+            <iframe className='aspect-video' width="560" height="315" src="https://www.youtube.com/embed/aawVzBjOzqs?si=Y42Mlj3pF9rYVYh8" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
           </div>
         </div>
       </div>
 
-      <div className="container py-5">
-        <div className="row">
-          <p className="col-12 col-sm-4">
-            <label htmlFor="date" className="form-label">
+      <div className="container mx-auto my-5 p-4">
+        <div className="grid grid-cols-3 gap-5">
+          <p>
+            <label htmlFor="date" className="block mb-2">
               Початковий курс валюти
             </label>
-            <input type="number" className="form-control" value={exchangeRate} onChange={(e) => setExchangeRate(e.target.valueAsNumber)} />
+            <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value={exchangeRate} onChange={(e) => setExchangeRate(e.target.valueAsNumber)} />
             {/*disabled={!found}*/}
           </p>
-          <p className="col-12 col-sm-4">
-            <label htmlFor="date" className="form-label">
+          <p>
+            <label htmlFor="date" className="block mb-2">
               Ставка податку на інвест прибуток
             </label>
-            <input type="number" className="form-control" value={tax} onChange={(e) => setTax(e.target.valueAsNumber)} />
+            <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value={tax} onChange={(e) => setTax(e.target.valueAsNumber)} />
             {/*disabled={!found}*/}
           </p>
-          <p className="col-12 col-sm-4">
-            <label htmlFor="date" className="form-label">
+          <p>
+            <label htmlFor="date" className="block mb-2">
               Прогнозована дохідність
             </label>
-            <input type="number" className="form-control" value={expectedReturn} min={1} step={1} onChange={(e) => setExpectedReturn(e.target.valueAsNumber)} />
+            <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value={expectedReturn} min={1} step={1} onChange={(e) => setExpectedReturn(e.target.valueAsNumber)} />
             {/*disabled={!found}*/}
           </p>
         </div>
-        <table className="table">
-          <thead>
+
+        <table className="table-auto w-full my-5">
+          <thead className='text-sm'>
             <tr>
-              <th>Роки інвестування</th>
-              <th colSpan={4}>Курс гривні до долара при різних % девальвації нац.валюти та прибутковості інвестицій</th>
-              <th colSpan={4}>Розрахункова % ставка податку на інвестиційний прибуток</th>
+              <th className='p-2 text-left'>Роки інвестування</th>
+              <th className='p-2 text-left' colSpan={4}>Курс гривні до долара при різних % девальвації нац.валюти та прибутковості інвестицій</th>
+              <th className='p-2 text-left' colSpan={4}>Розрахункова % ставка податку на інвестиційний прибуток</th>
             </tr>
-            <tr>
-              <th>темпи девальвації</th>
-              <td>
-                <input type="number" className="form-control" value={devalvation1} onChange={(e) => setDevalvation1(e.target.valueAsNumber)} />
+            <tr className='border-t border-neutral-200'>
+              <th className='p-2 text-left'>темпи девальвації</th>
+              <td className='p-2'>
+                <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value={devalvation1} onChange={(e) => setDevalvation1(e.target.valueAsNumber)} />
               </td>
-              <td>
-                <input type="number" className="form-control" value={devalvation2} onChange={(e) => setDevalvation2(e.target.valueAsNumber)} />
+              <td className='p-2'>
+                <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value={devalvation2} onChange={(e) => setDevalvation2(e.target.valueAsNumber)} />
               </td>
-              <td>
-                <input type="number" className="form-control" value={devalvation3} onChange={(e) => setDevalvation3(e.target.valueAsNumber)} />
+              <td className='p-2'>
+                <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value={devalvation3} onChange={(e) => setDevalvation3(e.target.valueAsNumber)} />
               </td>
-              <td>
-                <input type="number" className="form-control" value={devalvation4} onChange={(e) => setDevalvation4(e.target.valueAsNumber)} />
+              <td className='p-2'>
+                <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" value={devalvation4} onChange={(e) => setDevalvation4(e.target.valueAsNumber)} />
               </td>
-              <td>
-                <input type="number" className="form-control" value={devalvation1} disabled />
+              <td className='p-2'>
+                <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition disabled:bg-neutral-100" value={devalvation1} disabled />
               </td>
-              <td>
-                <input type="number" className="form-control" value={devalvation2} disabled />
+              <td className='p-2'>
+                <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition disabled:bg-neutral-100" value={devalvation2} disabled />
               </td>
-              <td>
-                <input type="number" className="form-control" value={devalvation3} disabled />
+              <td className='p-2'>
+                <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition disabled:bg-neutral-100" value={devalvation3} disabled />
               </td>
-              <td>
-                <input type="number" className="form-control" value={devalvation4} disabled />
+              <td className='p-2'>
+                <input type="number" className="block w-full px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition disabled:bg-neutral-100" value={devalvation4} disabled />
               </td>
             </tr>
           </thead>
@@ -395,16 +393,16 @@ const Forecast = () => {
             {rows
               .filter((row) => (short ? row.year === 1 || row.year % 5 === 0 : true))
               .map((row) => (
-                <tr className="text-center" key={row.year}>
-                  <td>{row.year}</td>
-                  <td>{currency(row.exchangeRate1)}</td>
-                  <td>{currency(row.exchangeRate2)}</td>
-                  <td>{currency(row.exchangeRate3)}</td>
-                  <td>{currency(row.exchangeRate4)}</td>
-                  <td>{currency(row.tax1)}%</td>
-                  <td>{currency(row.tax2)}%</td>
-                  <td>{currency(row.tax3)}%</td>
-                  <td>{currency(row.tax4)}%</td>
+                <tr className='border-t border-neutral-200 text-center' key={row.year}>
+                  <td className='p-2'>{row.year}</td>
+                  <td className='p-2'>{currency(row.exchangeRate1)}</td>
+                  <td className='p-2'>{currency(row.exchangeRate2)}</td>
+                  <td className='p-2'>{currency(row.exchangeRate3)}</td>
+                  <td className='p-2'>{currency(row.exchangeRate4)}</td>
+                  <td className='p-2'>{currency(row.tax1)}%</td>
+                  <td className='p-2'>{currency(row.tax2)}%</td>
+                  <td className='p-2'>{currency(row.tax3)}%</td>
+                  <td className='p-2'>{currency(row.tax4)}%</td>
                 </tr>
               ))}
           </tbody>
@@ -416,10 +414,10 @@ const Forecast = () => {
         </p>
         <canvas ref={chartRef} />
         <canvas ref={returnsChartRef} />
-      </div>
+      </div >
 
       <Join />
-    </main>
+    </main >
   )
 }
 

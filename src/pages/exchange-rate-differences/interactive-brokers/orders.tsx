@@ -230,107 +230,103 @@ const Orders = () => {
       <Header />
       {/* <Hero title="Курсові різниці" subtitle="Розрахунок фінансових результатів з виписки Interactive Brokers" /> */}
 
-      <div className="container py-5">
-        <p>Мета цього звіту &mdash; подивитися на свої активи в розрізі курсових різниць.</p>
-        <p>Адже можлива ситуація коли ми матимемо збиток у доларах, але після перерахунку у гривні - буде плюс, який повинен бути оподаткованим.</p>
+      <div className="container mx-auto my-5 p-4">
+        <p className='mb-2'>Мета цього звіту &mdash; подивитися на свої активи в розрізі курсових різниць.</p>
+        <p className='mb-2'>Адже можлива ситуація коли ми матимемо збиток у доларах, але після перерахунку у гривні - буде плюс, який повинен бути оподаткованим.</p>
 
-        <div className="row">
-          <p className="col-12 col-sm-6">
-            <label htmlFor="ofx" className="form-label">
-              Звіт MS Money{' '}
-              <a href="sample.ofx" download>
-                приклад
-              </a>
-            </label>
-            <input id="ofx" className="form-control" type="file" accept=".ofx" multiple={true} onChange={(e) => handleFileChoosen(e.target.files)} />
-          </p>
+        <div className="my-5">
+          <label htmlFor="ofx" className="block mb-2">Звіт MS Money <a href="sample.ofx" download>приклад</a></label>
+          <input id="ofx" className="px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" type="file" accept=".ofx" multiple={true} onChange={(e) => handleFileChoosen(e.target.files)} />
         </div>
-        <p>Примітка: IBKR не дозволяє сформувати звіт за період більший ніж рік - якщо у вас є покупки в різні роки - просто сформуйте декілька звітів та загрузіть їх усі одразу</p>
+
+        <p className='text-neutral-500'>Примітка: IBKR не дозволяє сформувати звіт за період більший ніж рік - якщо у вас є покупки в різні роки - просто сформуйте декілька звітів та загрузіть їх усі одразу</p>
         <details className="my-3">
           <summary>Покрокова інструкція &mdash; як сформувати звіт</summary>
-          <p>
+          <p className='mb-2'>
             Переходимо на сторінку <b>Third-Party Reports</b> розділу <b>Performance & Reports</b>
           </p>
-          <p>
+          <p className='mb-2'>
             <img src={statements} style={{ maxWidth: '50vw' }} />
           </p>
-          <p>
+          <p className='mb-2'>
             Знизу, буде блок <b>Third-Party Downloads</b> для формування звіту
           </p>
-          <p>
+          <p className='mb-2'>
             Виберіть <b>Custom Date Range</b> та дати, за якими буде сформовано звіт. Виберіть, приблизні, дати коли ви купляли будь які акції
           </p>
-          <p>
+          <p className='mb-2'>
             <img src={popup} style={{ maxWidth: '50vw' }} />
           </p>
-          <p>
+          <p className='mb-2'>
             <b>Provider - MS Money</b> - MS Money - один з розповсюджених форматів обміну фінансовою інформацією Open Finance Exchange (ofx), є нічим іншим як звичайний XML файлик з транзакціями за
             період, отже його можна відкрити в блокноті та подивитися, що там в середині. Ця сторінка просто "візуалізує" його. Причина чому вибрали MS Money - задля того, щоб не зійти з розуму,
             намагаючись зрозуміти як сформувати кастомний Flex звіт.
           </p>
         </details>
       </div>
-      <div className="container">
+
+
+      <div className="container mx-auto my-5 p-4">
         {transactions.length > 0 && (
-          <table className="table table-striped table-sm">
-            <thead style={{ position: 'sticky', top: 0 }}>
-              <tr className="table-dark small">
-                <th className="fw-normal">
+          <table className="table-auto w-full border-collapse">
+            <thead className='sticky top-0'>
+              <tr className="bg-black text-sm text-white">
+                <th className="font-normal">
                   Дата
                   <br />
                   <span className="opacity-50">купівлі</span>
                 </th>
-                <th className="fw-normal">
+                <th className="font-normal">
                   Тікер
                   <br />
                   <span className="opacity-50">&nbsp;</span>
                 </th>
-                <th className="fw-normal">
+                <th className="font-normal">
                   Кількість
                   <br />
                   <span className="opacity-50">шт</span>
                 </th>
-                <th className="fw-normal">
+                <th className="font-normal">
                   Валюта
                   <br />
                   <span className="opacity-50">од. валюти</span>
                 </th>
-                <th className="fw-normal">
+                <th className="font-normal">
                   Ціна покупки
                   <br />
                   <span className="opacity-50">од. валюти</span>
                 </th>
-                <th className="fw-normal">
+                <th className="font-normal">
                   Поточна ціна
                   <br />
                   <span className="opacity-50">од. валюти</span>
                 </th>
-                <th className="fw-normal">
+                <th className="font-normal">
                   Комісія
                   <br />
                   <span className="opacity-50">од. валюти</span>
                 </th>
-                {/* <th className="fw-normal">
+                {/* <th className="font-normal">
                   Фін. результат брутто
                   <br />
                   <span className="opacity-50">грн</span>
                 </th> */}
-                <th className="fw-normal">
+                <th className="font-normal">
                   Податок
                   <br />
                   <span className="opacity-50">од. валюти</span>
                 </th>
-                {/* <th className="fw-normal">
+                {/* <th className="font-normal">
                   Фін. результат нетто
                   <br />
                   <span className="opacity-50">грн</span>
                 </th> */}
-                <th className="fw-normal">
+                <th className="font-normal">
                   Фін. результат нетто
                   <br />
                   <span className="opacity-50">од. валюти</span>
                 </th>
-                <th className="fw-normal">
+                <th className="font-normal">
                   Фін. результат нетто
                   <br />
                   <span className="opacity-50">%</span>
@@ -339,11 +335,12 @@ const Orders = () => {
             </thead>
             <tbody className="table-group-divider">
               {filtered.map((t) => (
-                <tr key={t.id}>
-                  <td>{t.date.toISOString().split('T').shift()}</td>
-                  <td>{t.ticker}</td>
-                  <td>
+                <tr className='border-t border-neutral-200' key={t.id}>
+                  <td className='p-2'>{t.date.toISOString().split('T').shift()}</td>
+                  <td className='p-2'>{t.ticker}</td>
+                  <td className='p-2'>
                     <input
+                      className='block w-full px-2 py-1 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition'
                       type="number"
                       min="0"
                       max={t.sharesOriginal}
@@ -358,61 +355,63 @@ const Orders = () => {
                       }
                     />
                   </td>
-                  <td>{t.currency}</td>
-                  <td title={`${currency(t.exchangeRate * t.price)}грн`}>{currency(t.price)}</td>
-                  <td title={`${currency(currentExchangeRate * t.currentPrice)}грн`}>{currency(t.currentPrice)}</td>
-                  <td className="border-end">{currency(t.commision)}</td>
+                  <td className='p-2'>{t.currency}</td>
+                  <td className='p-2' title={`${currency(t.exchangeRate * t.price)}грн`}>{currency(t.price)}</td>
+                  <td className='p-2' title={`${currency(currentExchangeRate * t.currentPrice)}грн`}>{currency(t.currentPrice)}</td>
+                  <td className="p-2">{currency(t.commision)}</td>
                   {/* <td className={t.incomeUah < 0 ? 'text-danger' : ''}>{currency(t.incomeUah)}</td> */}
-                  <td title={`${currency(t.taxUah)}грн`} className="table-secondary">{currency(t.taxUsd)}</td>
+                  <td className="p-2 bg-neutral-200" title={`${currency(t.taxUah)}грн`}>{currency(t.taxUsd)}</td>
                   {/* <td className={t.netIncomeUah < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUah)}</td> */}
-                  <td title={`${currency(t.netIncomeUah)}грн`} className={t.netIncomeUsd < 0 ? 'text-danger' : ''}>{currency(t.netIncomeUsd)}</td>
-                  <td className={t.netIncomeUsd < 0 ? 'text-danger border-start' : 'border-start'}>{currency((t.netIncomeUsd / (t.price * t.shares + t.taxUsd + t.commision * 2)) * 100)}</td>{' '}
+                  <td title={`${currency(t.netIncomeUah)}грн`} className={t.netIncomeUsd < 0 ? 'text-red-500 p-2' : 'p-2'}>{currency(t.netIncomeUsd)}</td>
+                  <td className={t.netIncomeUsd < 0 ? 'text-red-500 p-2' : 'p-2'}>{currency((t.netIncomeUsd / (t.price * t.shares + t.taxUsd + t.commision * 2)) * 100)}</td>{' '}
                   {/*фин_результат_в_валюте/ (цена_покупки_usd*quantity+ налог_в_валюте + комисия*2)*/}
                 </tr>
               ))}
             </tbody>
-            <tfoot className="table-group-divider table-secondary">
+            <tfoot className="bg-neutral-100 border-t border-neutral-300">
               <tr>
-                <td colSpan={7}>Разом</td>
-                <td className="table-secondary">{currency(filtered.map((f) => f.taxUsd).reduce((a, b) => a + b, 0))}</td>
-                <td>{currency(filtered.map((f) => f.netIncomeUsd).reduce((a, b) => a + b, 0))}</td>
-                <td></td>
+                <td className='p-2' colSpan={7}>Разом</td>
+                <td className="p-2 bg-neutral-200">{currency(filtered.map((f) => f.taxUsd).reduce((a, b) => a + b, 0))}</td>
+                <td className='p-2'>{currency(filtered.map((f) => f.netIncomeUsd).reduce((a, b) => a + b, 0))}</td>
+                <td className='p-2'></td>
               </tr>
             </tfoot>
           </table>
         )}
       </div>
-      <div className="container my-5">
+
+
+      <div className="container mx-auto my-5 p-4">
         {negative && (
-          <p>
+          <p className='mb-5'>
             Так наприклад {negative.ticker} куплений {negative.date.toISOString().split('T').shift()} на разі має негативний результат{' '}
-            <span className="text-danger">{currency(negative.netIncomeUah)} грн</span>, навіть з урахуванням курсових різниць.
+            <span className="text-red-500">{currency(negative.netIncomeUah)} грн</span>, навіть з урахуванням курсових різниць.
           </p>
         )}
-        <p>Важливо - цей калькулятор рахує курсові різниці для всіх активів куплених у звітний період без урахування продажів, комісій тощо, метою є саме розрахунок курсових різниць</p>
+        <p className='my-5'>Важливо - цей калькулятор рахує курсові різниці для всіх активів куплених у звітний період без урахування продажів, комісій тощо, метою є саме розрахунок курсових різниць</p>
 
-        <details>
+        <details className='my-5'>
           <summary>Деталі звіту</summary>
-          <p>Для перевірки розхідностей, ось деяка інформація, що зможе допомогти</p>
-          <p>Кількість тікерів у звіті: {ofx?.SECLISTMSGSRSV1.SECLIST.STOCKINFO?.length || 0}</p>
-          <p>Кількість позицій у портфелі: {ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVPOSLIST?.POSSTOCK?.length || 0}</p>
-          <p>Кількість покупок: {ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK?.length || 0}</p>
-          <p>
+          <p className='mb-4'>Для перевірки розхідностей, ось деяка інформація, що зможе допомогти</p>
+          <p className='mb-4'>Кількість тікерів у звіті: {ofx?.SECLISTMSGSRSV1.SECLIST.STOCKINFO?.length || 0}</p>
+          <p className='mb-4'>Кількість позицій у портфелі: {ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVPOSLIST?.POSSTOCK?.length || 0}</p>
+          <p className='mb-4'>Кількість покупок: {ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK?.length || 0}</p>
+          <p className='mb-4'>
             Для ще більших деталей ось усі покупки що є у звіті. Тут ідея така - якщо покупка є в середині звіту і не відображається у табличці - то це десь наш косяк і його можна і
             потрібно виправити, якщо ж покупки нема в самому звіті то і в табличці вона не зʼявиться і потрібно формувати інший звіт за інший період.
           </p>
           <details>
             <summary>Покупки</summary>
-            <code>
+            <code className='text-xs p-2 block overflow-auto bg-neutral-100 border border-neutral-200 rounded'>
               <pre>{JSON.stringify(ofx?.INVSTMTMSGSRSV1.INVSTMTTRNRS.INVSTMTRS.INVTRANLIST?.BUYSTOCK, null, 4)}</pre>
             </code>
           </details>
         </details>
 
         {messages.length > 0 && (
-          <details>
+          <details className='my-5'>
             <summary>Повідомлення</summary>
-            <ul>
+            <ul className='list-disc list-inside ml-5'>
               {messages.map((message, i) => (
                 <li key={i}>{message}</li>
               ))}
