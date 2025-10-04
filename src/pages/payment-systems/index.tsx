@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useState, useMemo, useEffect } from 'react'
 import { HeadFC, PageProps, navigate } from 'gatsby'
-import './styles.css'
 import { currency } from '../../utils/formatters'
 import { VendorLogo } from './components/_banks'
 import Join from '../../components/join'
