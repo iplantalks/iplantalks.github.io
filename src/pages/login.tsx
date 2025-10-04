@@ -2,7 +2,6 @@ import { HeadFC, navigate } from 'gatsby'
 import * as React from 'react'
 import { useEffect } from 'react'
 import { useAuth } from '../context/auth'
-import '../styles/common.css'
 import logo from '../images/logo.svg'
 import bot from '../images/bot.png'
 

@@ -1,7 +1,6 @@
 import { HeadFC } from 'gatsby'
 import * as React from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import '../../../../styles/common.css'
 import { Header } from '../../../../components/header'
 
 const FlexItems = ({ name, count, doc }: { name: string; count: number, doc: Document | null }) => {

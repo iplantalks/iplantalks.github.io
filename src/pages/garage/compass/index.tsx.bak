@@ -1,7 +1,6 @@
 import { HeadFC } from 'gatsby'
 import * as React from 'react'
 import { useState } from 'react'
-import '../../../styles/common.css'
 import { Header } from '../../../components/header'
 
 import 'chart.js/auto'

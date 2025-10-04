@@ -1,4 +1,3 @@
-import '../../../styles/common.css'
 import { HeadFC } from 'gatsby'
 import * as React from 'react'
 import { useState, useMemo, useRef, useEffect } from 'react'

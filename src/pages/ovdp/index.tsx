@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useState, useMemo, useEffect } from 'react'
 import { HeadFC, PageProps, navigate } from 'gatsby'
-import '../../styles/common.css'
 import Join from '../../components/join'
 import { useDeposits, useInfo, useOvdp, useSnapshot } from './_googlesheets'
 import { ago } from '../../utils/ago'

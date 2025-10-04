@@ -1,7 +1,6 @@
 import { HeadFC } from 'gatsby'
 import * as React from 'react'
 import { useState, useEffect, useMemo, useRef } from 'react'
-import '../../../styles/common.css'
 import { Header } from '../../../components/header'
 import { queryChart, YahooChartRow } from '../../../utils/yahoo'
 import { round } from '../../../utils/formatters'

@@ -8,6 +8,7 @@ const config: GatsbyConfig = {
   graphqlTypegen: true,
   trailingSlash: 'always',
   plugins: [
+    'gatsby-plugin-postcss',
     {
       resolve: `gatsby-plugin-google-gtag`,
       options: { trackingIds: ['G-HRXQ4P204N'] },

@@ -1,7 +1,6 @@
 import { HeadFC, navigate } from 'gatsby'
 import * as React from 'react'
 import { useRef, useState, useEffect, useMemo } from 'react'
-import '../../../styles/common.css'
 import './styles.css'
 import { Header } from '../../../components/header'
 import Join from '../../../components/join'

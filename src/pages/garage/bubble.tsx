@@ -1,6 +1,5 @@
 import { HeadFC, navigate } from 'gatsby'
 import * as React from 'react'
-import '../../styles/common.css'
 import { Header } from '../../components/header'
 import { useState, useEffect } from 'react'
 import { proxy } from '../../utils/proxy'

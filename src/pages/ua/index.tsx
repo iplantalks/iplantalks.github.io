@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useState, useRef, useEffect, useMemo } from 'react'
-import '../../styles/common.css'
 import { HeadFC } from 'gatsby'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut, Line } from 'react-chartjs-2'

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { HeadFC, navigate } from 'gatsby'
-import '../../../styles/common.css'
 import Chart from 'chart.js/auto'
 import { currency, round } from '../../../utils/formatters'
 import { getExchangeRates } from '../../../utils/exchange-rate'

@@ -2,6 +2,8 @@ import * as React from 'react'
 import type { GatsbyBrowser } from 'gatsby'
 import { AuthProvider } from './src/context/auth'
 
+import './src/styles/common.css'
+
 /*
 https://www.gatsbyjs.com/docs/how-to/custom-configuration/typescript/#gatsby-browsertsx--gatsby-ssrtsx
 */

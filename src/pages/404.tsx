@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { HeadFC, PageProps } from 'gatsby'
-import '../styles/common.css'
 import logo from '../images/logo.svg'
 import bot from '../images/bot.png'
 
