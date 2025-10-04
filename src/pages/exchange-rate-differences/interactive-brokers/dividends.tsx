@@ -51,11 +51,9 @@ const CalendarMonth = ({ month, rows }: { month: number; rows: Row[] }) => {
     .map((row) => row.netIncomeUah)
     .reduce((a, b) => a + b, 0)
   return (
-    <div className="card">
-      <div className="card-header text-center">{months[month]}</div>
-      <ul className="list-group list-group-flush">
-        <li className="list-group-item text-center">{income > 0 ? <span>{currency(income)}<span className="text-muted">грн</span></span> : '-'}</li>
-      </ul>
+    <div>
+      <div className="text-neutral-500 text-center">{months[month]}</div>
+      {income > 0 ? <div className='font-bold text-center'>{currency(income)} <span className="text-neutral-500">грн</span></div> : <div className='text-center'>-</div>}
     </div>
   )
 }
@@ -64,10 +62,10 @@ const Calendar = ({ rows }: { rows: Row[] }) => {
   const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
   return (
     <div>
-      <h2 className="text-center mb-3">Календар виплат</h2>
-      <div className="row">
+      <h2 className="text-2xl font-bold text-center mt-10 mb-5">Календар виплат</h2>
+      <div className="grid grid-cols-6 gap-4">
         {numbers.map((month) => (
-          <div className="col-2 mb-3" key={month}>
+          <div className="p-4 border border-neutral-200 rounded" key={month}>
             <CalendarMonth month={month} rows={rows} />
           </div>
         ))}
@@ -201,42 +199,35 @@ const Dividends = () => {
     <main>
       <Header />
 
-      <div className="container py-5">
-        <p>З дивідендів, що виплачувалися впродовж року, мусимо сплатити податки на прикінці звітного періоду, але як та де швиденько подивитися картину в цілому?</p>
-        <p>Саме це і є метою ціеї сторінки, вивантажте звіт msmoney за потрібний період, та подивіться на розрахунки.</p>
+      <div className="container mx-auto my-5 p-4">
+        <p className='mb-3'>З дивідендів, що виплачувалися впродовж року, мусимо сплатити податки на прикінці звітного періоду, але як та де швиденько подивитися картину в цілому?</p>
+        <p className='mb-3'>Саме це і є метою ціеї сторінки, вивантажте звіт msmoney за потрібний період, та подивіться на розрахунки.</p>
 
-        <div className="row">
-          <p className="col-12 col-sm-6">
-            <label htmlFor="ofx" className="form-label">
-              Звіт MS Money{' '}
-              <a href="sample.ofx" download>
-                приклад
-              </a>
-            </label>
-            <input id="ofx" className="form-control" type="file" accept=".ofx" onChange={(e) => handleFileChoosen(e.target.files![0])} />
-          </p>
+        <div className="my-5">
+          <label htmlFor="ofx" className="block mb-2">Звіт MS Money <a href="sample.ofx" download>приклад</a></label>
+          <input id="ofx" className="px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" type="file" accept=".ofx" multiple={true} onChange={(e) => handleFileChoosen(e.target.files![0])} />
         </div>
         <details className="my-3">
           <summary>Покрокова інструкція &mdash; як сформувати звіт</summary>
-          <p>
+          <p className='mb-3'>
             Переходимо на сторінку <b>Statements</b> розділу <b>Performance & Reports</b>
           </p>
-          <p>
+          <p className='mb-3'>
             <img src={statements} style={{ maxWidth: '50vw' }} />
           </p>
-          <p>
+          <p className='mb-3'>
             Зправа, знизу, буде кнопка для формування звіту <b>MS Money</b>
           </p>
-          <p>
+          <p className='mb-3'>
             <img src={msmoney} style={{ maxWidth: '50vw' }} />
           </p>
-          <p>Зʼявиться віконце для вибору дат, за якими буде сформовано звіт. Виберіть, приблизні, дати коли ви купляли будь які акції</p>
-          <p>
+          <p className='mb-3'>Зʼявиться віконце для вибору дат, за якими буде сформовано звіт. Виберіть, приблизні, дати коли ви купляли будь які акції</p>
+          <p className='mb-3'>
             <img src={popup} style={{ maxWidth: '50vw' }} />
           </p>
         </details>
 
-        <div className="alert alert-warning">
+        <div className="bg-neutral-100 p-4 text-sm">
           Зверніть увагу, усі розрахунки та колонки мають пояснення, що і як рахується,
           <br />
           за для того щоб їх побачити підведіть курсор мишки та трохи зачейкайте
@@ -247,91 +238,93 @@ const Dividends = () => {
         </div>
 
         {rows.length && (
-          <table className="table table-striped table-sm">
-            <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
+          <table className="table-auto w-full my-5 border-collapse">
+            <thead className="sticky top-0 bg-black text-white text-sm">
               <tr>
-                <th title="Дата" className="fw-normal">
+                <th title="Дата" className="font-normal text-left p-2">
                   date
                 </th>
-                <th title="Ticker акції" className="fw-normal">
+                <th title="Ticker акції" className="font-normal text-left p-2">
                   ticker
                 </th>
-                <th title="Нарахування за кожну акцію" className="fw-normal">
-                  price <span className="text-secondary">$</span>
+                <th title="Нарахування за кожну акцію" className="font-normal text-left p-2">
+                  price <span className="opacity-50">$</span>
                 </th>
-                <th title="Розрахована кількість акцій units = income / price" className="fw-normal">
+                <th title="Розрахована кількість акцій units = income / price" className="font-normal text-left p-2">
                   units
                 </th>
-                <th title="Нарахування у далларах" className="fw-normal">
-                  income <span className="text-secondary">$</span>
+                <th title="Нарахування у далларах" className="font-normal text-left p-2">
+                  income <span className="opacity-50">$</span>
                 </th>
-                <th title="Утримано податків зі сторони IBKR на користь США у доларах" className="fw-normal">
-                  tax <span className="text-secondary">$</span>
+                <th title="Утримано податків зі сторони IBKR на користь США у доларах" className="font-normal text-left p-2">
+                  tax <span className="opacity-50">$</span>
                 </th>
-                <th title="Розрахований процент податку" className="fw-normal">
-                  tax <span className="text-secondary">%</span>
+                <th title="Розрахований процент податку" className="font-normal text-left p-2">
+                  tax <span className="opacity-50">%</span>
                 </th>
-                <th title="Нараховано чистими після податку США у доларах" className="fw-normal">
-                  net income <span className="text-secondary">$</span>
+                <th title="Нараховано чистими після податку США у доларах" className="font-normal text-left p-2">
+                  net income <span className="opacity-50">$</span>
                 </th>
-                <th title="Курс НБУ на дату нарахування" className="fw-normal">
+                <th title="Курс НБУ на дату нарахування" className="font-normal text-left p-2">
                   usd/uah
                 </th>
-                <th title="Нараховано у гривні загалом, без урахування податків США" className="fw-normal">
-                  income <span className="text-secondary">&#8372;</span>
+                <th title="Нараховано у гривні загалом, без урахування податків США" className="font-normal text-left p-2">
+                  income <span className="opacity-50">&#8372;</span>
                 </th>
-                <th title="Подакток України - 9% ПДФО та 5% війсковий збір, разом 14%. ВАЖЛИВО: податком обкладається зарахована сума, без урахування податку США" className="fw-normal">
-                  tax <span className="text-secondary">&#8372;</span>
+                <th title="Податок України - 9% ПДФО та 5% військовий збір, разом 14%. ВАЖЛИВО: податком обкладається зарахована сума, без урахування податку США" className="font-normal text-left p-2">
+                  tax <span className="opacity-50">&#8372;</span>
                 </th>
-                <th title="Фін. результат чистими, після сплати всіх податків у гривні" className="fw-normal">
-                  net income <span className="text-secondary">&#8372;</span>
+                <th title="Фін. результат чистими, після сплати всіх податків у гривні" className="font-normal text-left p-2">
+                  net income <span className="opacity-50">&#8372;</span>
                 </th>
               </tr>
             </thead>
             <tbody className="table-group-divider">
-              {rows.map((row) => (
-                <tr key={row.id}>
-                  <td title={row.metadata.income.date}>{row.date.toLocaleDateString()}</td>
-                  <td title={row.name}>{row.ticker}</td>
-                  <td>{currency(row.metadata.income.price)}</td>
-                  <td>{Math.round(row.income / row.metadata.income.price)}</td>
-                  <td title={row.metadata.income.memo}>{currency(row.income)}</td>
-                  <td title={row.metadata.tax.memo}>{currency(row.tax)}</td>
-                  <td>{round((Math.abs(row.tax) / row.income) * 100, 2)}</td>
-                  <td title={`net income = income-tax = ${currency(row.income)}${currency(row.tax)} = ${currency(row.netIncome)}`}>{currency(row.netIncome)}</td>
-                  <td className="table-secondary">{currency(row.exchangeRate)}</td>
-                  <td title={`income = income * exchange rate = ${currency(row.income)} * ${currency(row.exchangeRate)} = ${currency(row.incomeUah)}`}>{currency(row.incomeUah)}</td>
-                  <td title={`tax = income * 0.14 = ${currency(row.incomeUah)} * 0.14 = ${currency(row.taxUah)}`}>{currency(row.taxUah)}</td>
-                  <td title={`net income = income-tax = ${currency(row.incomeUah)}${currency(row.taxUah)} = ${currency(row.netIncomeUah)}`}>{currency(row.netIncomeUah)}</td>
+              {rows.map((row, idx) => (
+                <tr className={`border-t border-neutral-300 ${idx % 2 === 0 ? 'bg-neutral-100' : 'bg-white'}`} key={row.id}>
+                  <td className='p-2' title={row.metadata.income.date}>{row.date.toLocaleDateString()}</td>
+                  <td className='p-2' title={row.name}>{row.ticker}</td>
+                  <td className='p-2'>{currency(row.metadata.income.price)}</td>
+                  <td className='p-2'>{Math.round(row.income / row.metadata.income.price)}</td>
+                  <td className='p-2' title={row.metadata.income.memo}>{currency(row.income)}</td>
+                  <td className='p-2' title={row.metadata.tax.memo}>{currency(row.tax)}</td>
+                  <td className='p-2'>{round((Math.abs(row.tax) / row.income) * 100, 2)}</td>
+                  <td className='p-2' title={`net income = income-tax = ${currency(row.income)}${currency(row.tax)} = ${currency(row.netIncome)}`}>{currency(row.netIncome)}</td>
+                  <td className='p-2 bg-neutral-200'>{currency(row.exchangeRate)}</td>
+                  <td className='p-2' title={`income = income * exchange rate = ${currency(row.income)} * ${currency(row.exchangeRate)} = ${currency(row.incomeUah)}`}>{currency(row.incomeUah)}</td>
+                  <td className='p-2' title={`tax = income * 0.14 = ${currency(row.incomeUah)} * 0.14 = ${currency(row.taxUah)}`}>{currency(row.taxUah)}</td>
+                  <td className='p-2' title={`net income = income-tax = ${currency(row.incomeUah)}${currency(row.taxUah)} = ${currency(row.netIncomeUah)}`}>{currency(row.netIncomeUah)}</td>
                 </tr>
               ))}
             </tbody>
-            <tfoot className="table-group-divider table-secondary">
+            <tfoot className="bg-neutral-200 border-t border-neutral-300">
               <tr>
-                <td>Разом</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td title="Загальна сума нарахованих дивідендів у доларах">{currency(rows.map((row) => row.income).reduce((a, b) => a + b, 0))}</td>
-                <td title="Загальна сума утриманих податків на користь США у доларах">{currency(rows.map((row) => -1 * row.tax).reduce((a, b) => a + b, 0))}</td>
-                <td></td>
-                <td title="Нараховано чистими після сплати податків США у доларах">{currency(rows.map((row) => row.netIncome).reduce((a, b) => a + b, 0))}</td>
-                <td></td>
-                <td title="Загальна сума нарахованих дивідендів у гривні, після сплати податку США">{currency(rows.map((row) => row.incomeUah).reduce((a, b) => a + b, 0))}</td>
-                <td title="Сумма податків що маєемо сплатити на користь податкої України">{currency(rows.map((row) => row.taxUah).reduce((a, b) => a + b, 0))}</td>
-                <td title="Залишаеться чистими після сплати всіх податків">{currency(rows.map((row) => row.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
+                <td className='p-2'>Разом</td>
+                <td className='p-2'></td>
+                <td className='p-2'></td>
+                <td className='p-2'></td>
+                <td className='p-2' title="Загальна сума нарахованих дивідендів у доларах">{currency(rows.map((row) => row.income).reduce((a, b) => a + b, 0))}</td>
+                <td className='p-2' title="Загальна сума утриманих податків на користь США у доларах">{currency(rows.map((row) => -1 * row.tax).reduce((a, b) => a + b, 0))}</td>
+                <td className='p-2'></td>
+                <td className='p-2' title="Нараховано чистими після сплати податків США у доларах">{currency(rows.map((row) => row.netIncome).reduce((a, b) => a + b, 0))}</td>
+                <td className='p-2'></td>
+                <td className='p-2' title="Загальна сума нарахованих дивідендів у гривні, після сплати податку США">{currency(rows.map((row) => row.incomeUah).reduce((a, b) => a + b, 0))}</td>
+                <td className='p-2' title="Сумма податків що маєемо сплатити на користь податкої України">{currency(rows.map((row) => row.taxUah).reduce((a, b) => a + b, 0))}</td>
+                <td className='p-2' title="Залишаеться чистими після сплати всіх податків">{currency(rows.map((row) => row.netIncomeUah).reduce((a, b) => a + b, 0))}</td>
               </tr>
             </tfoot>
           </table>
         )}
+
+
         <details className="my-3">
           <summary>Примітки</summary>
-          <p>Ідея цієї таблички швиденько подивитися нараховані дивіденди, та розраховані податкові забовʼязання з урахуванням курсових різниць.</p>
-          <p>Майже кожна комірка у табличці має пояснення з формулою та цифрами розрахунку, за для того щоб його побачити слід підвести курсор мишки та трохи зачекати.</p>
-          <ul>
+          <p className='mb-3'>Ідея цієї таблички швиденько подивитися нараховані дивіденди, та розраховані податкові забовʼязання з урахуванням курсових різниць.</p>
+          <p className='mb-3'>Майже кожна комірка у табличці має пояснення з формулою та цифрами розрахунку, за для того щоб його побачити слід підвести курсор мишки та трохи зачекати.</p>
+          <ul className='list-disc list-inside ml-5'>
             <li>
               Данні з виписки Interactive Brokers
-              <ul>
+              <ul className='list-disc list-inside ml-5'>
                 <li>
                   <b>date</b> - дата надходження дивідендів з виписки Interactive Brokers
                 </li>
@@ -351,7 +344,7 @@ const Dividends = () => {
             </li>
             <li>
               Розрахунки
-              <ul>
+              <ul className='list-disc list-inside ml-5'>
                 <li>
                   <b>units</b> - кількість акцій з яких було виплачено дивіденди, розрахунок - <code>income / price</code>
                 </li>
@@ -365,19 +358,19 @@ const Dividends = () => {
             </li>
             <li>
               Курсові різниці
-              <ul>
+              <ul className='list-disc list-inside ml-5'>
                 <li>
-                  <b>usd/uah</b> - курс долара на дату виплати дивідендів, данні тягнемо з <a href="https://bank.gov.ua">bank.gov.ua</a> на дату виплати дивідендів, так наприклад для 2022-12-30 данні
+                  <b>usd/uah</b> - курс долара на дату виплати дивідендів, данні тягнемо з <a className='text-blue-500' href="https://bank.gov.ua">bank.gov.ua</a> на дату виплати дивідендів, так наприклад для 2022-12-30 данні
                   забираються{' '}
-                  <a href="https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=USD&date=20221230&json" target="_blank">
+                  <a className='text-blue-500' href="https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=USD&date=20221230&json" target="_blank">
                     звідси
                   </a>{' '}
-                  і ця ж <a href="https://bank.gov.ua/ua/markets/exchangerates?date=30.12.2023">сторінка для людей</a>
+                  і ця ж <a className='text-blue-500' href="https://bank.gov.ua/ua/markets/exchangerates?date=30.12.2023">сторінка для людей</a>
                 </li>
                 <li>
                   <b>income</b> - дохід у гривні, рахується як <code>income * usd/uah</code>, тобто ми беремо <b>не оподаткований</b> дохід у доларах та множимо на курс на дату. Чудова нагода
                   завітати до iTalks та сказати дякую одному з експертів що{' '}
-                  <a href="https://t.me/c/1440806120/12717/27029" target="_blank">
+                  <a className='text-blue-500' href="https://t.me/c/1440806120/12717/27029" target="_blank">
                     підказав
                   </a>
                 </li>
@@ -391,28 +384,26 @@ const Dividends = () => {
             </li>
           </ul>
         </details>
+
+
         <Calendar rows={rows} />
 
       </div>
 
       {tax30 && (
-        <div className="bg-danger-subtle">
-          <div className="container py-5">
-            <h3>Зі звіту, схоже що відбувається подвійне оподаткування</h3>
-            <p>Між Україною та США є домовленність про відсутність подвійного оподаткування, тобто якщо я сплатив податки в США, то не маю повторно їх сплачувати тут</p>
-            <p>Але за замовчанням ця опція виключена</p>
-            <p>
+        <div className="bg-red-100 mt-5 mb-0">
+          <div className="container mx-auto my-0 p-4">
+            <h3 className='text-2xl font-bold mb-3'>Зі звіту, схоже що відбувається подвійне оподаткування</h3>
+            <p className='mb-3'>Між Україною та США є домовленність про відсутність подвійного оподаткування, тобто якщо я сплатив податки в США, то не маю повторно їх сплачувати тут</p>
+            <p className='mb-3'>Але за замовчанням ця опція виключена</p>
+            <p className='mb-3'>
               І замість очікуваних <b>15%</b> податку, IB списує усі <b>30%</b>, так наприклад <b>{tax30?.ticker}</b> мав би списати <b>{currency(tax30?.income * 0.15)}</b>, а списав{' '}
               <b>{currency(Math.abs(tax30.tax))}</b>
             </p>
             <details>
               <summary>Як виправити</summary>
               <p>
-                Ось{' '}
-                <a href="https://t.me/c/1440806120/12717/22009" target="_blank">
-                  тут
-                </a>{' '}
-                була гарна переписка з прикладами, куди йти, що робити, які тікети відкривати і т.д.
+                Ось <a className='text-blue-500' href="https://t.me/c/1440806120/12717/22009" target="_blank">тут</a> була гарна переписка з прикладами, куди йти, що робити, які тікети відкривати і т.д.
               </p>
             </details>
           </div>
