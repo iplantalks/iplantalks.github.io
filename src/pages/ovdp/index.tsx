@@ -10,6 +10,7 @@ import { Checkboxes2 } from '../payment-systems/components/_checkboxes'
 import { LineChart } from './_line_chart'
 import { useAuth } from '../../context/auth'
 import { Feedback } from './_feedback'
+import { Bluetooth, ChevronDown, ChevronRight, MessageSquare } from 'lucide-react'
 
 function getUniqueValues<T, K extends keyof T>(values: T[], key: K): T[K][] {
   return Array.from(new Set(values.map((v) => v[key])))
@@ -20,12 +21,12 @@ const CollapsibleFilter = (props: React.PropsWithChildren<{ title: string }>) =>
   return (
     <>
       <div className="mt-3">
-        <div onClick={(e) => setCollapsed(!collapsed)} className="d-flex" style={{ cursor: 'pointer' }}>
-          <div className="flex-grow-1">
+        <div onClick={(e) => setCollapsed(!collapsed)} className="flex cursor-pointer items-center justify-between">
+          <div>
             <b>{props.title}</b>
           </div>
-          <div className="flex-shrink-0">
-            <i className={collapsed ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down'} />
+          <div>
+            {collapsed ? <ChevronRight /> : <ChevronDown />}
           </div>
         </div>
       </div>
@@ -123,19 +124,19 @@ const Ovdp: React.FC<PageProps> = () => {
     <main>
       {/* <Hero title="Інвестуємо в Україні" subtitle="ОВДП" /> */}
       <Header />
-      <div className="bg-body-secondary">
-        <div className="container-fluid py-5">
-          <div className="row">
-            <div className="col-12 col-md-3">
-              <div className="text-bg-light rounded-3 my-2 py-2 px-3">
-                <div className="text-secondary">
+      <div className="bg-neutral-100">
+        <div className="m-0 p-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="w-full md:w-20/100">
+              <div className="bg-white rounded p-3">
+                <div className="text-neutral-500">
                   <small>Налаштування</small>
                 </div>
                 <CollapsibleFilter title="Постачальник">
-                  <div className="d-flex align-items-center justify-content-between">
-                    <small className="text-secondary d-flex-growth-1">Назва банку або брокеру</small>
+                  <div className="flex items-center justify-between">
+                    <small className="text-neutral-500">Назва банку або брокеру</small>
                     <button
-                      className="btn btn-primary btn-sm d-flex-shrink-0"
+                      className="px-2 py-1 text-sm rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                       onClick={() =>
                         setProviderCheckboxes(getUniqueValues(rows, 'provider_name').reduce((acc, name) => Object.assign(acc, { [name]: !Object.values(providerCheckboxes).shift() }), {}))
                       }
@@ -171,10 +172,10 @@ const Ovdp: React.FC<PageProps> = () => {
                   />
                 </CollapsibleFilter>
                 <CollapsibleFilter title="Період">
-                  <div className="d-flex align-items-center justify-content-between">
-                    <small className="text-secondary d-flex-growth-1">Кількість місяців</small>
+                  <div className="flex items-center justify-between">
+                    <small className="text-neutral-500">Кількість місяців</small>
                     <button
-                      className="btn btn-primary btn-sm d-flex-shrink-0"
+                      className="px-2 py-1 text-sm rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                       onClick={() =>
                         setMonthsCheckboxes(
                           getUniqueValues(rows, 'months')
@@ -199,21 +200,21 @@ const Ovdp: React.FC<PageProps> = () => {
                 </CollapsibleFilter>
 
                 <div className="mt-4">
-                  <div className="form-check">
-                    <input className="form-check-input" type="checkbox" id="sale-checkbox" checked={saleCheckox} onChange={(e) => setSaleCheckbox(e.target.checked)} />
-                    <label className="form-check-label" htmlFor="sale-checkbox">
+                  <div className="flex gap-2 items-center">
+                    <input type="checkbox" id="sale-checkbox" checked={saleCheckox} onChange={(e) => setSaleCheckbox(e.target.checked)} />
+                    <label htmlFor="sale-checkbox">
                       дострокове погашення ⏰
                     </label>
                   </div>
-                  <div className="form-check">
-                    <input className="form-check-input" type="checkbox" id="online-checkbox" checked={onlineCheckbox} onChange={(e) => setOnlineCheckbox(e.target.checked)} />
-                    <label className="form-check-label" htmlFor="online-checkbox">
-                      online відкриття <i className="text-primary fa-brands fa-bluetooth"></i>
+                  <div className="flex gap-2 items-center">
+                    <input type="checkbox" id="online-checkbox" checked={onlineCheckbox} onChange={(e) => setOnlineCheckbox(e.target.checked)} />
+                    <label htmlFor="online-checkbox">
+                      online відкриття <Bluetooth size={16} className='text-blue-500 inline-block' />
                     </label>
                   </div>
-                  <div className="form-check">
-                    <input className="form-check-input" type="checkbox" id="dia-checkbox" checked={diaCheckbox} onChange={(e) => setDiaCheckbox(e.target.checked)} />
-                    <label className="form-check-label" htmlFor="dia-checkbox">
+                  <div className="flex gap-2 items-center">
+                    <input type="checkbox" id="dia-checkbox" checked={diaCheckbox} onChange={(e) => setDiaCheckbox(e.target.checked)} />
+                    <label htmlFor="dia-checkbox">
                       Дія
                       <img
                         width="16"
@@ -228,55 +229,55 @@ const Ovdp: React.FC<PageProps> = () => {
                   </div>
                 </div>
 
-                <div className="mt-3">
+                <div className="mt-3 flex flex-col gap-2">
                   {!currencyCheckboxes['UAH'] && <LineChart items={filtered} currency="UAH" />}
                   {!currencyCheckboxes['USD'] && <LineChart items={filtered} currency="USD" />}
                   {!currencyCheckboxes['EUR'] && <LineChart items={filtered} currency="EUR" />}
                 </div>
               </div>
             </div>
-            <div className="col-12 col-md-9">
-              <div className="text-bg-light mt-2">
-                <table className="table table-hover text-center mb-0">
-                  <thead className="table-dark" style={{ position: 'sticky', top: 0 }}>
+            <div className="w-full md:w-80/100">
+              <div>
+                <table className="table-auto border-collapse w-full bg-white">
+                  <thead className="bg-black text-white sticky top-0">
                     <tr>
-                      <th className="fw-normal small">Оновлено</th>
-                      <th className="fw-normal small"></th>
-                      <th className="fw-normal small"></th>
-                      <th className="fw-normal small">Постачальник</th>
-                      <th className="fw-normal small">Тип постачальника</th>
-                      <th className="fw-normal small">Тип інструменту</th>
-                      <th className="fw-normal small">Валюта</th>
-                      <th className="fw-normal small">
-                        Погашення <span className="text-secondary">дата</span>
+                      <th className="p-2 font-normal text-sm text-left">Оновлено</th>
+                      <th className="p-2 font-normal text-sm text-left"></th>
+                      <th className="p-2 font-normal text-sm text-left"></th>
+                      <th className="p-2 font-normal text-sm text-left">Постачальник</th>
+                      <th className="p-2 font-normal text-sm text-left">Тип постачальника</th>
+                      <th className="p-2 font-normal text-sm text-left">Тип інструменту</th>
+                      <th className="p-2 font-normal text-sm text-left">Валюта</th>
+                      <th className="p-2 font-normal text-sm text-left">
+                        Погашення <span className="text-neutral-500">дата</span>
                       </th>
-                      <th className="fw-normal small"></th>
-                      <th className="fw-normal small">
-                        Погашення <span className="text-secondary">місяців</span>
+                      <th className="p-2 font-normal text-sm text-left"></th>
+                      <th className="p-2 font-normal text-sm text-left">
+                        Погашення <span className="text-neutral-500">місяців</span>
                       </th>
-                      <th className="fw-normal small">
-                        Дохідність <span className="text-secondary">%</span>
+                      <th className="p-2 font-normal text-sm text-left">
+                        Дохідність <span className="text-neutral-500">%</span>
                       </th>
-                      <th className="fw-normal small"></th>
-                      <th className="fw-normal small"></th>
+                      <th className="p-2 font-normal text-sm text-left"></th>
+                      <th className="p-2 font-normal text-sm text-left"></th>
                     </tr>
                   </thead>
-                  <tbody className="table-group-divider">
+                  <tbody>
                     {filtered
                       .sort((a, b) => new Date(a.maturity ? a.maturity : new Date()).getTime() - new Date(b.maturity ? b.maturity : new Date()).getTime())
                       .map((item, idx, arr) => (
-                        <tr key={idx} className={idx > 1 && item.months !== arr[idx - 1].months ? 'table-group-divider' : ''}>
-                          <td>
-                            <small className="text-secondary">{item.input_date ? ago(new Date(item.input_date)) : ''} тому</small>
+                        <tr key={idx} className={idx > 1 && item.months !== arr[idx - 1].months ? 'border-t-2 border-neutral-500' : 'border-t border-neutral-300'}>
+                          <td className='p-2'>
+                            <small className="text-neutral-500">{item.input_date ? ago(new Date(item.input_date)) : ''} тому</small>
                           </td>
-                          <td valign="middle">
+                          <td className='p-2' valign="middle">
                             {item.info?.online && (
                               <span title="Можна відкрити рахунок online">
-                                <i className="text-primary fa-brands fa-bluetooth"></i>
+                                <Bluetooth size={16} className='text-blue-500' />
                               </span>
                             )}
                           </td>
-                          <td valign="middle">
+                          <td className='p-2' valign="middle">
                             {item.info?.dia && (
                               <img
                                 width="16"
@@ -288,20 +289,20 @@ const Ovdp: React.FC<PageProps> = () => {
                               />
                             )}
                           </td>
-                          <td>
+                          <td className='p-2'>
                             {item.provider_name}
-                            {item.info?.comment ? <i className="fa-regular fa-comment ms-2" title={item.info?.comment} /> : ''}
+                            {item.info?.comment && <span title={item.info?.comment}><MessageSquare size={14} className='ml-1 inline-block' /></span>}
                           </td>
-                          <td>{item.provider_type}</td>
-                          <td title={item.instrument_type === 'OVDP' ? item.isin : ''}>{item.instrument_type}</td>
-                          <td>{item.currency}</td>
-                          <td>{item.maturity ? item.maturity : ''}</td>
-                          <td>{item.info?.sale && <span title="Дострокове погашення">⏰</span>}</td>
-                          <td>{item.months ? item.months : ''}</td>
-                          <td className={[item.months && item.yield === best_over_months[item.months] ? 'text-success' : '', item.yield === best ? 'fw-bold' : ''].join(' ')}>
+                          <td className='p-2'>{item.provider_type}</td>
+                          <td className='p-2' title={item.instrument_type === 'OVDP' ? item.isin : ''}>{item.instrument_type}</td>
+                          <td className='p-2'>{item.currency}</td>
+                          <td className='p-2'>{item.maturity ? item.maturity : ''}</td>
+                          <td className='p-2'>{item.info?.sale && <span title="Дострокове погашення">⏰</span>}</td>
+                          <td className='p-2'>{item.months ? item.months : ''}</td>
+                          <td className={[item.months && item.yield === best_over_months[item.months] ? 'text-green-500 p-2' : 'p-2', item.yield === best ? 'font-bold' : ''].join(' ')}>
                             {currency(item.yield)}%{item.yield === best ? <span title={`Найкраща пропозиція`}>🥇</span> : ''}
                           </td>
-                          <td>
+                          <td className='p-2'>
                             <span
                               title={`Середня дохідність ${item.instrument_type} з погашенням через ${item.months} місяців за попередній період складає ${snapshot
                                 .filter((s) => s.kind === item.instrument_type && s.currency === item.currency && s.months === item.months)
@@ -314,13 +315,13 @@ const Ovdp: React.FC<PageProps> = () => {
                                   .filter((s) => s.kind === item.instrument_type && s.currency === item.currency && s.months === item.months)
                                   .sort((a, b) => b.month.localeCompare(a.month))
                                   .shift()?.ror || 0) ? (
-                                <span className="text-success">&#x25B2;</span>
+                                <span className="text-green-500">&#x25B2;</span>
                               ) : (
-                                <span className="text-danger">&#x25BC;</span>
+                                <span className="text-red-500">&#x25BC;</span>
                               )}
                             </span>
                           </td>
-                          <td>
+                          <td className='p-2'>
                             {item.info?.fee && (
                               <small title={item.info?.fee}>
                                 <i className="text-primary fa-solid fa-circle-info" />
@@ -336,23 +337,27 @@ const Ovdp: React.FC<PageProps> = () => {
           </div>
         </div>
       </div>
-      <div className="container py-5">
+
+      <div className="container mx-auto my-5 p-4">
         {!currencyCheckboxes['UAH'] && <LineChart items={filtered} currency="UAH" />}
-        <div className="row">
-          <div className="col-6">{!currencyCheckboxes['USD'] && <LineChart items={filtered} currency="USD" />}</div>
-          <div className="col-6">{!currencyCheckboxes['EUR'] && <LineChart items={filtered} currency="EUR" />}</div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>{!currencyCheckboxes['USD'] && <LineChart items={filtered} currency="USD" />}</div>
+          <div>{!currencyCheckboxes['EUR'] && <LineChart items={filtered} currency="EUR" />}</div>
         </div>
       </div>
-      <div className="bg-body-secondary">
-        <div className="container py-5">
-          <h2>Як це працює?</h2>
-          <p>ОВДП це як депозит, але з трохи більшою дохідністью.</p>
-          <p>ОВДП випускає та продає Міністерство Фінансів України.</p>
-          <p>Пересічний громадянин не може купити ОВДП у мінфін, вони продаються на так званих аукціьонах великими партіями.</p>
-          <p>Покупцями за звичай є банки та фонди.</p>
-          <p>Вони в свою чергу потім, перепродають їх нам, зі своєю націнкою, хтось трохи дорожче, хтось трохи дешевше.</p>
+
+
+      <div className="bg-neutral-100">
+        <div className="container mx-auto my-0 p-4">
+          <h2 className='text-2xl font-bold mb-3'>Як це працює?</h2>
+          <p className='mb-3'>ОВДП це як депозит, але з трохи більшою дохідністью.</p>
+          <p className='mb-3'>ОВДП випускає та продає Міністерство Фінансів України.</p>
+          <p className='mb-3'>Пересічний громадянин не може купити ОВДП у мінфін, вони продаються на так званих аукціьонах великими партіями.</p>
+          <p className='mb-3'>Покупцями за звичай є банки та фонди.</p>
+          <p className='mb-3'>Вони в свою чергу потім, перепродають їх нам, зі своєю націнкою, хтось трохи дорожче, хтось трохи дешевше.</p>
         </div>
       </div>
+
       <Feedback />
       <Join />
     </main>
