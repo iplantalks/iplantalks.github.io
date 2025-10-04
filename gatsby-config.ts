@@ -6,6 +6,7 @@ const config: GatsbyConfig = {
     siteUrl: `https://italks.com.ua`,
   },
   graphqlTypegen: true,
+  trailingSlash: 'always',
   plugins: [
     {
       resolve: `gatsby-plugin-google-gtag`,
