@@ -86,7 +86,3 @@ Technically Gatsby allow us to use anything as a datasource and render it via re
 At moment we are using github pages, which means there is no servers from our side that we need manage
 
 Just make some changes and save them - everything else will happen automatically
-
-## TODO
-
-- `// TODO: serviceworker - prepearing for rip` - cleanup `gatsby-browser.tsx` and remove `static/ss-messaging-sw.js` in few weeks
