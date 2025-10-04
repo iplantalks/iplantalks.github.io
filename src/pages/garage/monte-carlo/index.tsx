@@ -120,31 +120,31 @@ const MonteCarlo = () => {
   return (
     <main>
       <Header />
-      <div className="container py-5">
-        <h1>Monte Carlo 🪄</h1>
-        <div className="row">
+      <div className="container mx-auto my-5 p-4">
+        <h1 className='text-2xl font-bold mb-3'>Monte Carlo 🪄</h1>
+        <div className="flex gap-4 my-5">
           <div className='col'>
-            <label className='form-label'>Ticker</label>
-            <input className='form-control' placeholder="Stock, e.g.: VOO, VTI, AAPL, ..." value={ticker} onChange={(e) => setTicker(e.target.value)} />
+            <label className='block mb-2'>Ticker</label>
+            <input className='px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition' placeholder="Stock, e.g.: VOO, VTI, AAPL, ..." value={ticker} onChange={(e) => setTicker(e.target.value)} />
           </div>
           <div className='col'>
-            <label className='form-label'>Backward</label>
-            <div className="d-flex gap-2 align-items-center">
-              <input className='form-control' placeholder="Backward days" type="number" min="30" max="600" step="10" style={{ width: '6em' }} value={backward} onChange={(e) => setBackward(e.target.valueAsNumber)} />
-              <input className='form-range' placeholder="Backward days" type="range" min="30" max="600" step="10" value={backward} onChange={(e) => setBackward(e.target.valueAsNumber)} />
+            <label className='block mb-2'>Backward</label>
+            <div className="flex gap-2 items-center">
+              <input className='px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition' placeholder="Backward days" type="number" min="30" max="600" step="10" style={{ width: '6em' }} value={backward} onChange={(e) => setBackward(e.target.valueAsNumber)} />
+              <input placeholder="Backward days" type="range" min="30" max="600" step="10" value={backward} onChange={(e) => setBackward(e.target.valueAsNumber)} />
             </div>
           </div>
           <div className='col'>
-            <label className='form-label'>Forward</label>
-            <div className="d-flex gap-2 align-items-center">
-              <input className='form-control' placeholder="Forward days" type="number" min="5" max="100" step="1" style={{ width: '6em' }} value={forward} onChange={(e) => setForward(e.target.valueAsNumber)} />
-              <input className='form-range' placeholder="Forward days" type="range" min="5" max="100" step="1" value={forward} onChange={(e) => setForward(e.target.valueAsNumber)} />
+            <label className='block mb-2'>Forward</label>
+            <div className="flex gap-2 items-center">
+              <input className='px-3 py-2 border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition' placeholder="Forward days" type="number" min="5" max="100" step="1" style={{ width: '6em' }} value={forward} onChange={(e) => setForward(e.target.valueAsNumber)} />
+              <input placeholder="Forward days" type="range" min="5" max="100" step="1" value={forward} onChange={(e) => setForward(e.target.valueAsNumber)} />
             </div>
           </div>
           <div className='col'>
-            <label className='form-label'>&nbsp;</label>
+            <label className='block mb-2'>&nbsp;</label>
             <div>
-              <input className='btn btn-primary btn-block' type="submit" value="Submit" onClick={onSubmit} />
+              <input className='block w-full px-4 py-2 rounded bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition' type="submit" value="Submit" onClick={onSubmit} />
             </div>
           </div>
         </div>
