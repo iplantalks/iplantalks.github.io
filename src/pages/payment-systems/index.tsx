@@ -489,7 +489,7 @@ function Row({ r, sortField }: { r: Row & { bank_links?: SheetLink, service_link
             {r.bank_links && r.bank_links.remote === 'TRUE' && <TooltipIcon icon={<Bluetooth size={14} className='text-blue-500 inline-block' />} tooltip="Можливе віддаленне відкриття" />}
           </small>
         </div>
-        <div className="d-block d-mhidden">
+        <div className="block md:hidden">
           <Currency currency={r.card_currency} /> {currency(r.bank_fee)}%
         </div>
       </td>
