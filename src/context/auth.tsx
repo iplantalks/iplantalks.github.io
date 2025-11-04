@@ -29,7 +29,16 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
       return
     }
 
-    getAuth(app).onAuthStateChanged(setUser)
+    getAuth(app).onAuthStateChanged(user => {
+      setUser(user)
+      if (user && user.email) {
+        fetch('https://nethunt.com/service/automation/hooks/68f0c80df21e5b74dc674338', {
+          method: 'POST',
+          body: JSON.stringify({ email: user.email }),
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
+    })
   }, [])
 
   const login = () => {
