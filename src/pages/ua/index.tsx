@@ -4,7 +4,7 @@ import { HeadFC } from 'gatsby'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut, Line } from 'react-chartjs-2'
 import { LineSeries, LineStyle, createChart } from 'lightweight-charts'
-import { inflation, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, cash_usd, deposit_usd_orig, colors, useData } from './components/_data'
+import { colors } from './components/_data'
 import { BarChart } from './components/_bar-chart'
 import { PercentageBarChart } from './components/_percentage-bar-chart'
 import { CumulativeLineChart } from './components/_cumulative_line_chart'
@@ -12,6 +12,7 @@ import { CumulativeLinesChart } from './components/_cumulative_lines_chart'
 import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
 import Join from '../../components/join'
+import { useDepositUAH, useDepositUSD, useExchangeRate, useInflation, useOvdpUah, useOvdpUsd, useSpy } from './components/_googlesheets'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -127,6 +128,26 @@ const TableRow = ({
   toggle: (id: string) => void
 }) => {
   const found = allocations.find((x) => x.id === id)
+
+  // Handle empty data during loading
+  if (!data || data.length === 0) {
+    return (
+      <tr className='border-t border-neutral-200'>
+        <td className="p-2">{title}</td>
+        <td className="p-2">{money}</td>
+        <td className='p-2'>&mdash;</td>
+        <td className='p-2'>&mdash;</td>
+        <td className='p-2'>&mdash;</td>
+        <td className='p-2'>&mdash;</td>
+        <td className='p-2'>&mdash;</td>
+        <td className='p-2'>&mdash;</td>
+        <td className="p-2 text-neutral-500">
+          <small>завантаження...</small>
+        </td>
+      </tr>
+    )
+  }
+
   return (
     <tr className='border-t border-neutral-200'>
       <td className="p-2">{title}</td>
@@ -139,7 +160,7 @@ const TableRow = ({
           data
             .slice(data.length - 10)
             .map((x) => x.value)
-            .reduce((acc, x) => acc + x, 0) / 10
+            .reduce((acc, x) => acc + x, 0) / Math.min(10, data.length)
         )}
         %
       </td>
@@ -148,7 +169,7 @@ const TableRow = ({
           data
             .slice(data.length - 5)
             .map((x) => x.value)
-            .reduce((acc, x) => acc + x, 0) / 5
+            .reduce((acc, x) => acc + x, 0) / Math.min(5, data.length)
         )}
         %
       </td>
@@ -193,7 +214,16 @@ const Market = () => {
   const [showInflation, setShowInflation] = useState(true)
   const [showActives, setShowActives] = useState(true)
 
-  const data = useData()
+  const inflation = useInflation()
+  const cash_usd = useExchangeRate()
+  const deposit_uah = useDepositUAH()
+  const deposit_usd = useDepositUSD()
+  const ovdp_uah = useOvdpUah()
+  const ovdp_usd = useOvdpUsd()
+  const spy = useSpy()
+
+  const data: Record<string, Array<{ year: number; value: number }>> = useMemo(() => ({ cash_usd, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy }), [cash_usd, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy])
+
   const [allocations, setAllocations] = useState<Allocatable[]>([
     // { id: 'deposit_uah', value: 20, locked: false },
     // { id: 'deposit_usd', value: 20, locked: false },
@@ -205,7 +235,9 @@ const Market = () => {
       return result
     }
     for (const id of Array.from(new Set(allocations.map((x) => x.id)))) {
-      const min = Math.min(...data[id].map((x) => x.year))
+      const items = data[id] || []
+      if (items.length === 0) continue
+      const min = Math.min(...items.map((x) => x.year))
       if (min > result) {
         result = min
       }
@@ -219,7 +251,9 @@ const Market = () => {
       return result
     }
     for (const id of Array.from(new Set(allocations.map((x) => x.id)))) {
-      const max = Math.max(...data[id].map((x) => x.year))
+      const items = data[id] || []
+      if (items.length === 0) continue
+      const max = Math.max(...items.map((x) => x.year))
       if (max < result) {
         result = max
       }
@@ -292,14 +326,15 @@ const Market = () => {
     const portfolio: Record<number, number> = {}
     allocations.forEach(({ id, value }, idx) => {
       const allocation = value / 100
-      const items = data[id].filter((x) => x.year >= startDate && x.year <= endDate)
+      const allItems = data[id] || []
+      const items = allItems.filter((x) => x.year >= startDate && x.year <= endDate)
       for (let i = 0; i < items.length; i++) {
         if (!portfolio[items[i].year]) {
           portfolio[items[i].year] = 0
         }
         portfolio[items[i].year] += items[i].value * allocation
       }
-      if (showActives) {
+      if (showActives && items.length > 0) {
         chart.addSeries(LineSeries, { color: `rgba(${colors[idx]}, .5)`, title: id, priceLineVisible: true }).setData(toTimeseries(cumulative(items)))
       }
     })
@@ -313,7 +348,7 @@ const Market = () => {
     // chart.addLineSeries({ color: 'black', title: 'Portfolio', priceLineVisible: true }).setData(portfolioCum)
     // chart.addLineSeries({ color: 'black', title: 'Portfolio', priceLineVisible: true }).setData(toTimeseries(cumulative(portfolioCombined)))
 
-    if (showInflation) {
+    if (showInflation && inflation.length > 0) {
       // const infl = inflation.filter(({ year }) => year >= startDate && year <= endDate)
       // const infitems: Array<{ time: string; value: number }> = []
       // for (let i = 0; i < infl.length; i++) {
@@ -321,7 +356,10 @@ const Market = () => {
       //   infitems.push({ time: `${infl[i].year}-01-01`, value: cumulative })
       // }
       // chart.addLineSeries({ color: 'red', title: 'Inflation', lineStyle: LineStyle.Dashed }).setData(infitems)
-      chart.addSeries(LineSeries, { color: 'red', title: 'Inflation', lineStyle: LineStyle.Dashed }).setData(toTimeseries(cumulative(inflation.filter(({ year }) => year >= startDate && year <= endDate))))
+      const inflationFiltered = inflation.filter(({ year }) => year >= startDate && year <= endDate)
+      if (inflationFiltered.length > 0) {
+        chart.addSeries(LineSeries, { color: 'red', title: 'Inflation', lineStyle: LineStyle.Dashed }).setData(toTimeseries(cumulative(inflationFiltered)))
+      }
     }
 
     chart.timeScale().fitContent()
@@ -329,7 +367,7 @@ const Market = () => {
     return () => {
       chart.remove()
     }
-  }, [chartRef, allocations, startDate, endDate, showInflation, showActives])
+  }, [chartRef, allocations, data, inflation, startDate, endDate, showInflation, showActives])
 
   return (
     <main>
