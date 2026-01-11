@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 
+// https://docs.google.com/spreadsheets/d/1aSt7wyLU9ytpMAQcPFtdKRQaE8gyM4GW9nLsD4l5dEY
+
 async function fetchGoogleSheetsValues(range: string): Promise<string[][]> {
   // var url = new URL('https://gsr.iplan-talks.workers.dev')
   // url.searchParams.set('sheet', '1aSt7wyLU9ytpMAQcPFtdKRQaE8gyM4GW9nLsD4l5dEY')
