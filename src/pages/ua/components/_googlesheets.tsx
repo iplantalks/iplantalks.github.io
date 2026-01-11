@@ -112,3 +112,11 @@ export function useSpy() {
     return { year, value: val }
   })
 }
+
+export function useInsurance() {
+  return useYearValueSheet('insurance!A:B')
+}
+
+export function useNPF() {
+  return useYearValueSheet('npf!A:B')
+}

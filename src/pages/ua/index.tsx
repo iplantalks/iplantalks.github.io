@@ -12,7 +12,7 @@ import { CumulativeLinesChart } from './components/_cumulative_lines_chart'
 import { currency } from '../../utils/formatters'
 import { Header } from '../../components/header'
 import Join from '../../components/join'
-import { useDepositUAH, useDepositUSD, useExchangeRate, useInflation, useOvdpUah, useOvdpUsd, useSpy } from './components/_googlesheets'
+import { useDepositUAH, useDepositUSD, useExchangeRate, useInflation, useInsurance, useNPF, useOvdpUah, useOvdpUsd, useSpy } from './components/_googlesheets'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -221,8 +221,10 @@ const Market = () => {
   const ovdp_uah = useOvdpUah()
   const ovdp_usd = useOvdpUsd()
   const spy = useSpy()
+  const insurance = useInsurance()
+  const npf = useNPF()
 
-  const data: Record<string, Array<{ year: number; value: number }>> = useMemo(() => ({ cash_usd, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy }), [cash_usd, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy])
+  const data: Record<string, Array<{ year: number; value: number }>> = useMemo(() => ({ cash_usd, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, insurance, npf }), [cash_usd, deposit_uah, deposit_usd, ovdp_uah, ovdp_usd, spy, insurance, npf])
 
   const [allocations, setAllocations] = useState<Allocatable[]>([
     // { id: 'deposit_uah', value: 20, locked: false },
@@ -501,8 +503,8 @@ const Market = () => {
             <TableRow title="Депозит" money="Долар" data={deposit_usd} id="deposit_usd" allocations={allocations} toggle={handleToggleInstrument} />
             <TableRow title="ОВДП" money="Гривня" data={ovdp_uah} id="ovdp_uah" allocations={allocations} toggle={handleToggleInstrument} />
             <TableRow title="ОВДП" money="Долар" data={ovdp_usd} id="ovdp_usd" allocations={allocations} toggle={handleToggleInstrument} />
-            <TableRowComminSoon title="Страховка" money="Гривня" />
-            <TableRowComminSoon title="НПФ" money="Гривня" />
+            <TableRow title="Страховка" money="Гривня" data={insurance} id="insurance" allocations={allocations} toggle={handleToggleInstrument} />
+            <TableRow title="НПФ" money="Гривня" data={npf} id="npf" allocations={allocations} toggle={handleToggleInstrument} />
             <TableRow title="Фондовий ринок" money="Долар" data={spy} id="spy" allocations={allocations} toggle={handleToggleInstrument} />
           </tbody>
         </table>
