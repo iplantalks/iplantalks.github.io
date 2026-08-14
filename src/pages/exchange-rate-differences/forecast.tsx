@@ -37,7 +37,7 @@ const Forecast = () => {
   const [chart, setChart] = useState<Chart>()
   const [returnsChart, setReturnsChart] = useState<Chart>()
   const [short, setShort] = useState(true)
-  const [tax, setTax] = useState(19.5)
+  const [tax, setTax] = useState(23)
   const [expectedReturn, setExpectedReturn] = useState(7)
   const [exchangeRate, setExchangeRate] = useState(0)
   const [devalvation1, setDevalvation1] = useState(12)
